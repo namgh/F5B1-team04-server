@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FileUpload } from 'graphql-upload';
-import { Repository } from 'typeorm';
+import { getRepository, Repository } from 'typeorm';
 import { Blog } from './entities/blog.entity';
 import { Storage } from '@google-cloud/storage';
 import { User } from '../user/entities/user.entity';
@@ -22,6 +22,28 @@ export class BlogService {
 
   async findAll() {
     return await this.blogrepository.find();
+  }
+
+  async findotherblog({ email }) {
+    const user = await this.userrepository.findOne({ email });
+
+    const blog = await getRepository(Blog)
+      .createQueryBuilder('blog')
+      .leftJoinAndSelect('blog.user', 'user')
+      .andWhere('user.id = :id', { id: user.id })
+      .getMany();
+
+    return blog;
+  }
+
+  async findmyblog({ currentUser }) {
+    const blog = await getRepository(Blog)
+      .createQueryBuilder('blog')
+      .leftJoinAndSelect('blog.user', 'user')
+      .andWhere('user.id = :id', { id: currentUser.id })
+      .getMany();
+
+    return blog;
   }
 
   async create({ title, contents, currentUser }) {

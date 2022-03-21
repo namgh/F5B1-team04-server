@@ -1,4 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { BlogLike } from 'src/apis/bloglike/entities/bloglike.entity';
 import { User } from 'src/apis/user/entities/user.entity';
 import {
   Column,
@@ -6,6 +7,7 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -25,11 +27,14 @@ export class Blog {
   @Field(() => String)
   contents: string;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, (user) => user.blog)
   @Field(() => User)
   user: User;
 
-  @Column({default:0})
+  @OneToMany((type) => BlogLike, (bloglike) => bloglike.blog)
+  bloglike: BlogLike[];
+
+  @Column({ default: 0 })
   @Field(() => Int)
   like: number;
 

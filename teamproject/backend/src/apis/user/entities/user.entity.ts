@@ -1,9 +1,12 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { Blog } from 'src/apis/blog/entities/blog.entity';
+import { BlogLike } from 'src/apis/bloglike/entities/bloglike.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -62,4 +65,10 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany((type) => Blog, (blog) => blog.user)
+  blog: Blog[];
+
+  @OneToMany((type) => BlogLike, (bloglike) => bloglike.user)
+  bloglike: BlogLike[];
 }

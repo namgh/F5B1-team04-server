@@ -22,6 +22,17 @@ export class BlogResolver {
   }
 
   @UseGuards(GqlAuthAccessGuard)
+  @Query(() => [Blog])
+  fetchmyBlog(@CurrentUser() currentUser: ICurrentUser) {
+    return this.blogService.findmyblog({ currentUser });
+  }
+
+  @Query(() => [Blog])
+  fetchotherBlog(@Args('email') email: string) {
+    return this.blogService.findotherblog({ email });
+  }
+
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Blog)
   async createBlog(
     @Args('title') title: string,

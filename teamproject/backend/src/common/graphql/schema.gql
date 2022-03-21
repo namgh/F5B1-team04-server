@@ -1,0 +1,62 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: String!
+  email: String!
+  name: String!
+  phoneNumber: String
+  nickname: String!
+  codeInterest: String!
+  coachInterest: String!
+}
+
+type Blog {
+  id: String!
+  title: String!
+  contents: String!
+  user: User!
+  like: Int!
+}
+
+type BlogComment {
+  id: String!
+  contents: String!
+  user: User!
+  blog: Blog!
+}
+
+type BlogLike {
+  id: String!
+  user: User!
+  blog: Blog!
+  islike: Boolean!
+}
+
+type Query {
+  findAllUser: User!
+  fetchBlog: [Blog!]!
+  fetchAllBlogcomment(blogid: String!): BlogComment!
+  Bloglike: [Blog!]!
+}
+
+type Mutation {
+  createUser(name: String!, nickname: String!, phonenumber: String!, password: String!, email: String!): User!
+  updateUser(name: String!, nickname: String!, phonenumber: String!, password: String!): User!
+  deleteUser: Boolean!
+  login(password: String!, email: String!): String!
+  resotreAccessToken: String!
+  logout: String!
+  createBlog(contents: String!, title: String!): Blog!
+  updateBlog(blogid: String!, contents: String!, title: String!): Blog!
+  deleteBlog(blogid: String!): String!
+  uploadFile(files: [Upload!]!): [String!]!
+  createBlogComment(contents: String!, blogid: String!): BlogComment!
+  updateBlogComment(blogcommentid: String!, contents: String!, blogid: String!): BlogComment!
+  deleteBlogComment(blogcommentid: String!): BlogComment!
+  Blogtoggle(blogid: String!): BlogLike!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload

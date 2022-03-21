@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Connection, Repository } from 'typeorm';
+import {
+  Connection,
+  createQueryBuilder,
+  getRepository,
+  Repository,
+} from 'typeorm';
 import { Blog } from '../blog/entities/blog.entity';
 import { User } from '../user/entities/user.entity';
 import { BlogLike } from './entities/bloglike.entity';
@@ -20,40 +25,15 @@ export class BlogLikeService {
   ) {}
 
   async findBloglike({ currentUser }) {
-    const queryRunner = await this.connection.createQueryRunner();
-    const queryBuilder = await this.connection.createQueryBuilder();
-    await queryRunner.connect();
-    try {
-      const userblogtemp = await queryRunner.manager.find(Blog, {
-        user: currentUser.id,
-      });
-      const userblogparse = JSON.stringify(userblogtemp);
-      const userblog = JSON.parse(userblogparse);
-      const likeblog = await Promise.all(
-        await userblog.map((ele) => {
-          return queryRunner.manager.findOne(BlogLike, {
-            user: currentUser.id,
-            blog: ele.id,
-            islike: true,
-          });
-        }),
-      );
-      console.log('+++++++++', likeblog[0]);
-      const aaa = likeblog.filter((ele) => {
-        return ele;
-      });
-      console.log(aaa);
-      //console.log(likeblog);
-      return aaa;
-      // const resultlikeblog = likeblog.filter((ele) => ele.length > 0);
-      // console.log(resultlikeblog);
+    const user = await getRepository(Blog)
+      .createQueryBuilder('blog')
+      .leftJoinAndSelect('blog.user', 'user')
+      .leftJoinAndSelect('blog.bloglike', 'bloglike')
+      .where('bloglike.islike = :islike', { islike: true })
+      .andWhere('user.id = :id', { id: currentUser.id })
+      .getMany();
 
-      // return resultlikeblog;
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-    } finally {
-      await queryRunner.release();
-    }
+    return user;
   }
 
   async like({ blogid, currentUser }) {

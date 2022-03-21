@@ -12,7 +12,7 @@ export class BlogLikeResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [Blog])
-  async Bloglike(@CurrentUser() currentUser: ICurrentUser) {
+  async fetchBloglike(@CurrentUser() currentUser: ICurrentUser) {
     return this.bloglikeservice.findBloglike({ currentUser });
   }
 

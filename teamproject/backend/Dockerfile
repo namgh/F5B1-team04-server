@@ -6,4 +6,4 @@ COPY ./yarn.lock /myfolder/
 RUN yarn install
 
 COPY . /myfolder/
-CMD yarn start:dev
+CMD yarn start:dev 

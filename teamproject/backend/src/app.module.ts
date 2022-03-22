@@ -9,9 +9,11 @@ import { UserModule } from './apis/user/user.module';
 import { BlogModule } from './apis/blog/blog.module';
 import { BlogCommentModule } from './apis/blogcomment/blogcomment.module';
 import { BloglikeModule } from './apis/bloglike/bloglike.module';
+import { CoachModule } from './apis/coach/coach.module';
 
 @Module({
   imports: [
+    CoachModule,
     UserModule,
     AuthModule,
     BlogModule,
@@ -26,18 +28,20 @@ import { BloglikeModule } from './apis/bloglike/bloglike.module';
       host: 'my_database',
       port: 3306,
       username: 'root',
-      password: '1q2w3e4r',
-      database: 'teamproject',
+      password: 'root',
+      database: 'cu2project',
+      // password: '1q2w3e4r',
+      // database: 'teamproject',
       entities: [__dirname + '/apis/**/*.entity.*'],
       synchronize: true,
       logging: true,
     }),
-    ConfigModule.forRoot({ isGlobal: true }), //
-    CacheModule.register<RedisClientOptions>({
-      store: redisStore,
-      url: 'redis://my_redis:6379',
-      isGlobal: true,
-    }),
+    // ConfigModule.forRoot({ isGlobal: true }), //
+    // CacheModule.register<RedisClientOptions>({
+    //   store: redisStore,
+    //   url: 'redis://my_redis:6379',
+    //   isGlobal: true,
+    // }),
   ],
   // controllers: [AppController],
   // providers: [AppService],

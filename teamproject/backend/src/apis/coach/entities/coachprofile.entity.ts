@@ -1,12 +1,15 @@
-import { Field } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
+  Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
+@Entity()
+@ObjectType()
 export class CoachProfile {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => String)

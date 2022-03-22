@@ -1,6 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { BlogComment } from 'src/apis/blogcomment/entities/blogcomment.entity';
-import { BlogLike } from 'src/apis/bloglike/entities/bloglike.entity';
+import { StackLike } from 'src/apis/stacklike/entities/stacklike.entity';
 import { User } from 'src/apis/user/entities/user.entity';
 import {
   Column,
@@ -15,7 +14,7 @@ import {
 
 @Entity()
 @ObjectType()
-export class Blog {
+export class Stack {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => String)
   id: string;
@@ -28,17 +27,12 @@ export class Blog {
   @Field(() => String)
   contents: string;
 
-  @ManyToOne(() => User, (user) => user.blog)
+  @ManyToOne(() => User, (user) => user.stack)
   @Field(() => User)
   user: User;
 
-  @OneToMany((type) => BlogLike, (bloglike) => bloglike.blog)
-  bloglike: BlogLike[];
-
-  @OneToMany((type) => BlogComment, (blogcomment) => blogcomment.blog, {
-    cascade: ['soft-remove'],
-  })
-  blogcomment: BlogComment[];
+  @OneToMany((type) => StackLike, (stacklike) => stacklike.stack)
+  stacklike: StackLike[];
 
   @Column({ default: 0 })
   @Field(() => Int)

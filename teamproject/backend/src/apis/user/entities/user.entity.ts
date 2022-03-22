@@ -1,12 +1,15 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Blog } from 'src/apis/blog/entities/blog.entity';
 import { BlogLike } from 'src/apis/bloglike/entities/bloglike.entity';
+import { CoachProfile } from 'src/apis/coach/entities/coachprofile.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -56,6 +59,11 @@ export class User {
   point: number;
 
   status: USER_TYPE_ENUM;
+
+  @JoinColumn()
+  @OneToOne(() => CoachProfile, { nullable: true })
+  @Field(() => CoachProfile)
+  coachProfile: CoachProfile;
 
   @DeleteDateColumn()
   deletdAt: Date;

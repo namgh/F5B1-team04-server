@@ -1,6 +1,6 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { Blog } from 'src/apis/blog/entities/blog.entity';
-import { BlogCommentLike } from 'src/apis/blogcommentlike/entities/blogcommentlike.entity';
+import { Stack } from 'src/apis/stack/entities/stack.entity';
 import { User } from 'src/apis/user/entities/user.entity';
 import {
   Column,
@@ -8,14 +8,13 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
 @ObjectType()
-export class BlogComment {
+export class StackComment {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => String)
   id: string;
@@ -28,19 +27,9 @@ export class BlogComment {
   @Field(() => User)
   user: User;
 
-  @OneToMany(
-    (type) => BlogCommentLike,
-    (blogCommentLike) => blogCommentLike.blogcomment,
-  )
-  blogcommentlike: BlogCommentLike[];
-
-  @ManyToOne(() => Blog, { onDelete: 'CASCADE' })
-  @Field(() => Blog)
-  blog: Blog;
-
-  @Column({ default: 0 })
-  @Field(() => Int)
-  like: number;
+  @ManyToOne(() => Stack)
+  @Field(() => Stack)
+  stack: Stack;
 
   @CreateDateColumn()
   createAt: Date;

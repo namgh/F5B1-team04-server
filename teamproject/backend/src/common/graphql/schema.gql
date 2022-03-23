@@ -2,6 +2,21 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type BlogCommentLike {
+  id: String!
+  user: User!
+  blogcomment: BlogComment!
+  islike: Boolean!
+}
+
+type BlogComment {
+  id: String!
+  contents: String!
+  user: User!
+  blog: Blog!
+  like: Int!
+}
+
 type BlogLike {
   id: String!
   user: User!
@@ -17,6 +32,33 @@ type Blog {
   like: Int!
 }
 
+type CoachProfile {
+  id: String!
+  orgName: String!
+  orgType: String!
+  orgEmail: String!
+  department: String!
+  job: String!
+  profileTitle: String!
+  profileContents: String!
+  image: String!
+}
+
+type StackLike {
+  id: String!
+  user: User!
+  stack: Stack!
+  islike: Boolean!
+}
+
+type Stack {
+  id: String!
+  title: String!
+  contents: String!
+  user: User!
+  like: Int!
+}
+
 type User {
   id: String!
   email: String!
@@ -25,13 +67,15 @@ type User {
   nickname: String!
   codeInterest: String!
   coachInterest: String!
+  point: Int!
+  coachProfile: CoachProfile!
 }
 
-type BlogComment {
+type StackComment {
   id: String!
   contents: String!
   user: User!
-  blog: Blog!
+  stack: Stack!
 }
 
 type Query {
@@ -39,8 +83,13 @@ type Query {
   fetchBlog: [Blog!]!
   fetchmyBlog: [Blog!]!
   fetchotherBlog(email: String!): [Blog!]!
-  fetchAllBlogcomment(blogid: String!): BlogComment!
+  fetchAllBlogcomment(stackid: String!): StackComment!
   fetchBloglike: [Blog!]!
+  fetchStack: [Stack!]!
+  fetchmyStack: [Stack!]!
+  fetchotherStack(email: String!): [Stack!]!
+  fetchStacklike: [Stack!]!
+  fetchBlogcommentlike: [BlogComment!]!
 }
 
 type Mutation {
@@ -54,10 +103,16 @@ type Mutation {
   updateBlog(blogid: String!, contents: String!, title: String!): Blog!
   deleteBlog(blogid: String!): String!
   uploadFile(files: [Upload!]!): [String!]!
-  createBlogComment(contents: String!, blogid: String!): BlogComment!
-  updateBlogComment(blogcommentid: String!, contents: String!, blogid: String!): BlogComment!
-  deleteBlogComment(blogcommentid: String!): BlogComment!
+  createBlogComment(contents: String!, stackid: String!): StackComment!
+  updateBlogComment(stackcommentid: String!, contents: String!, stackid: String!): StackComment!
+  deleteBlogComment(stackcommentid: String!): StackComment!
   Blogtoggle(blogid: String!): BlogLike!
+  createStack(contents: String!, title: String!): Stack!
+  updateStack(blogid: String!, contents: String!, title: String!): Stack!
+  deleteStack(blogid: String!): String!
+  uploadStackFile(files: [Upload!]!): [String!]!
+  Stacktoggle(stackid: String!): StackLike!
+  Blogcommenttoggle(blogcommentid: String!): BlogCommentLike!
 }
 
 """The `Upload` scalar type represents a file upload."""

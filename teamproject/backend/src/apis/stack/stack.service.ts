@@ -2,55 +2,55 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FileUpload } from 'graphql-upload';
 import { getRepository, Repository } from 'typeorm';
-import { Blog } from './entities/blog.entity';
 import { Storage } from '@google-cloud/storage';
 import { User } from '../user/entities/user.entity';
+import { Stack } from './entities/stack.entity';
 
 interface IFile {
   files: FileUpload[];
 }
 
 @Injectable()
-export class BlogService {
+export class StackService {
   constructor(
-    @InjectRepository(Blog)
-    private readonly blogrepository: Repository<Blog>,
+    @InjectRepository(Stack)
+    private readonly stackrepository: Repository<Stack>,
 
     @InjectRepository(User)
     private readonly userrepository: Repository<User>,
   ) {}
 
   async findAll() {
-    return await this.blogrepository.find();
+    return await this.stackrepository.find();
   }
 
-  async findotherblog({ email }) {
+  async findotherstack({ email }) {
     const user = await this.userrepository.findOne({ email });
 
-    const blog = await getRepository(Blog)
-      .createQueryBuilder('blog')
-      .leftJoinAndSelect('blog.user', 'user')
+    const stack = await getRepository(Stack)
+      .createQueryBuilder('stack')
+      .leftJoinAndSelect('stack.user', 'user')
       .andWhere('user.id = :id', { id: user.id })
       .getMany();
 
-    return blog;
+    return stack;
   }
 
-  async findmyblog({ currentUser }) {
-    const blog = await getRepository(Blog)
-      .createQueryBuilder('blog')
-      .leftJoinAndSelect('blog.user', 'user')
+  async findmystack({ currentUser }) {
+    const stack = await getRepository(Stack)
+      .createQueryBuilder('stack')
+      .leftJoinAndSelect('stack.user', 'user')
       .andWhere('user.id = :id', { id: currentUser.id })
       .getMany();
 
-    return blog;
+    return stack;
   }
 
   async create({ title, contents, currentUser }) {
     const user = await this.userrepository.findOne({
       email: currentUser.email,
     });
-    return await this.blogrepository.save({
+    return await this.stackrepository.save({
       title,
       contents,
       user,
@@ -58,9 +58,9 @@ export class BlogService {
   }
 
   async update({ title, contents, currentUser, blogid }) {
-    const blog = await this.blogrepository.findOne({ id: blogid });
+    const blog = await this.stackrepository.findOne({ id: blogid });
 
-    return await this.blogrepository.save({
+    return await this.stackrepository.save({
       ...blog,
       contents,
       title,
@@ -68,21 +68,10 @@ export class BlogService {
   }
 
   async delete({ currentUser, blogid }) {
-    const blog = await getRepository(Blog)
-      .createQueryBuilder('blog')
-      .leftJoinAndSelect('blog.user', 'user')
-      .where('blog.id = :id', { id: blogid })
-      .andWhere('user.id = :id', { id: currentUser.id })
-      .getMany();
-
-    console.log('blog===========', blog);
-    if (blog) {
-      const result = await this.blogrepository.softDelete({
-        id: blogid,
-      });
-      return result.affected ? true : false;
-    }
-    return null;
+    const result = await this.stackrepository.softDelete({
+      id: blogid,
+    });
+    return result.affected ? true : false;
   }
 
   async upload({ files }: IFile) {

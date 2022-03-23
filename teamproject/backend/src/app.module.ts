@@ -9,16 +9,24 @@ import { UserModule } from './apis/user/user.module';
 import { BlogModule } from './apis/blog/blog.module';
 import { BlogCommentModule } from './apis/blogcomment/blogcomment.module';
 import { BloglikeModule } from './apis/bloglike/bloglike.module';
-import { CoachModule } from './apis/coach/coach.module';
+//import { CoachModule } from './apis/coach/coach.module';
+import { StackModule } from './apis/stack/stack.module';
+import { StacklikeModule } from './apis/stacklike/stacklike.module';
+import { StackCommentModule } from './apis/stackcomment/stackcomment.module';
+import { BlogCommentLikeModule } from './apis/blogcommentlike/blogcommentlike.module';
 
 @Module({
   imports: [
-    CoachModule,
+    //   CoachModule,
     UserModule,
     AuthModule,
     BlogModule,
     BlogCommentModule,
     BloglikeModule,
+    StackModule,
+    StacklikeModule,
+    StackCommentModule,
+    BlogCommentLikeModule,
     GraphQLModule.forRoot({
       autoSchemaFile: 'src/common/graphql/schema.gql',
       context: ({ req, res }) => ({ req, res }),
@@ -28,20 +36,20 @@ import { CoachModule } from './apis/coach/coach.module';
       host: 'my_database',
       port: 3306,
       username: 'root',
-      password: 'root',
-      database: 'cu2project',
-      // password: '1q2w3e4r',
-      // database: 'teamproject',
+      // password: 'root',
+      // database: 'cu2project',
+      password: '1q2w3e4r',
+      database: 'teamproject',
       entities: [__dirname + '/apis/**/*.entity.*'],
       synchronize: true,
       logging: true,
     }),
-    // ConfigModule.forRoot({ isGlobal: true }), //
-    // CacheModule.register<RedisClientOptions>({
-    //   store: redisStore,
-    //   url: 'redis://my_redis:6379',
-    //   isGlobal: true,
-    // }),
+    ConfigModule.forRoot({ isGlobal: true }), //
+    CacheModule.register<RedisClientOptions>({
+      store: redisStore,
+      url: 'redis://my_redis:6379',
+      isGlobal: true,
+    }),
   ],
   // controllers: [AppController],
   // providers: [AppService],

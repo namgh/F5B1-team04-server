@@ -14,10 +14,13 @@ import { StackModule } from './apis/stack/stack.module';
 import { StacklikeModule } from './apis/stacklike/stacklike.module';
 import { StackCommentModule } from './apis/stackcomment/stackcomment.module';
 import { BlogCommentLikeModule } from './apis/blogcommentlike/blogcommentlike.module';
+import { CoachModule } from './apis/coach/coach.module';
+import { PointTransactionModule } from './apis/pointTransaction/pointTransaction.module';
 
 @Module({
   imports: [
-    //   CoachModule,
+    CoachModule,
+    PointTransactionModule,
     UserModule,
     AuthModule,
     BlogModule,
@@ -36,10 +39,10 @@ import { BlogCommentLikeModule } from './apis/blogcommentlike/blogcommentlike.mo
       host: 'my_database',
       port: 3306,
       username: 'root',
-      // password: 'root',
-      // database: 'cu2project',
-      password: '1q2w3e4r',
-      database: 'teamproject',
+      password: 'root',
+      database: 'cu2project',
+      // password: '1q2w3e4r',
+      // database: 'teamproject',
       entities: [__dirname + '/apis/**/*.entity.*'],
       synchronize: true,
       logging: true,

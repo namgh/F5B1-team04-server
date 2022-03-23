@@ -78,7 +78,23 @@ type StackComment {
   stack: Stack!
 }
 
+type PointTransaction {
+  id: String!
+  impUid: String!
+  amount: Int!
+  status: POINT_TRANSACTION_STATUS_ENUM!
+  user: User!
+}
+
+enum POINT_TRANSACTION_STATUS_ENUM {
+  PAYMENT
+  CANCEL
+  PENDING
+}
+
 type Query {
+  fetchCoachUserList: [User!]!
+  fetchCoachUser(userId: String!): User!
   findAllUser: User!
   fetchBlog: [Blog!]!
   fetchmyBlog: [Blog!]!
@@ -93,6 +109,11 @@ type Query {
 }
 
 type Mutation {
+  createCoachProfile(createProfileInput: CreateCoachProfileInput!, userId: String!): User!
+  updateCoachProfile(UpdateCoachInput: UpdateCoachInput!, userId: String!): User!
+  deleteCoachProfile(userId: String!): Boolean!
+  createPointTransaction(amount: Float!, impUid: String!): PointTransaction!
+  cancelPointTransaction(amount: Float!, impUid: String!): PointTransaction!
   createUser(name: String!, nickname: String!, phonenumber: String!, password: String!, email: String!): User!
   updateUser(name: String!, nickname: String!, phonenumber: String!, password: String!): User!
   deleteUser: Boolean!
@@ -113,6 +134,25 @@ type Mutation {
   uploadStackFile(files: [Upload!]!): [String!]!
   Stacktoggle(stackid: String!): StackLike!
   Blogcommenttoggle(blogcommentid: String!): BlogCommentLike!
+}
+
+input CreateCoachProfileInput {
+  orgName: String!
+  orgType: String!
+  orgEmail: String!
+  department: String!
+  job: String!
+  profileTitle: String!
+  profileContents: String!
+  image: String!
+}
+
+input UpdateCoachInput {
+  department: String!
+  job: String!
+  profileTitle: String!
+  profileContents: String!
+  image: String!
 }
 
 """The `Upload` scalar type represents a file upload."""

@@ -116,6 +116,7 @@ export class PointTransactionService {
       const afterCanceled = await this.pointTransactionRepository.create({
         ...rest,
         amount: -cancel_amount,
+        user: currentUser,
         status: POINT_TRANSACTION_STATUS_ENUM.CANCEL,
       });
       const updatedUser = this.userPository.create({
@@ -126,6 +127,8 @@ export class PointTransactionService {
       await queryRunner.manager.save(updatedUser);
 
       await queryRunner.commitTransaction();
+
+      return afterCanceled;
     } catch (error) {
       await queryRunner.rollbackTransaction();
     } finally {

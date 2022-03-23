@@ -15,8 +15,10 @@ services:
     platform: linux/x86_64
     image: mysql:latest
     environment:
-      MYSQL_DATABASE: 'homework'
-      MYSQL_ROOT_PASSWORD: '1q2w3e4r'
+      # MYSQL_DATABASE: 'homework'
+      # MYSQL_ROOT_PASSWORD: '1q2w3e4r'
+      MYSQL_DATABASE: 'cu2project'
+      MYSQL_ROOT_PASSWORD: 'root'
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
@@ -31,15 +33,15 @@ services:
     ports:
       - 6379:6379
 
-  elasticsearch:
-    image: elasticsearch:7.17.0
-    environment:
-      discovery.type: single-node
-    ports:
-      - 9200:9200
+  # elasticsearch:
+  #   image: elasticsearch:7.17.0
+  #   environment:
+  #     discovery.type: single-node
+  #   ports:
+  #     - 9200:9200
 
-  logstash:
-    image: logstash:7.17.0
-    volumes:
-      - ./elk/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-      - ./elk/logstash/mysql-connector-java-8.0.28.jar:/usr/share/logstash/mysql-connector-java-8.0.28.jar
+  # logstash:
+  #   image: logstash:7.17.0
+  #   volumes:
+  #     - ./elk/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+  #     - ./elk/logstash/mysql-connector-java-8.0.28.jar:/usr/share/logstash/mysql-connector-java-8.0.28.jar

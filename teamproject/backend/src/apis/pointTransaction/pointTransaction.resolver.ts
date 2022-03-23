@@ -41,21 +41,10 @@ export class PointTransactionResolver {
     @Args('amount') amount: number,
     @CurrentUser() currentUser: ICurrentUser,
   ) {
-    // await this.pointTransactionService.checkAlreadyCanceled({ impUid });
-    // await this.pointTransactionService.checkHasEnoughPoint({
-    //   impUid,
-    //   currentUser,
-    // });
-    // const access_token = await this.iamportService.getImpAccessToken();
-    // const cancel_amount = await this.iamportService.cancelPayment({
-    //   impUid,
-    //   amount,
-    //   access_ token,
-    // });
-    // return await this.pointTransactionService.cancel({
-    //   impUid,
-    //   amount: cancel_amount,
-    //   currentUser,
-    // });
+    return await this.pointTransactionService.cancel({
+      impUid,
+      amount,
+      currentUser,
+    });
   }
 }

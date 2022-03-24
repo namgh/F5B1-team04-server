@@ -16,9 +16,11 @@ import { StackCommentModule } from './apis/stackcomment/stackcomment.module';
 import { BlogCommentLikeModule } from './apis/blogcommentlike/blogcommentlike.module';
 import { CoachModule } from './apis/coach/coach.module';
 import { PointTransactionModule } from './apis/pointTransaction/pointTransaction.module';
+import { CoachColumnModule } from './apis/column/column.module';
 
 @Module({
   imports: [
+    CoachColumnModule,
     CoachModule,
     PointTransactionModule,
     UserModule,

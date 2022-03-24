@@ -44,6 +44,15 @@ type CoachProfile {
   image: String!
 }
 
+type CoachColumn {
+  id: String!
+  title: String!
+  contents: String!
+  hits: Int!
+  user: User!
+  likecount: Int!
+}
+
 type StackLike {
   id: String!
   user: User!
@@ -93,6 +102,11 @@ enum POINT_TRANSACTION_STATUS_ENUM {
 }
 
 type Query {
+  fetchColumnList: [CoachColumn!]!
+  fetchRecommendColumnList: [CoachColumn!]!
+  fetchHighHitColumnList: [CoachColumn!]!
+  fetchDetailColumn(columnId: String!): CoachColumn!
+  fetchMyColumn: [CoachColumn!]!
   fetchCoachUserList: [User!]!
   fetchCoachUser(userId: String!): User!
   findAllUser: User!
@@ -109,6 +123,10 @@ type Query {
 }
 
 type Mutation {
+  increaseColumnHit(columnId: String!): CoachColumn!
+  createColumn(createColumnInput: CreateColumnInput!): CoachColumn!
+  updateColumn(updateColumnInput: UpdateColumnInput!, columnId: String!): CoachColumn!
+  deleteColumn(columnId: String!): Boolean!
   createCoachProfile(createProfileInput: CreateCoachProfileInput!, userId: String!): User!
   updateCoachProfile(UpdateCoachInput: UpdateCoachInput!, userId: String!): User!
   deleteCoachProfile(userId: String!): Boolean!
@@ -134,6 +152,16 @@ type Mutation {
   uploadStackFile(files: [Upload!]!): [String!]!
   Stacktoggle(stackid: String!): StackLike!
   Blogcommenttoggle(blogcommentid: String!): BlogCommentLike!
+}
+
+input CreateColumnInput {
+  title: String!
+  contents: String!
+}
+
+input UpdateColumnInput {
+  title: String
+  contents: String
 }
 
 input CreateCoachProfileInput {

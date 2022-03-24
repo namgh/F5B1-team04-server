@@ -1,9 +1,11 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { User } from 'src/apis/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -56,6 +58,9 @@ export class CoachProfile {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToOne(() => User, (user) => user.coachProfile)
+  user: User;
 
   // @Column({ nullable: true })
   // @Field(() => Boolean)

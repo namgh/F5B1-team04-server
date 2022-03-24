@@ -20,7 +20,7 @@ export class BlogService {
     private readonly userrepository: Repository<User>,
   ) {}
 
-  async findAll() {
+  async findAll() { 
     return await this.blogrepository.find();
   }
 

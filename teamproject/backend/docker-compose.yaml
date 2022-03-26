@@ -8,8 +8,8 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - .env:/myfolder/.env
       - ./src:/myfolder/src
+      - .env:/myfolder/.env
 
   my_database:
     platform: linux/x86_64

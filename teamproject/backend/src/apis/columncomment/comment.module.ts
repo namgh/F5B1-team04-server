@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CoachColumn } from '../column/entities/column.entity';
 import { User } from '../user/entities/user.entity';
 import { ColumnCommentResolver } from './comment.resolver';
 import { ColumnCommentService } from './comment.service';
@@ -9,7 +10,8 @@ import { ColumnComment } from './entities/columncomment.entity';
   imports: [
     TypeOrmModule.forFeature([
       User, //
-      ColumnComment
+      ColumnComment,
+      CoachColumn,
     ]),
   ],
   providers: [ColumnCommentResolver, ColumnCommentService],

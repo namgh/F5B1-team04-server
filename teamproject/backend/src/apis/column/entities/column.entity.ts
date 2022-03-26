@@ -44,9 +44,13 @@ export class CoachColumn {
   @DeleteDateColumn()
   deletedAt: Date;
 
-  @Column()
+  @Column({ default: 0 })
   @Field(() => Int)
   likecount: number;
+
+  @Column({ default: 0, readonly: false })
+  @Field(() => Int)
+  dislikecount: number;
 
   @OneToMany(() => ColumnLike, (columnLike) => columnLike.user)
   columnLike: ColumnLike[];

@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { CoachColumn } from 'src/apis/column/entities/column.entity';
 import { User } from 'src/apis/user/entities/user.entity';
 import {
@@ -23,12 +23,16 @@ export class ColumnComment {
   contents: string;
 
   @ManyToOne(() => User)
-  @Field()
+  @Field(() => User)
   user: User;
 
   @ManyToOne(() => CoachColumn)
-  @Field()
+  @Field(() => CoachColumn)
   coachColumn: CoachColumn;
+
+  @Column()
+  @Field(() => Int)
+  likecount: number;
 
   @CreateDateColumn()
   createdAt: Date;

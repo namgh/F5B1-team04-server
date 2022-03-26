@@ -44,6 +44,29 @@ type CoachProfile {
   image: String!
 }
 
+type ColumnComment {
+  id: String!
+  contents: String!
+  user: User!
+  coachColumn: CoachColumn!
+  likecount: Int!
+}
+
+type ColumnLike {
+  id: String!
+  user: User!
+  status: C_LIKE_STATUS!
+  coachColumn: CoachColumn!
+  columnComment: ColumnComment!
+  isLike: Boolean!
+  idDislike: Boolean!
+}
+
+enum C_LIKE_STATUS {
+  COLUMN
+  COMMENT
+}
+
 type CoachColumn {
   id: String!
   title: String!
@@ -51,6 +74,7 @@ type CoachColumn {
   hits: Int!
   user: User!
   likecount: Int!
+  dislikecount: Int!
 }
 
 type StackLike {
@@ -102,6 +126,7 @@ enum POINT_TRANSACTION_STATUS_ENUM {
 }
 
 type Query {
+  fetchColumnCommentList(columnId: String!): [ColumnComment!]!
   fetchColumnList: [CoachColumn!]!
   fetchRecommendColumnList: [CoachColumn!]!
   fetchHighHitColumnList: [CoachColumn!]!
@@ -123,6 +148,11 @@ type Query {
 }
 
 type Mutation {
+  createColumnComment(contents: String!, columnId: String!): ColumnComment!
+  updateColumnComment(contents: String!, commentId: String!): ColumnComment!
+  deleteColumnComment(commentId: String!, columnId: String!): Boolean!
+  LikeColumnToggle(columnId: String!): ColumnLike!
+  DislikeColumnToggle(columnId: String!): ColumnLike!
   increaseColumnHit(columnId: String!): CoachColumn!
   createColumn(createColumnInput: CreateColumnInput!): CoachColumn!
   updateColumn(updateColumnInput: UpdateColumnInput!, columnId: String!): CoachColumn!

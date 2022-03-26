@@ -13,7 +13,7 @@ export class ColumnlikeResolver {
   // comment: likecount
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => ColumnLike)
-  async LikeColumn(
+  async LikeColumnToggle(
     @CurrentUser() currentUser: ICurrentUser,
     @Args('columnId') columnId: string,
   ) {
@@ -22,7 +22,7 @@ export class ColumnlikeResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => ColumnLike)
-  async DislikeColumn(
+  async DislikeColumnToggle(
     @CurrentUser() currentUser: ICurrentUser,
     @Args('columnId') columnId: string,
   ) {

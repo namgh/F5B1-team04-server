@@ -30,7 +30,7 @@ export class ColumnComment {
   @Field(() => CoachColumn)
   coachColumn: CoachColumn;
 
-  @Column()
+  @Column({ default: 0 })
   @Field(() => Int)
   likecount: number;
 

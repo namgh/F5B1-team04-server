@@ -9,7 +9,6 @@ import { UserModule } from './apis/user/user.module';
 import { BlogModule } from './apis/blog/blog.module';
 import { BlogCommentModule } from './apis/blogcomment/blogcomment.module';
 import { BloglikeModule } from './apis/bloglike/bloglike.module';
-//import { CoachModule } from './apis/coach/coach.module';
 import { StackModule } from './apis/stack/stack.module';
 import { StacklikeModule } from './apis/stacklike/stacklike.module';
 import { StackCommentModule } from './apis/stackcomment/stackcomment.module';
@@ -17,9 +16,13 @@ import { BlogCommentLikeModule } from './apis/blogcommentlike/blogcommentlike.mo
 import { CoachModule } from './apis/coach/coach.module';
 import { PointTransactionModule } from './apis/pointTransaction/pointTransaction.module';
 import { CoachColumnModule } from './apis/column/column.module';
+import { ColumnlikeModule } from './apis/columnlike/columnlike.module';
+import { ColumnCommentModule } from './apis/columncomment/comment.module';
 
 @Module({
   imports: [
+    ColumnCommentModule,
+    ColumnlikeModule,
     CoachColumnModule,
     CoachModule,
     PointTransactionModule,

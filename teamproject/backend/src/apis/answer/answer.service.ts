@@ -22,6 +22,17 @@ export class AnswerService {
     private readonly coachRepository: Repository<CoachProfile>,
   ) {}
 
+  async findAnswerListOrderByHighScoreDesc({ itemCount }) {
+    return await getRepository(Answer)
+      .createQueryBuilder('answer')
+      .leftJoinAndSelect('answer.question', 'question')
+      .leftJoinAndSelect('question.fromUser', 'user')
+      .leftJoinAndSelect('question.toCoach', 'coach')
+      .orderBy('answer.likecount', 'DESC')
+      .take(itemCount)
+      .getMany();
+  }
+
   async findMyHasAnswerCoaching({ currentUser }) {
     const question = await this.questionRepository.find({
       where: { fromUser: { id: currentUser.id } },

@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { Question } from 'src/apis/question/entities/question.entity';
 import {
   Column,
@@ -27,10 +27,22 @@ export class Answer {
   @Field(() => String)
   contents: string;
 
+  @Column({ default: 500 })
+  @Field(() => Int)
+  amount: number;
+
   @JoinColumn()
   @OneToOne(() => Question, (question) => question.answer)
   @Field(() => Question)
   question: Question;
+
+  @Column({ default: 0 })
+  @Field(() => Int)
+  likecount: number;
+
+  @Column({ default: 0, readonly: false })
+  @Field(() => Int)
+  dislikecount: number;
 
   @CreateDateColumn()
   createdAt: Date;

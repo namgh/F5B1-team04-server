@@ -20,9 +20,13 @@ import { ColumnlikeModule } from './apis/columnlike/columnlike.module';
 import { ColumnCommentModule } from './apis/columncomment/comment.module';
 import { QuestionModule } from './apis/question/question.module';
 import { AnswerModule } from './apis/answer/answer.module';
+import { AnswercommentModule } from './apis/answercomment/answercomment.module';
+import { AnswerlikeModule } from './apis/answerlike/answerlike.module';
 
 @Module({
   imports: [
+    AnswerlikeModule,
+    AnswercommentModule,
     AnswerModule,
     QuestionModule,
     ColumnCommentModule,

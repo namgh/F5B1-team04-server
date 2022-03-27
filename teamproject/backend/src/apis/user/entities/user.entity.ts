@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { type } from 'os';
 import { Blog } from 'src/apis/blog/entities/blog.entity';
 import { BlogLike } from 'src/apis/bloglike/entities/bloglike.entity';
@@ -21,11 +21,12 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-export enum USER_TYPE_ENUM {
+export enum Role {
   USER = 'USER',
   COACH = 'COACH',
   ADMIN = 'ADMIN',
 }
+registerEnumType(Role, { name: 'Role' });
 
 @Entity()
 @ObjectType()
@@ -67,7 +68,9 @@ export class User {
   @Field(() => Int)
   point: number;
 
-  status: USER_TYPE_ENUM;
+  @Column({ type: 'enum', enum: Role, default: Role.USER })
+  @Field(() => Role)
+  role: Role;
 
   @JoinColumn()
   @OneToOne(() => CoachProfile, { nullable: true })

@@ -18,9 +18,13 @@ import { PointTransactionModule } from './apis/pointTransaction/pointTransaction
 import { CoachColumnModule } from './apis/column/column.module';
 import { ColumnlikeModule } from './apis/columnlike/columnlike.module';
 import { ColumnCommentModule } from './apis/columncomment/comment.module';
+import { QuestionModule } from './apis/question/question.module';
+import { AnswerModule } from './apis/answer/answer.module';
 
 @Module({
   imports: [
+    AnswerModule,
+    QuestionModule,
     ColumnCommentModule,
     ColumnlikeModule,
     CoachColumnModule,
@@ -60,6 +64,9 @@ import { ColumnCommentModule } from './apis/columncomment/comment.module';
     }),
   ],
   // controllers: [AppController],
-  // providers: [AppService],
+  // providers: [{
+  //   provide: APP_GUARD,
+  //   useClass: RolesGuard
+  // }],
 })
 export class AppModule {}

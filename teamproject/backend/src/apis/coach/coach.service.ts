@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getRepository, Repository } from 'typeorm';
-import { User, USER_TYPE_ENUM } from '../user/entities/user.entity';
+import { User, Role } from '../user/entities/user.entity';
 import { UpdateCoachInput } from './dto/updateCoach.input';
 import { CoachProfile } from './entities/coachprofile.entity';
 
@@ -40,7 +40,7 @@ export class CoachProfileService {
       coachprofile: await this.coachprofileRepository.save({
         ...createProfileInput,
       }),
-      status: USER_TYPE_ENUM.COACH,
+      status: Role.COACH,
     };
 
     return await this.userRepository.save(coachUser);

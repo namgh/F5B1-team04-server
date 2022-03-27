@@ -26,10 +26,16 @@ export class ColumnlikeService {
     await queryRunner.startTransaction('SERIALIZABLE');
 
     try {
-      const flag = await queryRunner.manager.findOne(ColumnLike, {
-        user: currentUser.id,
-        coachColumn: columnId,
-      });
+      const flag = await queryRunner.manager.findOne(
+        ColumnLike,
+        {
+          user: currentUser.id,
+          coachColumn: columnId,
+        },
+        { relations: ['user', 'coachColumn'] },
+      );
+
+      console.log('💛💛💛💛💛💛flag💛💛💛💛💛💛', flag);
       const user_ = await queryRunner.manager.findOne(User, {
         id: currentUser.id,
       });

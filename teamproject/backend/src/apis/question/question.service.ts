@@ -18,27 +18,12 @@ export class QuestionService {
     private readonly coachReposotory: Repository<CoachProfile>,
   ) {}
 
-  /**
-   * (my)user가 한 질문 (+ 갯수)
-   * (my)user의 질문에 답변이 있는것들 (+ 갯수)
-   * (my)user의 질문에 답변이 없는것들 (+ 갯수)
-   *
-   * coach에게 달린 질문 (+ 갯수)
-   * 답변이 달린 질문 (+ 갯수)
-   * 답변이 없는 질문 (+ 갯수)
-   *
-   * cud
-   */
-
   async findAllCoachQuestion({ coachId }) {
     return await this.questionRepository.find({
-      where: { toCoach: coachId },
+      where: { toCoach: { id: coachId } },
       relations: ['fromUser', 'toCoach', 'toCoach.coachProfile'],
     });
   }
-
-  async findAllHasAnswerQuestion({ coachId }) {}
-
   async findAllHasNoAnsweredQuestion({ coachId }) {}
 
   async findAllMyQuestion({ currentUser }) {
@@ -47,9 +32,6 @@ export class QuestionService {
       relations: ['fromUser', 'toCoach', 'toCoach.coachProfile'],
     });
   }
-
-  async findMyHasAnswerQuestion({ currentUser }) {}
-
   async findMyHasNoAnswerQuestion({ currentUser }) {}
 
   async findQuestion({ questionId }) {

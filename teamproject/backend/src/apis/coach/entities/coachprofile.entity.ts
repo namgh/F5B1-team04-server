@@ -30,7 +30,7 @@ export class CoachProfile {
   @Field(() => String)
   orgEmail: string;
 
-  @Column()
+  @Column() 
   @Field(() => String)
   department: string;
 

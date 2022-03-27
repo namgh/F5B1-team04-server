@@ -1,4 +1,5 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Answer } from 'src/apis/answer/entities/answer.entity';
 import { User } from 'src/apis/user/entities/user.entity';
 import {
   Column,
@@ -6,6 +7,7 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -50,6 +52,9 @@ export class Question {
   @Column()
   @Field(() => String)
   contents: string;
+
+  @OneToOne(() => Answer, (answer) => answer.question)
+  answer: Answer;
 
   @CreateDateColumn()
   createdAt: Date;

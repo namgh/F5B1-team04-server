@@ -101,7 +101,14 @@ type User {
   codeInterest: String!
   coachInterest: String!
   point: Int!
+  role: Role!
   coachProfile: CoachProfile!
+}
+
+enum Role {
+  USER
+  COACH
+  ADMIN
 }
 
 type StackComment {
@@ -125,7 +132,34 @@ enum POINT_TRANSACTION_STATUS_ENUM {
   PENDING
 }
 
+type Answer {
+  id: String!
+  title: String!
+  contents: String!
+  question: Question!
+}
+
+type Question {
+  id: String!
+  fromUser: User!
+  toCoach: User!
+  title: String!
+  QType: QUESTION_FIELD_ENUM!
+  contents: String!
+}
+
+enum QUESTION_FIELD_ENUM {
+  NORM
+  RESUME
+  PORTFORLIO
+}
+
 type Query {
+  myCoachingListHasAnswer: [Answer!]!
+  coachAnsweredList: [Answer!]!
+  fetchCoachQuestionList(coachId: String!): [Question!]!
+  fetchMyQuestionList: [Question!]!
+  fetchQuestion(questionId: String!): Question!
   fetchColumnCommentList(columnId: String!): [ColumnComment!]!
   fetchColumnList: [CoachColumn!]!
   fetchRecommendColumnList: [CoachColumn!]!
@@ -148,6 +182,12 @@ type Query {
 }
 
 type Mutation {
+  createCoachAnswer(createAnswerInput: CreateAnswerInput!, questionId: String!): Answer!
+  updateCoachAnswer(updateAnswerInput: UpdateAnswerInput!, answerId: String!): Answer!
+  deleteCoachAnswer(answerId: String!): Boolean!
+  createCoachQuestion(createQuestionInput: CreateQuestionInput!, coachId: String!): Question!
+  updateCoachQuestion(updateQuestionInput: UpdateQuestionInput!, questionId: String!): Question!
+  deleteCoachQuestion(questionId: String!): Boolean!
   createColumnComment(contents: String!, columnId: String!): ColumnComment!
   updateColumnComment(contents: String!, commentId: String!): ColumnComment!
   deleteColumnComment(commentId: String!, columnId: String!): Boolean!
@@ -182,6 +222,28 @@ type Mutation {
   uploadStackFile(files: [Upload!]!): [String!]!
   Stacktoggle(stackid: String!): StackLike!
   Blogcommenttoggle(blogcommentid: String!): BlogCommentLike!
+}
+
+input CreateAnswerInput {
+  title: String!
+  contents: String!
+}
+
+input UpdateAnswerInput {
+  title: String!
+  contents: String!
+}
+
+input CreateQuestionInput {
+  title: String!
+  contents: String!
+  QType: QUESTION_FIELD_ENUM!
+}
+
+input UpdateQuestionInput {
+  title: String!
+  contents: String!
+  Qtype: QUESTION_FIELD_ENUM = NORM
 }
 
 input CreateColumnInput {

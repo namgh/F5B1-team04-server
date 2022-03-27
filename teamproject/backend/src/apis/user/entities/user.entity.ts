@@ -2,6 +2,9 @@ import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { Blog } from 'src/apis/blog/entities/blog.entity';
 import { BlogLike } from 'src/apis/bloglike/entities/bloglike.entity';
 import { CoachProfile } from 'src/apis/coach/entities/coachprofile.entity';
+import { CoachColumn } from 'src/apis/column/entities/column.entity';
+import { ColumnLike } from 'src/apis/columnlike/entities/columnlike.entity';
+import { MainStack } from 'src/apis/mainstack/entities/mainstack.entity';
 // import { CoachProfile } from 'src/apis/coach/entities/coachprofile.entity';
 import { Stack } from 'src/apis/stack/entities/stack.entity';
 import { StackLike } from 'src/apis/stacklike/entities/stacklike.entity';
@@ -58,6 +61,8 @@ export class User {
   @Field(() => String)
   coachInterest: string;
 
+  @Column({ default: 0 })
+  @Field(() => Int)
   score: number;
 
   @Column({ default: 0 })
@@ -91,4 +96,15 @@ export class User {
 
   @OneToMany((type) => StackLike, (stacklike) => stacklike.user)
   stacklike: StackLike[];
+
+  @JoinColumn({})
+  @OneToOne(() => MainStack)
+  @Field(() => MainStack)
+  mainstack: MainStack;
+
+  @OneToMany(() => CoachColumn, (coachColumn) => coachColumn.user)
+  coachColumn: CoachColumn[];
+
+  @OneToMany(() => ColumnLike, (columnLike) => columnLike.user)
+  columnlike: ColumnLike[];
 }

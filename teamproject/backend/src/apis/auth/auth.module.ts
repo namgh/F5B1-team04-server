@@ -11,9 +11,13 @@ import { jwtGoogleStrategy } from 'src/common/auth/jwt-social-google.strategy';
 import { jwtNaverStrategy } from 'src/common/auth/jwt-social-naver.strategy';
 import { jwtKakaoStrategy } from 'src/common/auth/jwt-social-kakao.strategy';
 import { jwtAccessStrategy } from 'src/common/auth/jwt-access.strategy';
+import { MainStack } from '../mainstack/entities/mainstack.entity';
 
 @Module({
-  imports: [JwtModule.register({}), TypeOrmModule.forFeature([User])],
+  imports: [
+    JwtModule.register({}),
+    TypeOrmModule.forFeature([User, MainStack]),
+  ],
   providers: [
     AuthResolver, //
     AuthService,

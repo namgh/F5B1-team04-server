@@ -24,16 +24,26 @@ export class BlogService {
     return await this.blogrepository.find();
   }
 
-  async findotherblog({ email }) {
-    const user = await this.userrepository.findOne({ email });
-
-    const blog = await getRepository(Blog)
+  async fetchotherBlogorderbylike() {
+    return await getRepository(Blog)
       .createQueryBuilder('blog')
-      .leftJoinAndSelect('blog.user', 'user')
-      .andWhere('user.id = :id', { id: user.id })
+      .orderBy('blog.like', 'DESC')
       .getMany();
+  }
 
-    return blog;
+  async fetchotherBlogorderbycreateAt() {
+    return await getRepository(Blog)
+      .createQueryBuilder('blog')
+      .orderBy('blog.createAt', 'DESC')
+      .getMany();
+  }
+
+  async fetchotherBlogorderbylikecreate() {
+    return await getRepository(Blog)
+      .createQueryBuilder('blog')
+      .orderBy('blog.like', 'DESC')
+      .addOrderBy('blog.createAt', 'DESC')
+      .getMany();
   }
 
   async findmyblog({ currentUser }) {

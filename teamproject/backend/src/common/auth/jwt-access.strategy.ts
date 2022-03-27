@@ -26,6 +26,7 @@ export class jwtAccessStrategy extends PassportStrategy(Strategy, 'access') {
     const accesstoken = req.headers.authorization.replace('Bearer ', '');
     const check = await this.cacheManager.get(`accesstoken:${accesstoken}`);
     if (check) throw new UnauthorizedException('이미 로그아웃 되었습니다.');
+    console.log('aaaaaaaaaa');
     return {
       id: payload.sub,
       email: payload.email,

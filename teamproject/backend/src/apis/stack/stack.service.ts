@@ -24,16 +24,18 @@ export class StackService {
     return await this.stackrepository.find();
   }
 
-  async findotherstack({ email }) {
-    const user = await this.userrepository.findOne({ email });
-
-    const stack = await getRepository(Stack)
+  async fetchotherStackorderbylike() {
+    return await getRepository(Stack)
       .createQueryBuilder('stack')
-      .leftJoinAndSelect('stack.user', 'user')
-      .andWhere('user.id = :id', { id: user.id })
+      .orderBy('stack.like', 'ASC')
       .getMany();
+  }
 
-    return stack;
+  async fetchotherStackorderbycreateAt() {
+    return await getRepository(Stack)
+      .createQueryBuilder('stack')
+      .orderBy('stack.createAt', 'ASC')
+      .getMany();
   }
 
   async findmystack({ currentUser }) {

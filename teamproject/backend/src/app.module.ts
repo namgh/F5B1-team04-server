@@ -16,6 +16,10 @@ import { StackCommentModule } from './apis/stackcomment/stackcomment.module';
 import { BlogCommentLikeModule } from './apis/blogcommentlike/blogcommentlike.module';
 import { CoachModule } from './apis/coach/coach.module';
 import { PointTransactionModule } from './apis/pointTransaction/pointTransaction.module';
+import { ElasticsearchModule } from '@nestjs/elasticsearch';
+import { ColumnlikeModule } from './apis/columnlike/columnlike.module';
+import { ColumnCommentModule } from './apis/columncomment/comment.module';
+import { CoachColumnModule } from './apis/column/column.module';
 
 @Module({
   imports: [
@@ -30,6 +34,9 @@ import { PointTransactionModule } from './apis/pointTransaction/pointTransaction
     StacklikeModule,
     StackCommentModule,
     BlogCommentLikeModule,
+    ColumnlikeModule,
+    ColumnCommentModule,
+    CoachColumnModule,
     GraphQLModule.forRoot({
       autoSchemaFile: 'src/common/graphql/schema.gql',
       context: ({ req, res }) => ({ req, res }),
@@ -39,10 +46,10 @@ import { PointTransactionModule } from './apis/pointTransaction/pointTransaction
       host: 'my_database',
       port: 3306,
       username: 'root',
-      password: 'root',
-      database: 'cu2project',
-      // password: '1q2w3e4r',
-      // database: 'teamproject',
+      // password: 'root',
+      // database: 'cu2project',
+      password: '1q2w3e4r',
+      database: 'teamproject',
       entities: [__dirname + '/apis/**/*.entity.*'],
       synchronize: true,
       logging: true,

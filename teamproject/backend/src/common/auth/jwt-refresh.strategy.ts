@@ -18,9 +18,8 @@ export class jwtRefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
       //jwtFromRequest: (qqq) => { console.log(qqq)  하면 gql-auth.guard.ts 리턴값이 들어옴}
       jwtFromRequest: (req) => {
         console.log(req.headers);
-        const cookies = req.headers.cookies;
+        const cookies = req.headers.cookie;
         return cookies.replace('refreshToken=', '');
-        console.log(req.headers.cokkies);
       },
       passReqToCallback: true,
       secretOrKey: 'myRefreshKey',
@@ -28,6 +27,7 @@ export class jwtRefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
   }
 
   async validate(req, payload) {
+    console.log(req.headers);
     const refreshToken = req.headers.cookie.replace('refreshToken=', '');
     const check = await this.cacheManager.get(`refreshToken:${refreshToken}`);
     if (check) throw new UnauthorizedException('이미 로그아웃 되었습니다.');

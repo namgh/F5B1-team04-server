@@ -26,7 +26,8 @@ export class AuthService {
       { email: user.email, sub: user.id },
       { secret: 'myRefreshkey', expiresIn: '2w' },
     );
-    res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; path=/;`);
+    res.setHeader('Set-Cookie', `refreshToken = ${refreshToken};`);
+    console.log(res);
   }
 
   async logout({ accesstoken, refreshToken, currentUser }) {
@@ -41,6 +42,5 @@ export class AuthService {
     return await this.cacheManager.set(`accesstoken:${accesstoken}`, User, {
       ttl: User.exp,
     });
-
   }
 }

@@ -2,6 +2,32 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type MainStack {
+  id: String!
+  Python: Int!
+  C: Int!
+  Java: Int!
+  Cpp: Int!
+  Cshop: Int!
+  JavaScript: Int!
+  PHP: Int!
+  SQL: Int!
+  R: Int!
+  Go: Int!
+  Swift: Int!
+  Ruby: Int!
+  Git: Int!
+  Objective_C: Int!
+  CSS: Int!
+  HTML: Int!
+  React_js: Int!
+  Vue_js: Int!
+  Node_js: Int!
+  Express: Int!
+  Spring: Int!
+  etc: Int!
+}
+
 type BlogCommentLike {
   id: String!
   user: User!
@@ -22,6 +48,7 @@ type BlogLike {
   user: User!
   blog: Blog!
   islike: Boolean!
+  isdislike: Boolean!
 }
 
 type Blog {
@@ -30,6 +57,7 @@ type Blog {
   contents: String!
   user: User!
   like: Int!
+  dislike: Int!
 }
 
 type CoachProfile {
@@ -67,8 +95,10 @@ type User {
   nickname: String!
   codeInterest: String!
   coachInterest: String!
+  score: Int!
   point: Int!
   coachProfile: CoachProfile!
+  mainstack: MainStack!
 }
 
 type StackComment {
@@ -96,14 +126,22 @@ type Query {
   fetchCoachUserList: [User!]!
   fetchCoachUser(userId: String!): User!
   findAllUser: User!
+  findUserOrderbylike: [User!]!
+  findUsersearch(search: String!): [User!]!
+  fetchmainstack: String!
   fetchBlog: [Blog!]!
   fetchmyBlog: [Blog!]!
-  fetchotherBlog(email: String!): [Blog!]!
+  fetchotherBlogorderbylikeAll: [Blog!]!
+  fetchotherBlogorderbycreateAt: [Blog!]!
+  fetchotherBlogorderbylikecreate: [Blog!]!
+  fetchBlogSearch(search: String!): [Blog!]!
   fetchAllBlogcomment(stackid: String!): StackComment!
+  fetchBlogCommentorderby(blogid: String!): [BlogComment!]!
   fetchBloglike: [Blog!]!
   fetchStack: [Stack!]!
   fetchmyStack: [Stack!]!
-  fetchotherStack(email: String!): [Stack!]!
+  fetchotherStackorderbylike: [Stack!]!
+  fetchotherStackorderbycreateAt: [Stack!]!
   fetchStacklike: [Stack!]!
   fetchBlogcommentlike: [BlogComment!]!
 }
@@ -124,15 +162,19 @@ type Mutation {
   updateBlog(blogid: String!, contents: String!, title: String!): Blog!
   deleteBlog(blogid: String!): String!
   uploadFile(files: [Upload!]!): [String!]!
-  createBlogComment(contents: String!, stackid: String!): StackComment!
-  updateBlogComment(stackcommentid: String!, contents: String!, stackid: String!): StackComment!
-  deleteBlogComment(stackcommentid: String!): StackComment!
-  Blogtoggle(blogid: String!): BlogLike!
+  createBlogComment(contents: String!, blogid: String!): BlogComment!
+  updateBlogComment(blogcommentid: String!, contents: String!, blogid: String!): BlogComment!
+  deleteBlogComment(blogcommentid: String!): Boolean!
+  likeBlogtoggle(blogid: String!): BlogLike!
+  dislikeBlogtoggle(blogid: String!): BlogLike!
   createStack(contents: String!, title: String!): Stack!
   updateStack(blogid: String!, contents: String!, title: String!): Stack!
   deleteStack(blogid: String!): String!
   uploadStackFile(files: [Upload!]!): [String!]!
   Stacktoggle(stackid: String!): StackLike!
+  createStackComment(contents: String!, stackid: String!): StackComment!
+  updateStackComment(stackcommentid: String!, contents: String!): StackComment!
+  deleteStackComment(stackcommentid: String!): StackComment!
   Blogcommenttoggle(blogcommentid: String!): BlogCommentLike!
 }
 

@@ -18,6 +18,14 @@ export class BlogCommentService {
     private readonly userrepository: Repository<User>,
   ) {}
 
+  async fetchBlogCommentorderby({ blogid }) {
+    return await getRepository(BlogComment)
+      .createQueryBuilder('blogcomment')
+      .leftJoinAndSelect('blogcomment.blog', 'blog')
+      .where('blog.id = :id', { id: blogid })
+      .getMany();
+  }
+
   async create({ blogid, contents, currentUser }) {
     const user = await this.userrepository.findOne({
       email: currentUser.email,

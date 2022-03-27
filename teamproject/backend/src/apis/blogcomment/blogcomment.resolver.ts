@@ -9,11 +9,16 @@ import { BlogComment } from './entities/blogcomment.entity';
 export class BlogCommentResolver {
   constructor(private readonly blogCommentService: BlogCommentService) {}
 
-  @Query(() => BlogComment)
+  @Query(() => [BlogComment])
   async fetchAllBlogcomment(@Args('blogid') blogid: string) {
     return this.blogCommentService.findAll({
       blogid,
     });
+  }
+
+  @Query(() => [BlogComment])
+  async fetchBlogCommentorderby(@Args('blogid') blogid: string) {
+    return this.blogCommentService.fetchBlogCommentorderby({ blogid });
   }
 
   @UseGuards(GqlAuthAccessGuard)

@@ -33,7 +33,7 @@ export class StackCommentService {
     });
   }
 
-  async update({ stackcommentid, stackid, contents, currentUser }) {
+  async update({ stackcommentid, contents, currentUser }) {
     const blogcomment = await this.stackCommentrepository.findOne({
       id: stackcommentid,
     });

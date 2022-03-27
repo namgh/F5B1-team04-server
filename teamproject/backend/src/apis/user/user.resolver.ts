@@ -15,6 +15,22 @@ export class UserResolver {
     return this.userService.findAll();
   }
 
+  @Query(() => [User])
+  findUserOrderbylike() {
+    return this.userService.findUserOrderbylike();
+  }
+
+  @Query(() => [User])
+  findUsersearch(@Args('search') search: string) {
+    return this.userService.findusersearch({ search });
+  }
+
+  @UseGuards(GqlAuthAccessGuard)
+  @Query(() => String)
+  fetchmainstack(@CurrentUser() currentUser: ICurrentUser) {
+    return this.userService.fetchmainstack({ currentUser });
+  }
+
   @Mutation(() => User)
   async createUser(
     @Args('email') email: string,

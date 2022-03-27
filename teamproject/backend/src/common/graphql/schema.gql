@@ -72,6 +72,39 @@ type CoachProfile {
   image: String!
 }
 
+type ColumnComment {
+  id: String!
+  contents: String!
+  user: User!
+  coachColumn: CoachColumn!
+  likecount: Int!
+}
+
+type ColumnLike {
+  id: String!
+  user: User!
+  status: C_LIKE_STATUS!
+  coachColumn: CoachColumn!
+  columnComment: ColumnComment!
+  isLike: Boolean!
+  idDislike: Boolean!
+}
+
+enum C_LIKE_STATUS {
+  COLUMN
+  COMMENT
+}
+
+type CoachColumn {
+  id: String!
+  title: String!
+  contents: String!
+  hits: Int!
+  user: User!
+  likecount: Int!
+  dislikecount: Int!
+}
+
 type StackLike {
   id: String!
   user: User!
@@ -144,6 +177,12 @@ type Query {
   fetchotherStackorderbycreateAt: [Stack!]!
   fetchStacklike: [Stack!]!
   fetchBlogcommentlike: [BlogComment!]!
+  fetchColumnCommentList(columnId: String!): [ColumnComment!]!
+  fetchColumnList: [CoachColumn!]!
+  fetchRecommendColumnList: [CoachColumn!]!
+  fetchHighHitColumnList: [CoachColumn!]!
+  fetchDetailColumn(columnId: String!): CoachColumn!
+  fetchMyColumn: [CoachColumn!]!
 }
 
 type Mutation {
@@ -176,6 +215,15 @@ type Mutation {
   updateStackComment(stackcommentid: String!, contents: String!): StackComment!
   deleteStackComment(stackcommentid: String!): StackComment!
   Blogcommenttoggle(blogcommentid: String!): BlogCommentLike!
+  LikeColumnToggle(columnId: String!): ColumnLike!
+  DislikeColumnToggle(columnId: String!): ColumnLike!
+  createColumnComment(contents: String!, columnId: String!): ColumnComment!
+  updateColumnComment(contents: String!, commentId: String!): ColumnComment!
+  deleteColumnComment(commentId: String!, columnId: String!): Boolean!
+  increaseColumnHit(columnId: String!): CoachColumn!
+  createColumn(createColumnInput: CreateColumnInput!): CoachColumn!
+  updateColumn(updateColumnInput: UpdateColumnInput!, columnId: String!): CoachColumn!
+  deleteColumn(columnId: String!): Boolean!
 }
 
 input CreateCoachProfileInput {
@@ -199,3 +247,13 @@ input UpdateCoachInput {
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
+
+input CreateColumnInput {
+  title: String!
+  contents: String!
+}
+
+input UpdateColumnInput {
+  title: String
+  contents: String
+}

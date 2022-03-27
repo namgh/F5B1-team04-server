@@ -18,4 +18,20 @@ export class BlogTagService {
 
     return await this.blogtagrepository.save({ tag: blogtag });
   }
+
+  async updateBlogTag({ blogtag, updateblogtag }) {
+    const blogtagId = await this.blogtagrepository.findOne({ tag: blogtag });
+
+    return await this.blogtagrepository.save({
+      ...blogtagId,
+      tag: updateblogtag,
+    });
+  }
+
+  async deleteBlogtag({ blogtag }) {
+    const result = await this.blogtagrepository.softDelete({
+      tag: blogtag,
+    });
+    return result.affected ? true : false;
+  }
 }

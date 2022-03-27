@@ -14,6 +14,13 @@ import { Answer } from './entities/answer.entity';
 export class AnswerResolver {
   constructor(private readonly answerService: AnswerService) {}
 
+  @Query(() => [Answer])
+  async goodEvalAnswerList(@Args('itemCount') itemCount: number) {
+    return await this.answerService.findAnswerListOrderByHighScoreDesc({
+      itemCount,
+    });
+  }
+
   //
   //
   //

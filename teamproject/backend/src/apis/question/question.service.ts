@@ -1,7 +1,12 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getRepository, Repository } from 'typeorm';
+import { Connection, getRepository, Repository } from 'typeorm';
 import { CoachProfile } from '../coach/entities/coachprofile.entity';
+import { Deposit, DEPOSIT_STATUS } from '../deposit/entities/deposit.entity';
 import { User } from '../user/entities/user.entity';
 import { Question } from './entities/question.entity';
 
@@ -16,6 +21,8 @@ export class QuestionService {
 
     @InjectRepository(CoachProfile)
     private readonly coachReposotory: Repository<CoachProfile>,
+
+    private readonly connection: Connection,
   ) {}
 
   async findAllCoachQuestion({ coachId }) {
@@ -51,21 +58,64 @@ export class QuestionService {
   }
 
   async create({ coachId, currentUser, createQuestionInput }) {
-    const fromUser = await this.userRepository.findOne({
-      where: { id: currentUser.id },
-      relations: ['coachProfile'],
-    });
+    const queryRunner = await this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction('SERIALIZABLE');
 
-    const toCoach = await this.userRepository.findOne({
-      where: { id: coachId },
-      relations: ['coachProfile'],
-    });
+    /**
+     * fromUser
+     * toCoach
+     *
+     * 1. 코치가 설정해 둔 초기 비용 -> coachUser : amount
+     * 2. User - initAmount
+     * 3. Deposit create
+     * 4. question save
+     */
 
-    return await this.questionRepository.save({
-      fromUser,
-      toCoach,
-      ...createQuestionInput,
-    });
+    try {
+      const fromUser = await queryRunner.manager.findOne(User, {
+        where: { id: currentUser.id },
+        relations: ['coachProfile'],
+      });
+      const toCoach = await queryRunner.manager.findOne(User, {
+        where: { id: coachId },
+        relations: ['coachProfile'],
+      });
+
+      const amount = toCoach.coachProfile.answerInitAmount;
+      if (fromUser.point - toCoach.coachProfile.answerInitAmount) {
+        throw new UnprocessableEntityException(
+          '포인트 잔액이 충분하지 않습니다.',
+        );
+      }
+
+      const minusUser = await queryRunner.manager.save({
+        ...fromUser,
+        point: fromUser.point - toCoach.coachProfile.answerInitAmount,
+      });
+
+      const deposit = await queryRunner.manager.save(Deposit, {
+        fromUser: minusUser,
+        toCoach,
+        fromAmount: toCoach.coachProfile.answerInitAmount,
+        status: DEPOSIT_STATUS.PENDING,
+      });
+      console.log('💛Deposit', deposit);
+
+      const question = await queryRunner.manager.save(Question, {
+        ...createQuestionInput,
+        fromUser: minusUser,
+        toCoach,
+        depositId: deposit.id,
+      });
+      await queryRunner.commitTransaction();
+
+      return question;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async update({ questionId, updateQuestionInput }) {

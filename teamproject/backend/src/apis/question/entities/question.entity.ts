@@ -1,11 +1,13 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Answer } from 'src/apis/answer/entities/answer.entity';
+import { Deposit } from 'src/apis/deposit/entities/deposit.entity';
 import { User } from 'src/apis/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -64,4 +66,10 @@ export class Question {
 
   @DeleteDateColumn()
   deletedAt: Date;
+
+  // @JoinColumn()
+  // @OneToOne(() => Deposit, (deposit) => deposit.question)
+  // @Field(() => Deposit)
+  @Column()
+  deposit: string;
 }

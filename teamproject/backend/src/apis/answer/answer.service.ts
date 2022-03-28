@@ -1,7 +1,9 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getRepository, IsNull, Not, Repository } from 'typeorm';
+import { Connection, getRepository, IsNull, Not, Repository } from 'typeorm';
 import { CoachProfile } from '../coach/entities/coachprofile.entity';
+import { Deposit, DEPOSIT_STATUS } from '../deposit/entities/deposit.entity';
+import { OrderHistory } from '../order/entities/order.entity';
 import { Question } from '../question/entities/question.entity';
 import { User } from '../user/entities/user.entity';
 import { Answer } from './entities/answer.entity';
@@ -15,11 +17,16 @@ export class AnswerService {
     @InjectRepository(Question)
     private readonly questionRepository: Repository<Question>,
 
+    // @InjectRepository(Deposit)
+    // private readonly depositRepository: Repository<Deposit>,
+
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
 
     @InjectRepository(CoachProfile)
     private readonly coachRepository: Repository<CoachProfile>,
+
+    private readonly connection: Connection,
   ) {}
 
   async findAnswerListOrderByHighScoreDesc({ itemCount }) {
@@ -66,15 +73,55 @@ export class AnswerService {
   }
 
   async create({ questionId, createAnswerInput }) {
-    const question = await this.questionRepository.findOne({
-      where: { id: questionId },
-      relations: ['fromUser', 'toCoach', 'toCoach.coachProfile'],
-    });
+    const queryRunner = await this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction('SERIALIZABLE');
 
-    return await this.answerRepository.save({
-      ...createAnswerInput,
-      question,
-    });
+    /**
+     * qusetionId -> depositid
+     * 1. deposit update ('COMPLETED')
+     * 2. coachUser point ++
+     * 3. order (user/ )
+     * 4. answer save
+     */
+    try {
+      const question = await queryRunner.manager.findOne(Question, {
+        where: { id: questionId },
+        relations: ['fromUser', 'toCoach', 'toCoach.coachProfile'],
+      });
+      const deposit = await queryRunner.manager.findOne(Deposit, {
+        id: question.deposit,
+      });
+      await queryRunner.manager.save({
+        ...deposit,
+        toAmount: deposit.fromAmount,
+        fromAmount: 0,
+        status: DEPOSIT_STATUS.COMPLETED,
+      });
+
+      await queryRunner.manager.save(User, {
+        ...question.toCoach,
+        point: question.toCoach.point + deposit.fromAmount,
+      });
+
+      const answer = await queryRunner.manager.save({
+        ...createAnswerInput,
+        question,
+      });
+
+      const order = await queryRunner.manager.save(OrderHistory, {
+        user: question.fromUser,
+        answer,
+        amount: deposit.fromAmount,
+      });
+      console.log('💛order', order);
+      await queryRunner.commitTransaction();
+      return answer;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async update({ answerId, updateAnswerInput }) {

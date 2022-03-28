@@ -27,7 +27,7 @@ export class Answer {
   @Field(() => String)
   contents: string;
 
-  @Column({ default: 500 })
+  @Column()
   @Field(() => Int)
   amount: number;
 

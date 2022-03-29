@@ -107,4 +107,8 @@ export class User {
 
   @OneToMany(() => ColumnLike, (columnLike) => columnLike.user)
   columnlike: ColumnLike[];
+
+  @OneToOne(() => MainStack)
+  @Field(() => MainStack)
+  user: MainStack;
 }

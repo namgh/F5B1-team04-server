@@ -15,7 +15,7 @@ services:
     platform: linux/x86_64
     image: mysql:latest
     environment:
-      MYSQL_DATABASE: 'homework'
+      MYSQL_DATABASE: 'teamproject'
       MYSQL_ROOT_PASSWORD: '1q2w3e4r'
     command:
       - --character-set-server=utf8mb4

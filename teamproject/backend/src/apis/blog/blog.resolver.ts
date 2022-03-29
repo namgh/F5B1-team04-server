@@ -104,12 +104,17 @@ export class BlogResolver {
   async createBlog(
     @Args('title') title: string,
     @Args('contents') contents: string,
+    @Args({ name: 'blogtag', type: () => [String] }) blogtag: string[],
+    @Args({ name: 'blogcategorytag', type: () => [String] })
+    blogcategorytag: string[],
     @CurrentUser() currentUser: ICurrentUser,
   ) {
     return this.blogService.create({
       title,
       contents,
       currentUser,
+      blogtag,
+      blogcategorytag,
     });
   }
 

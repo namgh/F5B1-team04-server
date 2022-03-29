@@ -12,7 +12,7 @@ import {
 
 @Entity()
 @ObjectType()
-export class BlogTag {
+export class BlogCategoryTag {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => String)
   id: string;
@@ -24,7 +24,7 @@ export class BlogTag {
   @DeleteDateColumn()
   deletdAt: Date;
 
-  @ManyToMany(() => Blog, (blog) => blog.blogtag)
+  @ManyToMany(() => Blog, (blog) => blog.blogcategorytag)
   @Field(() => [Blog])
   blog: Blog[];
 }

@@ -73,4 +73,17 @@ export class UserResolver {
   deleteUser(@CurrentUser() currentUser: ICurrentUser) {
     return this.userService.delete({ currentUser });
   }
+
+  @Mutation(() => String)
+  sendTokenTOSMS(@Args('phonenumber') phonenumber: string) {
+    return this.userService.sendTokenTOSMS({ phonenumber });
+  }
+
+  @Mutation(() => Boolean)
+  async checktoken(
+    @Args('token') token: string,
+    @Args('phonenumber') phonenumber: string,
+  ) {
+    return await this.userService.checktoken({ phonenumber, token });
+  }
 }

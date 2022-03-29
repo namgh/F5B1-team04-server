@@ -2,30 +2,10 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type MainStack {
+type BlogCategoryTag {
   id: String!
-  Python: Int!
-  C: Int!
-  Java: Int!
-  Cpp: Int!
-  Cshop: Int!
-  JavaScript: Int!
-  PHP: Int!
-  SQL: Int!
-  R: Int!
-  Go: Int!
-  Swift: Int!
-  Ruby: Int!
-  Git: Int!
-  Objective_C: Int!
-  CSS: Int!
-  HTML: Int!
-  React_js: Int!
-  Vue_js: Int!
-  Node_js: Int!
-  Express: Int!
-  Spring: Int!
-  etc: Int!
+  tag: String!
+  blog: [Blog!]!
 }
 
 type BlogCommentLike {
@@ -51,6 +31,12 @@ type BlogLike {
   isdislike: Boolean!
 }
 
+type BlogTag {
+  id: String!
+  tag: String!
+  blog: [Blog!]!
+}
+
 type Blog {
   id: String!
   title: String!
@@ -58,6 +44,8 @@ type Blog {
   user: User!
   like: Int!
   dislike: Int!
+  blogtag: [BlogTag!]!
+  blogcategorytag: [BlogCategoryTag!]!
 }
 
 type CoachProfile {
@@ -132,6 +120,34 @@ type User {
   point: Int!
   coachProfile: CoachProfile!
   mainstack: MainStack!
+  user: MainStack!
+}
+
+type MainStack {
+  id: String!
+  Python: Int!
+  C: Int!
+  Java: Int!
+  Cpp: Int!
+  Cshop: Int!
+  JavaScript: Int!
+  PHP: Int!
+  SQL: Int!
+  R: Int!
+  Go: Int!
+  Swift: Int!
+  Ruby: Int!
+  Git: Int!
+  Objective_C: Int!
+  CSS: Int!
+  HTML: Int!
+  React_js: Int!
+  Vue_js: Int!
+  Node_js: Int!
+  Express: Int!
+  Spring: Int!
+  etc: Int!
+  user: User!
 }
 
 type StackComment {
@@ -194,10 +210,12 @@ type Mutation {
   createUser(name: String!, nickname: String!, phonenumber: String!, password: String!, email: String!): User!
   updateUser(name: String!, nickname: String!, phonenumber: String!, password: String!): User!
   deleteUser: Boolean!
+  sendTokenTOSMS(phonenumber: String!): String!
+  checktoken(phonenumber: String!, token: String!): Boolean!
   login(password: String!, email: String!): String!
   resotreAccessToken: String!
   logout: String!
-  createBlog(contents: String!, title: String!): Blog!
+  createBlog(blogcategorytag: [String!]!, score: Float!, blogtag: [String!]!, contents: String!, title: String!): Blog!
   updateBlog(blogid: String!, contents: String!, title: String!): Blog!
   deleteBlog(blogid: String!): String!
   uploadFile(files: [Upload!]!): [String!]!
@@ -224,6 +242,14 @@ type Mutation {
   createColumn(createColumnInput: CreateColumnInput!): CoachColumn!
   updateColumn(updateColumnInput: UpdateColumnInput!, columnId: String!): CoachColumn!
   deleteColumn(columnId: String!): Boolean!
+  createBlogManycategoryTag(blogcategorytag: [String!]!): [BlogCategoryTag!]!
+  createBlogcategoryTag(blogcategorytag: String!): BlogCategoryTag!
+  updateBlogcategorytag(updateblogtag: String!, blogcategorytag: String!): [BlogCategoryTag!]!
+  deleteBlogcategoryTag(blogcategorytag: String!): BlogCategoryTag!
+  createBlogManyTag(blogtag: [String!]!): [BlogTag!]!
+  createBlogTag(blogtag: String!): BlogTag!
+  updateBlogtag(updateblogtag: String!, blogtag: String!): [BlogTag!]!
+  deleteBlogTag(blogtag: String!): BlogTag!
 }
 
 input CreateCoachProfileInput {

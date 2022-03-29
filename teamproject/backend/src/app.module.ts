@@ -20,6 +20,8 @@ import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { ColumnlikeModule } from './apis/columnlike/columnlike.module';
 import { ColumnCommentModule } from './apis/columncomment/comment.module';
 import { CoachColumnModule } from './apis/column/column.module';
+import { BlogTagModule } from './apis/blogtag/blogtag.module';
+import { BlogCategoryTagModule } from './apis/blogcategorytag/blogcategorytag.module';
 
 @Module({
   imports: [
@@ -37,6 +39,8 @@ import { CoachColumnModule } from './apis/column/column.module';
     ColumnlikeModule,
     ColumnCommentModule,
     CoachColumnModule,
+    BlogCategoryTagModule,
+    BlogTagModule,
     GraphQLModule.forRoot({
       autoSchemaFile: 'src/common/graphql/schema.gql',
       context: ({ req, res }) => ({ req, res }),

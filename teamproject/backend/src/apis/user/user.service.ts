@@ -1,8 +1,15 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  CACHE_MANAGER,
+  Inject,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import axios from 'axios';
 import { getRepository, Repository } from 'typeorm';
 import { MainStack } from '../mainstack/entities/mainstack.entity';
 import { User } from './entities/user.entity';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class UserService {
@@ -11,6 +18,9 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(MainStack)
     private readonly mainstackRepository: Repository<MainStack>,
+
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
   ) {}
 
   async findAll() {
@@ -59,16 +69,37 @@ export class UserService {
 
     if (result1) throw new ConflictException('이미 등록된 이메일입니다');
 
-    const mainstack = await this.mainstackRepository.save({});
-
-    return await this.userRepository.save({
-      password: hashedPassword,
+    const createnewuser = await this.userRepository.save({
       email,
-      nickname,
-      name,
+      password: hashedPassword,
       phonenumber,
-      mainstack,
+      name,
+      nickname,
     });
+
+    await this.mainstackRepository.save({
+      user: createnewuser,
+    });
+
+    return createnewuser;
+    // const newuser = {
+    //   password: hashedPassword,
+    //   email,
+    //   nickname,
+    //   name,
+    //   phonenumber,
+    // };
+
+    // const createnewuser = await this.userRepository.create(newuser);
+
+    // const mainstack = await this.mainstackRepository.save({
+    //   user: createnewuser,
+    // });
+
+    // return await this.userRepository.save({
+    //   ...newuser,
+    //   mainstack,
+    // });
   }
   async socailcreate({ password, email, name }) {
     const result1 = await this.userRepository.findOne({
@@ -106,5 +137,47 @@ export class UserService {
     const { email, ...rest } = currentUser;
     const result = await this.userRepository.softDelete({ email }); // 모든조건 삭제 가능
     return result.affected ? true : false;
+  }
+
+  async sendTokenTOSMS({ phonenumber }) {
+    const token = String(Math.floor(Math.random() * 10 ** 6)).padStart(6, '0');
+
+    const appKeys = process.env.SMS_APP_KEY;
+    const XSecretKey = process.env.SMS_X_SECRET_KEY;
+    const sender = phonenumber;
+    await axios.post(
+      `https://api-sms.cloud.toast.com/sms/v3.0/appKeys/${appKeys}/sender/sms`,
+      {
+        body: `안녕하세요. 인증번호는 ${token}입니다`,
+        sendNo: '01065474238',
+        recipientList: [
+          {
+            internationalRecipientNo: sender,
+          },
+        ],
+      },
+      {
+        headers: {
+          'X-Secret-Key': XSecretKey,
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+      },
+    );
+    const redistoken = await this.cacheManager.get(phonenumber);
+    if (redistoken) await this.cacheManager.del(phonenumber);
+    await this.cacheManager.set(phonenumber, token, {
+      ttl: 180,
+    });
+  }
+
+  async checktoken({ phonenumber, token }) {
+    const redistoken = await this.cacheManager.get(phonenumber);
+
+    if (redistoken === token) {
+      await this.cacheManager.del(phonenumber);
+      return true;
+    }
+
+    return false;
   }
 }

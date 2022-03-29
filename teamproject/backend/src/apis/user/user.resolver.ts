@@ -11,17 +11,17 @@ export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
   @Query(() => User)
-  findAllUser() {
+  fetchAllUser() {
     return this.userService.findAll();
   }
 
   @Query(() => [User])
-  findUserOrderbylike() {
+  fetchUserOrderbylike() {
     return this.userService.findUserOrderbylike();
   }
 
   @Query(() => [User])
-  findUsersearch(@Args('search') search: string) {
+  fetchUsersearch(@Args('search') search: string) {
     return this.userService.findusersearch({ search });
   }
 

@@ -28,7 +28,12 @@ export class AuthService {
     );
     console.log(refreshToken);
     // res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; path=/;`);
-    res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; path=/;`);
+    //res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; path=/;`);
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader(
+      'Set-Cookie',
+      `refreshToken${refreshToken}; path=/; domain = 34.64.206.255; SameSite = None; Secure; httpOnly;`,
+    );
   }
 
   async logout({ refreshToken, currentUser }) {

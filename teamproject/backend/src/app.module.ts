@@ -58,6 +58,16 @@ import { StackTagModule } from './apis/stacktag/stacktag.module';
     GraphQLModule.forRoot({
       autoSchemaFile: 'src/common/graphql/schema.gql',
       context: ({ req, res }) => ({ req, res }),
+      cors: {
+        origin: [
+          'http://localhost:3000',
+          'http://cucutoo.shop',
+          'https://cucutoo.shop',
+          'http://cucutoo.com',
+          'http://cucutoo.com',
+        ],
+        Credential: true,
+      },
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',

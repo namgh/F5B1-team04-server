@@ -1,11 +1,13 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { StackLike } from 'src/apis/stacklike/entities/stacklike.entity';
+import { StackTag } from 'src/apis/stacktag/entities/stacktag.entity';
 import { User } from 'src/apis/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -46,4 +48,8 @@ export class Stack {
 
   @DeleteDateColumn()
   deletdAt: Date;
+
+  @ManyToMany(() => StackTag, (stacktag) => stacktag.stack)
+  @Field(() => [StackTag])
+  stacktag: StackTag[];
 }

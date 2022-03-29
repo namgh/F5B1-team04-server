@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
-import { getRepository, Repository } from 'typeorm';
+import { Connection, getRepository, Repository } from 'typeorm';
 import { MainStack } from '../mainstack/entities/mainstack.entity';
 import { User } from './entities/user.entity';
 import { Cache } from 'cache-manager';
@@ -21,6 +21,8 @@ export class UserService {
 
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
+
+    private readonly connection: Connection,
   ) {}
 
   async findAll() {
@@ -179,5 +181,59 @@ export class UserService {
     }
 
     return false;
+  }
+
+  async plususerscore({ score, currentUser }) {
+    const queryRunner = await this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction('SERIALIZABLE');
+
+    try {
+      const user = await queryRunner.manager.findOne(
+        User,
+        { id: currentUser.id },
+        { lock: { mode: 'pessimistic_write' } },
+      );
+
+      const result = await queryRunner.manager.save(User, {
+        ...user,
+        score: user.score + score,
+      });
+
+      await queryRunner.commitTransaction();
+
+      return result;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async minususerscore({ score, currentUser }) {
+    const queryRunner = await this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction('SERIALIZABLE');
+
+    try {
+      const user = await queryRunner.manager.findOne(
+        User,
+        { id: currentUser.id },
+        { lock: { mode: 'pessimistic_write' } },
+      );
+
+      const result = await queryRunner.manager.save(User, {
+        ...user,
+        score: user.score - score,
+      });
+
+      await queryRunner.commitTransaction();
+
+      return result;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

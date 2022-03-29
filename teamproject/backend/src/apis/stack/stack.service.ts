@@ -5,6 +5,7 @@ import { getRepository, Repository } from 'typeorm';
 import { Storage } from '@google-cloud/storage';
 import { User } from '../user/entities/user.entity';
 import { Stack } from './entities/stack.entity';
+import { StackTag } from '../stacktag/entities/stacktag.entity';
 
 interface IFile {
   files: FileUpload[];
@@ -18,6 +19,9 @@ export class StackService {
 
     @InjectRepository(User)
     private readonly userrepository: Repository<User>,
+
+    @InjectRepository(StackTag)
+    private readonly stacktagrepository: Repository<StackTag>,
   ) {}
 
   async findAll() {
@@ -48,14 +52,28 @@ export class StackService {
     return stack;
   }
 
-  async create({ title, contents, currentUser }) {
+  async create({ title, contents, currentUser, stacktag }) {
     const user = await this.userrepository.findOne({
       email: currentUser.email,
     });
+
+    const stacktagresult = stacktag.map(async (ele) => {
+      const isstacktag = await this.stacktagrepository.findOne({
+        tag: ele,
+      });
+      if (isstacktag) return isstacktag;
+      else {
+        return await this.stacktagrepository.save({
+          tag: ele,
+        });
+      }
+    });
+
     return await this.stackrepository.save({
       title,
       contents,
       user,
+      stacktag: stacktagresult,
     });
   }
 

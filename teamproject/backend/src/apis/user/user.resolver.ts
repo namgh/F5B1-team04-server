@@ -86,4 +86,22 @@ export class UserResolver {
   ) {
     return await this.userService.checktoken({ phonenumber, token });
   }
+
+  @UseGuards(GqlAuthAccessGuard)
+  @Mutation(() => User)
+  async plususerscore(
+    @Args('score') score: number,
+    @CurrentUser() currentUser: ICurrentUser,
+  ) {
+    return this.userService.plususerscore({ score, currentUser });
+  }
+
+  @UseGuards(GqlAuthAccessGuard)
+  @Mutation(() => User)
+  async minususerscore(
+    @Args('score') score: number,
+    @CurrentUser() currentUser: ICurrentUser,
+  ) {
+    return this.userService.plususerscore({ score, currentUser });
+  }
 }

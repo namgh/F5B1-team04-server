@@ -21,24 +21,22 @@ export class AuthService {
     );
   }
 
-  setRefreshToken({ user, res }) {
-    const refreshToken = this.jwtService.sign(
+  async setRefreshToken({ user, res }) {
+    const refreshToken = await this.jwtService.sign(
       { email: user.email, sub: user.id, role: user.role },
       { secret: 'myRefreshkey', expiresIn: '2w' },
     );
+    console.log(refreshToken);
+    // res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; path=/;`);
     res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; path=/;`);
   }
 
-  async logout({ accesstoken, refreshToken, currentUser }) {
+  async logout({ refreshToken, currentUser }) {
     const User = {
-      accesstoken: accesstoken,
       refreshToken: refreshToken,
       ...currentUser,
     };
-    await this.cacheManager.set(`refreshToken:${refreshToken}`, User, {
-      ttl: User.exp,
-    });
-    return await this.cacheManager.set(`accesstoken:${accesstoken}`, User, {
+    return await this.cacheManager.set(`refreshToken:${refreshToken}`, User, {
       ttl: User.exp,
     });
   }

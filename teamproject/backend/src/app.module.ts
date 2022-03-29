@@ -9,15 +9,19 @@ import { UserModule } from './apis/user/user.module';
 import { BlogModule } from './apis/blog/blog.module';
 import { BlogCommentModule } from './apis/blogcomment/blogcomment.module';
 import { BloglikeModule } from './apis/bloglike/bloglike.module';
+//import { CoachModule } from './apis/coach/coach.module';
 import { StackModule } from './apis/stack/stack.module';
 import { StacklikeModule } from './apis/stacklike/stacklike.module';
 import { StackCommentModule } from './apis/stackcomment/stackcomment.module';
 import { BlogCommentLikeModule } from './apis/blogcommentlike/blogcommentlike.module';
 import { CoachModule } from './apis/coach/coach.module';
 import { PointTransactionModule } from './apis/pointTransaction/pointTransaction.module';
-import { CoachColumnModule } from './apis/column/column.module';
+import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { ColumnlikeModule } from './apis/columnlike/columnlike.module';
 import { ColumnCommentModule } from './apis/columncomment/comment.module';
+import { CoachColumnModule } from './apis/column/column.module';
+import { BlogTagModule } from './apis/blogtag/blogtag.module';
+import { BlogCategoryTagModule } from './apis/blogcategorytag/blogcategorytag.module';
 import { QuestionModule } from './apis/question/question.module';
 import { AnswerModule } from './apis/answer/answer.module';
 import { AnswercommentModule } from './apis/answercomment/answercomment.module';
@@ -27,15 +31,6 @@ import { DepositModule } from './apis/deposit/deposit.module';
 
 @Module({
   imports: [
-    DepositModule,
-    OrderModule,
-    AnswerlikeModule,
-    AnswercommentModule,
-    AnswerModule,
-    QuestionModule,
-    ColumnCommentModule,
-    ColumnlikeModule,
-    CoachColumnModule,
     CoachModule,
     PointTransactionModule,
     UserModule,
@@ -47,6 +42,17 @@ import { DepositModule } from './apis/deposit/deposit.module';
     StacklikeModule,
     StackCommentModule,
     BlogCommentLikeModule,
+    ColumnlikeModule,
+    ColumnCommentModule,
+    CoachColumnModule,
+    BlogCategoryTagModule,
+    BlogTagModule,
+    QuestionModule,
+    AnswerModule,
+    AnswercommentModule,
+    AnswerlikeModule,
+    OrderModule,
+    DepositModule,
     GraphQLModule.forRoot({
       autoSchemaFile: 'src/common/graphql/schema.gql',
       context: ({ req, res }) => ({ req, res }),
@@ -72,9 +78,6 @@ import { DepositModule } from './apis/deposit/deposit.module';
     }),
   ],
   // controllers: [AppController],
-  // providers: [{
-  //   provide: APP_GUARD,
-  //   useClass: RolesGuard
-  // }],
+  // providers: [AppService],
 })
 export class AppModule {}

@@ -18,7 +18,7 @@ export class StackCommentResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => StackComment)
-  async createBlogComment(
+  async createStackComment(
     @Args('stackid') stackid: string,
     @Args('contents') contents: string,
     @CurrentUser() currentUser: ICurrentUser,
@@ -32,15 +32,13 @@ export class StackCommentResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => StackComment)
-  async updateBlogComment(
-    @Args('stackid') stackid: string,
+  async updateStackComment(
     @Args('contents') contents: string,
     @Args('stackcommentid') stackcommentid: string,
     @CurrentUser() currentUser: ICurrentUser,
   ) {
     return this.stackCommentService.update({
       stackcommentid,
-      stackid,
       contents,
       currentUser,
     });
@@ -48,7 +46,7 @@ export class StackCommentResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => StackComment)
-  async deleteBlogComment(
+  async deleteStackComment(
     @Args('stackcommentid') stackcommentid: string,
     @CurrentUser() currentUser: ICurrentUser,
   ) {

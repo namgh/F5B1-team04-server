@@ -25,15 +25,14 @@ export class BlogLikeService {
   ) {}
 
   async findBloglike({ currentUser }) {
-    const user = await getRepository(Blog)
+    return await getRepository(Blog)
       .createQueryBuilder('blog')
-      .leftJoinAndSelect('blog.user', 'user')
       .leftJoinAndSelect('blog.bloglike', 'bloglike')
+      .leftJoinAndSelect('bloglike.user', 'bloguser')
+      .leftJoinAndSelect('bloglike.user', 'user')
       .where('bloglike.islike = :islike', { islike: true })
       .andWhere('user.id = :id', { id: currentUser.id })
       .getMany();
-
-    return user;
   }
 
   async like({ blogid, currentUser }) {
@@ -56,8 +55,6 @@ export class BlogLikeService {
         user: currentUser.id,
         blog: blogid,
       });
-
-      console.log('++++++', bloglike);
 
       if (!bloglike) {
         const createlike = await this.bloglikerepository.create({
@@ -111,6 +108,95 @@ export class BlogLikeService {
       const updateblog = await this.blogrepository.create({
         ...blog,
         like,
+      });
+
+      await queryRunner.manager.save(updateblog);
+
+      const result = await queryRunner.manager.save(createlike);
+
+      await queryRunner.commitTransaction();
+
+      return result;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async dislike({ blogid, currentUser }) {
+    const queryRunner = await this.connection.createQueryRunner();
+    const queryBuiler = await this.connection.createQueryBuilder();
+    await queryRunner.connect();
+    await queryRunner.startTransaction('SERIALIZABLE');
+    try {
+      const blog = await queryRunner.manager.findOne(
+        Blog,
+        { id: blogid },
+        { lock: { mode: 'pessimistic_write' } },
+      );
+
+      const user = await queryRunner.manager.findOne(User, {
+        id: currentUser.id,
+      });
+
+      const bloglike = await queryRunner.manager.findOne(BlogLike, {
+        user: currentUser.id,
+        blog: blogid,
+      });
+
+      if (!bloglike) {
+        const createlike = await this.bloglikerepository.create({
+          isdislike: true,
+          user: user,
+          blog: blog,
+        });
+
+        const dislike = blog.dislike + 1;
+
+        const updateblog = await this.blogrepository.create({
+          ...blog,
+          dislike,
+        });
+
+        await queryRunner.manager.save(updateblog);
+
+        const result = await queryRunner.manager.save(createlike);
+
+        await queryRunner.commitTransaction();
+
+        return result;
+      }
+
+      if (!bloglike.islike) {
+        const createlike = await this.bloglikerepository.create({
+          ...bloglike,
+          isdislike: true,
+        });
+
+        const dislike = blog.dislike + 1;
+
+        const updateblog = await this.blogrepository.create({
+          ...blog,
+          dislike,
+        });
+
+        await queryRunner.manager.save(updateblog);
+
+        const result = await queryRunner.manager.save(createlike);
+        await queryRunner.commitTransaction();
+        return result;
+      }
+
+      const createlike = await this.bloglikerepository.create({
+        ...bloglike,
+        isdislike: false,
+      });
+      const dislike = blog.dislike - 1;
+
+      const updateblog = await this.blogrepository.create({
+        ...blog,
+        dislike,
       });
 
       await queryRunner.manager.save(updateblog);

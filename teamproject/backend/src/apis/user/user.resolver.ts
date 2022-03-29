@@ -68,7 +68,7 @@ export class UserResolver {
     });
   }
 
-  @UseGuards(GqlAuthAccessGuard) //gql사용할때
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
   deleteUser(@CurrentUser() currentUser: ICurrentUser) {
     return this.userService.delete({ currentUser });

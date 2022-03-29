@@ -58,6 +58,7 @@ type CoachProfile {
   profileTitle: String!
   profileContents: String!
   image: String!
+  answerInitAmount: Int
 }
 
 type ColumnComment {
@@ -112,7 +113,7 @@ type User {
   id: String!
   email: String!
   name: String!
-  phoneNumber: String
+  phonenumber: String
   nickname: String!
   codeInterest: String!
   coachInterest: String!
@@ -121,6 +122,13 @@ type User {
   coachProfile: CoachProfile!
   mainstack: MainStack!
   user: MainStack!
+  role: Role!
+}
+
+enum Role {
+  USER
+  COACH
+  ADMIN
 }
 
 type MainStack {
@@ -171,6 +179,31 @@ enum POINT_TRANSACTION_STATUS_ENUM {
   PENDING
 }
 
+type Question {
+  id: String!
+  fromUser: User!
+  toCoach: User!
+  title: String!
+  QType: QUESTION_FIELD_ENUM!
+  contents: String!
+}
+
+enum QUESTION_FIELD_ENUM {
+  NORM
+  RESUME
+  PORTFORLIO
+}
+
+type Answer {
+  id: String!
+  title: String!
+  contents: String!
+  amount: Int!
+  question: Question!
+  likecount: Int!
+  dislikecount: Int!
+}
+
 type Query {
   fetchCoachUserList: [User!]!
   fetchCoachUser(userId: String!): User!
@@ -196,15 +229,17 @@ type Query {
   fetchColumnCommentList(columnId: String!): [ColumnComment!]!
   fetchColumnList: [CoachColumn!]!
   fetchRecommendColumnList: [CoachColumn!]!
+  fetchRecommendColumnListArgs(itemcount: Float!, pageNum: Float!): [CoachColumn!]!
   fetchHighHitColumnList: [CoachColumn!]!
+  fetchHighHitColumnListArgs(itemcount: Float!, pageNum: Float!): [CoachColumn!]!
   fetchDetailColumn(columnId: String!): CoachColumn!
   fetchMyColumn: [CoachColumn!]!
 }
 
 type Mutation {
-  createCoachProfile(createProfileInput: CreateCoachProfileInput!, userId: String!): User!
-  updateCoachProfile(UpdateCoachInput: UpdateCoachInput!, userId: String!): User!
-  deleteCoachProfile(userId: String!): Boolean!
+  createCoachProfile(createProfileInput: CreateCoachProfileInput!): User!
+  updateCoachProfile(UpdateCoachInput: UpdateCoachInput!): User!
+  deleteCoachProfile: Boolean!
   createPointTransaction(amount: Float!, impUid: String!): PointTransaction!
   cancelPointTransaction(amount: Float!, impUid: String!): PointTransaction!
   createUser(name: String!, nickname: String!, phonenumber: String!, password: String!, email: String!): User!
@@ -215,7 +250,7 @@ type Mutation {
   login(password: String!, email: String!): String!
   resotreAccessToken: String!
   logout: String!
-  createBlog(blogcategorytag: [String!]!, score: Float!, blogtag: [String!]!, contents: String!, title: String!): Blog!
+  createBlog(blogcategorytag: [String!]!, blogtag: [String!]!, contents: String!, title: String!): Blog!
   updateBlog(blogid: String!, contents: String!, title: String!): Blog!
   deleteBlog(blogid: String!): String!
   uploadFile(files: [Upload!]!): [String!]!
@@ -261,6 +296,7 @@ input CreateCoachProfileInput {
   profileTitle: String!
   profileContents: String!
   image: String!
+  answerInitAmount: Int
 }
 
 input UpdateCoachInput {
@@ -269,6 +305,7 @@ input UpdateCoachInput {
   profileTitle: String!
   profileContents: String!
   image: String!
+  answerInitAmount: Int
 }
 
 """The `Upload` scalar type represents a file upload."""

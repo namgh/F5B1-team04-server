@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { User } from 'src/apis/user/entities/user.entity';
 import {
   Column,
@@ -49,6 +49,10 @@ export class CoachProfile {
   @Column()
   @Field(() => String)
   image: string;
+
+  @Column({ default: 1000 })
+  @Field(() => Int, { nullable: true })
+  answerInitAmount: number;
 
   @DeleteDateColumn({ nullable: true })
   deletdAt: Date;

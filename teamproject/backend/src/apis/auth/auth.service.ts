@@ -16,18 +16,17 @@ export class AuthService {
   getAccessToken({ user }) {
     console.log(user.id);
     return this.jwtService.sign(
-      { email: user.email, sub: user.id },
+      { email: user.email, sub: user.id, role: user.role },
       { secret: 'myAccessKey', expiresIn: '2h' },
     );
   }
 
   setRefreshToken({ user, res }) {
     const refreshToken = this.jwtService.sign(
-      { email: user.email, sub: user.id },
+      { email: user.email, sub: user.id, role: user.role },
       { secret: 'myRefreshkey', expiresIn: '2w' },
     );
-    res.setHeader('Set-Cookie', `refreshToken = ${refreshToken};`);
-    console.log(res);
+    res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; path=/;`);
   }
 
   async logout({ accesstoken, refreshToken, currentUser }) {

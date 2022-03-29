@@ -23,6 +23,7 @@ export class CoachColumnResolver {
     return await this.fetchRecommendColumnListArgs(1, 20);
   }
 
+  @Query(() => [CoachColumn])
   async fetchRecommendColumnListArgs(
     @Args('pageNum') pageNum: number,
     @Args('itemcount') itemcount: number,
@@ -38,6 +39,7 @@ export class CoachColumnResolver {
     return this.fetchHighHitColumnListArgs(1, 20);
   }
 
+  @Query(() => [CoachColumn])
   async fetchHighHitColumnListArgs(
     @Args('pageNum') pageNum: number,
     @Args('itemcount') itemcount: number,

@@ -135,7 +135,7 @@ export class UserService {
 
   async delete({ currentUser }) {
     const { email, ...rest } = currentUser;
-    const result = await this.userRepository.softDelete({ email }); // 모든조건 삭제 가능
+    const result = await this.userRepository.softDelete({ email });
     return result.affected ? true : false;
   }
 

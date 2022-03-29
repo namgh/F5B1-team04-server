@@ -5,6 +5,9 @@ import { getRepository, Repository } from 'typeorm';
 import { Blog } from './entities/blog.entity';
 import { Storage } from '@google-cloud/storage';
 import { User } from '../user/entities/user.entity';
+import { MainStack } from '../mainstack/entities/mainstack.entity';
+import { BlogTag } from '../blogtag/entities/blogtag.entity';
+import { BlogCategoryTag } from '../blogcategorytag/entities/blogcategofytag.entity';
 
 interface IFile {
   files: FileUpload[];
@@ -18,22 +21,41 @@ export class BlogService {
 
     @InjectRepository(User)
     private readonly userrepository: Repository<User>,
+
+    @InjectRepository(MainStack)
+    private readonly mainstackrepository: Repository<MainStack>,
+
+    @InjectRepository(BlogTag)
+    private readonly blogtagrepository: Repository<BlogTag>,
+
+    @InjectRepository(BlogCategoryTag)
+    private readonly blogcategorytagrepository: Repository<BlogCategoryTag>,
   ) {}
 
-  async findAll() { 
+  async findAll() {
     return await this.blogrepository.find();
   }
 
-  async findotherblog({ email }) {
-    const user = await this.userrepository.findOne({ email });
-
-    const blog = await getRepository(Blog)
+  async fetchotherBlogorderbylike() {
+    return await getRepository(Blog)
       .createQueryBuilder('blog')
-      .leftJoinAndSelect('blog.user', 'user')
-      .andWhere('user.id = :id', { id: user.id })
+      .orderBy('blog.like', 'DESC')
       .getMany();
+  }
 
-    return blog;
+  async fetchotherBlogorderbycreateAt() {
+    return await getRepository(Blog)
+      .createQueryBuilder('blog')
+      .orderBy('blog.createAt', 'DESC')
+      .getMany();
+  }
+
+  async fetchotherBlogorderbylikecreate() {
+    return await getRepository(Blog)
+      .createQueryBuilder('blog')
+      .orderBy('blog.like', 'DESC')
+      .addOrderBy('blog.createAt', 'DESC')
+      .getMany();
   }
 
   async findmyblog({ currentUser }) {
@@ -46,14 +68,59 @@ export class BlogService {
     return blog;
   }
 
-  async create({ title, contents, currentUser }) {
+  async create({ title, contents, currentUser, blogtag, blogcategorytag }) {
     const user = await this.userrepository.findOne({
       email: currentUser.email,
     });
+
+    const mainstack = await getRepository(MainStack)
+      .createQueryBuilder('mainstack')
+      .leftJoinAndSelect('mainstack.user', 'user')
+      .where('user.id = :id', { id: currentUser.id })
+      .getOne();
+
+    blogtag.forEach((ele) => {
+      for (const key in mainstack) {
+        console.log(key, mainstack[key], ele);
+
+        if (key === ele) {
+          mainstack[key] += 1;
+        }
+      }
+    });
+
+    await this.mainstackrepository.save(mainstack);
+
+    const blogtagresult = blogtag.map(async (ele) => {
+      const isblogtag = await this.blogtagrepository.findOne({
+        tag: ele,
+      });
+      if (isblogtag) return isblogtag;
+      else {
+        return await this.blogtagrepository.save({
+          tag: ele,
+        });
+      }
+    });
+
+    const blogcategorytagresult = blogcategorytag.map(async (ele) => {
+      const isblogtag = await this.blogcategorytagrepository.findOne({
+        tag: ele,
+      });
+      if (isblogtag) return isblogtag;
+      else {
+        return await this.blogcategorytagrepository.save({
+          tag: ele,
+        });
+      }
+    });
+
     return await this.blogrepository.save({
       title,
       contents,
       user,
+      blogtag: blogtagresult,
+      blogcategorytag: blogcategorytagresult,
     });
   }
 

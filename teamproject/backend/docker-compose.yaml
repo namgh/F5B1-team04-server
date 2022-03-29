@@ -36,7 +36,7 @@ services:
   # elasticsearch:
   #   image: elasticsearch:7.17.0
   #   environment:
-  #     discovery.type: single-node
+  #     discovery.type: single-node 
   #   ports:
   #     - 9200:9200
 

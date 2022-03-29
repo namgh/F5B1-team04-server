@@ -24,16 +24,26 @@ export class StackLikeService {
     private readonly connection: Connection,
   ) {}
 
-  async findBloglike({ currentUser }) {
-    const user = await getRepository(Stack)
+  async findstacklike({ currentUser }) {
+    const stack = await getRepository(Stack)
       .createQueryBuilder('stack')
-      .leftJoinAndSelect('stack.user', 'user')
+      .leftJoinAndSelect('stack.user', 'stackuser')
       .leftJoinAndSelect('stack.stacklike', 'stacklike')
+      .leftJoinAndSelect('stacklike.user', 'user')
       .where('stacklike.islike = :islike', { islike: true })
       .andWhere('user.id = :id', { id: currentUser.id })
       .getMany();
 
-    return user;
+    // const aaa = await getRepository(Stack)
+    //   .createQueryBuilder('stack')
+    //   .leftJoinAndSelect('stack.user', 'user')
+    //   .leftJoinAndSelect('stack.stacklike', 'stacklike')
+    //   .where('stacklike.islike = :islike', { islike: true })
+    //   .andWhere('user.id = :id', { id: currentUser.id })
+    //   .getMany();
+
+    // console.log(aaa);
+    return stack;
   }
 
   async like({ stackid, currentUser }) {
@@ -63,7 +73,7 @@ export class StackLikeService {
         const createlike = await this.stacklikerepository.create({
           islike: true,
           user: user,
-          stack: stacklike,
+          stack: stack,
         });
 
         const like = stack.like + 1;

@@ -15,6 +15,22 @@ export class UserResolver {
     return this.userService.findAll();
   }
 
+  @Query(() => [User])
+  findUserOrderbylike() {
+    return this.userService.findUserOrderbylike();
+  }
+
+  @Query(() => [User])
+  findUsersearch(@Args('search') search: string) {
+    return this.userService.findusersearch({ search });
+  }
+
+  @UseGuards(GqlAuthAccessGuard)
+  @Query(() => String)
+  fetchmainstack(@CurrentUser() currentUser: ICurrentUser) {
+    return this.userService.fetchmainstack({ currentUser });
+  }
+
   @Mutation(() => User)
   async createUser(
     @Args('email') email: string,
@@ -52,9 +68,22 @@ export class UserResolver {
     });
   }
 
-  @UseGuards(GqlAuthAccessGuard) //gql사용할때
+  @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
   deleteUser(@CurrentUser() currentUser: ICurrentUser) {
     return this.userService.delete({ currentUser });
+  }
+
+  @Mutation(() => String)
+  sendTokenTOSMS(@Args('phonenumber') phonenumber: string) {
+    return this.userService.sendTokenTOSMS({ phonenumber });
+  }
+
+  @Mutation(() => Boolean)
+  async checktoken(
+    @Args('token') token: string,
+    @Args('phonenumber') phonenumber: string,
+  ) {
+    return await this.userService.checktoken({ phonenumber, token });
   }
 }

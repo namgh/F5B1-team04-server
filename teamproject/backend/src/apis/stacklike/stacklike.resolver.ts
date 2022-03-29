@@ -13,7 +13,7 @@ export class StackLikeResolver {
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [Stack])
   async fetchStacklike(@CurrentUser() currentUser: ICurrentUser) {
-    return this.stacklikeservice.findBloglike({ currentUser });
+    return this.stacklikeservice.findstacklike({ currentUser });
   }
 
   @UseGuards(GqlAuthAccessGuard)

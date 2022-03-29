@@ -28,8 +28,13 @@ export class StackResolver {
   }
 
   @Query(() => [Stack])
-  fetchotherStack(@Args('email') email: string) {
-    return this.stackService.findotherstack({ email });
+  fetchotherStackorderbylike() {
+    return this.stackService.fetchotherStackorderbylike();
+  }
+
+  @Query(() => [Stack])
+  fetchotherStackorderbycreateAt() {
+    return this.stackService.fetchotherStackorderbycreateAt();
   }
 
   @UseGuards(GqlAuthAccessGuard)

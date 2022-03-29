@@ -1,10 +1,10 @@
 import { Field, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { type } from 'os';
 import { Blog } from 'src/apis/blog/entities/blog.entity';
 import { BlogLike } from 'src/apis/bloglike/entities/bloglike.entity';
 import { CoachProfile } from 'src/apis/coach/entities/coachprofile.entity';
 import { CoachColumn } from 'src/apis/column/entities/column.entity';
 import { ColumnLike } from 'src/apis/columnlike/entities/columnlike.entity';
+import { MainStack } from 'src/apis/mainstack/entities/mainstack.entity';
 // import { CoachProfile } from 'src/apis/coach/entities/coachprofile.entity';
 import { Stack } from 'src/apis/stack/entities/stack.entity';
 import { StackLike } from 'src/apis/stacklike/entities/stacklike.entity';
@@ -27,7 +27,6 @@ export enum Role {
   ADMIN = 'ADMIN',
 }
 registerEnumType(Role, { name: 'Role' });
-
 @Entity()
 @ObjectType()
 export class User {
@@ -48,7 +47,7 @@ export class User {
 
   @Column({ nullable: true })
   @Field(() => String, { nullable: true })
-  phoneNumber?: string;
+  phonenumber?: string;
 
   @Column({ nullable: true })
   @Field(() => String)
@@ -62,15 +61,13 @@ export class User {
   @Field(() => String)
   coachInterest: string;
 
+  @Column({ default: 0 })
+  @Field(() => Int)
   score: number;
 
   @Column({ default: 0 })
   @Field(() => Int)
   point: number;
-
-  @Column({ type: 'enum', enum: Role, default: Role.USER })
-  @Field(() => Role)
-  role: Role;
 
   @JoinColumn()
   @OneToOne(() => CoachProfile, { nullable: true })
@@ -98,9 +95,22 @@ export class User {
   @OneToMany((type) => StackLike, (stacklike) => stacklike.user)
   stacklike: StackLike[];
 
+  @JoinColumn({})
+  @OneToOne(() => MainStack)
+  @Field(() => MainStack)
+  mainstack: MainStack;
+
   @OneToMany(() => CoachColumn, (coachColumn) => coachColumn.user)
   coachColumn: CoachColumn[];
 
   @OneToMany(() => ColumnLike, (columnLike) => columnLike.user)
   columnlike: ColumnLike[];
+
+  @OneToOne(() => MainStack)
+  @Field(() => MainStack)
+  user: MainStack;
+
+  @Column({ type: 'enum', enum: Role, default: Role.USER })
+  @Field(() => Role)
+  role: Role;
 }

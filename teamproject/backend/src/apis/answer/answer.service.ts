@@ -89,35 +89,44 @@ export class AnswerService {
         where: { id: questionId },
         relations: ['fromUser', 'toCoach', 'toCoach.coachProfile'],
       });
+      console.log('💛question', question);
       const deposit = await queryRunner.manager.findOne(Deposit, {
         id: question.deposit,
       });
-      await queryRunner.manager.save({
+      console.log('💛', deposit);
+      console.log('💛', deposit.fromAmount);
+
+      const x = await queryRunner.manager.save(Deposit, {
         ...deposit,
         toAmount: deposit.fromAmount,
         fromAmount: 0,
         status: DEPOSIT_STATUS.COMPLETED,
       });
+      console.log(x);
 
-      await queryRunner.manager.save(User, {
+      const y = await queryRunner.manager.save(User, {
         ...question.toCoach,
         point: question.toCoach.point + deposit.fromAmount,
       });
 
-      const answer = await queryRunner.manager.save({
+      //answer:question 은 1:1 관계 이기에 같은 questionId를 갖는 question을 주입하려고 할 때 에러!
+      //중복 검사 안해도됨
+      const answer = await queryRunner.manager.save(Answer, {
         ...createAnswerInput,
         question,
+        amount: deposit.fromAmount,
       });
-
+      const c = answer.question.toCoach.coachProfile;
+      console.log(c);
       const order = await queryRunner.manager.save(OrderHistory, {
         user: question.fromUser,
         answer,
-        amount: deposit.fromAmount,
+        amount: answer.amount,
       });
-      console.log('💛order', order);
       await queryRunner.commitTransaction();
       return answer;
     } catch (error) {
+      console.log(error);
       await queryRunner.rollbackTransaction();
     } finally {
       await queryRunner.release();

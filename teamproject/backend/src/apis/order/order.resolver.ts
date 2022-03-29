@@ -24,9 +24,10 @@ export class OrderResolver {
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => OrderHistory)
   async cancelAnswerOrder(
-    @CurrentUser() currentUser: ICurrentUser,
+    // @CurrentUser() currentUser: ICurrentUser, -> ADMIN
+    @Args('userId') userId: string,
     @Args('answerId') answerId: string,
   ) {
-    return await this.orderService.cancel({ currentUser, answerId });
+    return await this.orderService.cancel({ userId, answerId });
   }
 }

@@ -77,22 +77,27 @@ export class QuestionService {
         where: { id: currentUser.id },
         relations: ['coachProfile'],
       });
+      console.log('💛fromUser', fromUser);
       const toCoach = await queryRunner.manager.findOne(User, {
         where: { id: coachId },
         relations: ['coachProfile'],
       });
-
+      console.log('💛toCoach', toCoach);
       const amount = toCoach.coachProfile.answerInitAmount;
-      if (fromUser.point - toCoach.coachProfile.answerInitAmount) {
+      console.log('💛amount', amount);
+
+      if (fromUser.point < toCoach.coachProfile.answerInitAmount) {
+        console.log('v');
         throw new UnprocessableEntityException(
           '포인트 잔액이 충분하지 않습니다.',
         );
       }
-
-      const minusUser = await queryRunner.manager.save({
+      const minusPoint = fromUser.point - toCoach.coachProfile.answerInitAmount;
+      const minusUser = await queryRunner.manager.save(User, {
         ...fromUser,
-        point: fromUser.point - toCoach.coachProfile.answerInitAmount,
+        point: minusPoint,
       });
+      console.log('💛minusUser', minusUser);
 
       const deposit = await queryRunner.manager.save(Deposit, {
         fromUser: minusUser,
@@ -101,17 +106,20 @@ export class QuestionService {
         status: DEPOSIT_STATUS.PENDING,
       });
       console.log('💛Deposit', deposit);
-
+      console.log('💛deposit.id', deposit.id);
       const question = await queryRunner.manager.save(Question, {
         ...createQuestionInput,
         fromUser: minusUser,
         toCoach,
-        depositId: deposit.id,
+        deposit: deposit.id,
       });
+      console.log('💛', question);
+
       await queryRunner.commitTransaction();
 
       return question;
     } catch (error) {
+      console.log(error);
       await queryRunner.rollbackTransaction();
     } finally {
       await queryRunner.release();

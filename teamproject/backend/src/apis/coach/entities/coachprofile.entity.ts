@@ -51,7 +51,7 @@ export class CoachProfile {
   image: string;
 
   @Column({ default: 1000 })
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   answerInitAmount: number;
 
   @DeleteDateColumn({ nullable: true })

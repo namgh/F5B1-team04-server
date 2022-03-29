@@ -26,7 +26,7 @@ export class PointTransactionResolver {
     const access_token = await this.iamportService.getImpAccessToken();
     await this.iamportService.checkPaid({ impUid, amount, access_token });
 
-    return await this.pointTransactionService.create({
+    return await this.pointTransactionService.create({ 
       impUid,
       amount,
       currentUser,

@@ -22,9 +22,13 @@ import { QuestionModule } from './apis/question/question.module';
 import { AnswerModule } from './apis/answer/answer.module';
 import { AnswercommentModule } from './apis/answercomment/answercomment.module';
 import { AnswerlikeModule } from './apis/answerlike/answerlike.module';
+import { OrderModule } from './apis/order/order.module';
+import { DepositModule } from './apis/deposit/deposit.module';
 
 @Module({
   imports: [
+    DepositModule,
+    OrderModule,
     AnswerlikeModule,
     AnswercommentModule,
     AnswerModule,

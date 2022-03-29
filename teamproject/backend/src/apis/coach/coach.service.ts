@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ICurrentUser } from 'src/common/auth/gql-user.param';
 import { getRepository, Repository } from 'typeorm';
 import { User, Role } from '../user/entities/user.entity';
 import { UpdateCoachInput } from './dto/updateCoach.input';
 import { CoachProfile } from './entities/coachprofile.entity';
 
 interface IUpdateCoach {
-  userId: string;
+  currentUser: ICurrentUser;
   updateCoachInput: UpdateCoachInput;
 }
 
@@ -33,37 +34,54 @@ export class CoachProfileService {
     });
   }
 
-  async create({ userId, createProfileInput }) {
-    const user_ = await this.userRepository.findOne(userId);
-    const coachUser = {
-      ...user_,
-      coachprofile: await this.coachprofileRepository.save({
-        ...createProfileInput,
+  async create({ currentUser, createProfileInput }) {
+    const coachProfile = await this.coachprofileRepository.save({
+      ...createProfileInput,
+    });
+    const user = await this.userRepository.findOne({ id: currentUser.id });
+    const x = await this.userRepository.save({
+      ...user,
+      coachProfile,
+      role: Role.COACH,
+    });
+    console.log(x);
+  }
+
+  async update({ currentUser, updateCoachInput }: IUpdateCoach) {
+    const user = await this.userRepository.findOne({
+      where: { id: currentUser.id },
+      relations: ['coachProfile'],
+    });
+    const profile = await this.coachprofileRepository.findOne({
+      where: { id: user.coachProfile.id },
+    });
+    return await this.userRepository.save({
+      ...user,
+      coachProfile: await this.coachprofileRepository.save({
+        ...profile,
+        ...updateCoachInput,
       }),
-      status: Role.COACH,
-    };
-
-    return await this.userRepository.save(coachUser);
+    });
   }
 
-  async update({ userId, updateCoachInput }: IUpdateCoach) {
-    const user_ = await this.userRepository.findOne({ id: userId });
-    const updateCoach = {
-      ...user_,
-      coachProfile: { ...updateCoachInput },
-    };
-    return await this.userRepository.save(updateCoach);
-  }
-
-  async delete({ userId }) {
-    const user_ = await this.userRepository.findOne({ id: userId });
+  async delete({ currentUser }) {
+    const user_ = await this.userRepository.findOne({
+      where: { id: currentUser.id },
+      relations: ['coachProfile'],
+    });
     console.log(`💛 user_.coachProfile: ${user_.coachProfile}`);
 
     const result = await this.coachprofileRepository.softDelete({
       id: user_.coachProfile.id,
     });
 
-    console.log(`💛 delete result: ${result}`);
-    return result.affected ? true : false;
+    if (result.affected) {
+      await this.userRepository.save({
+        ...user_,
+        role: Role.USER,
+      });
+      return true;
+    }
+    return false;
   }
 }

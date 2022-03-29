@@ -67,6 +67,7 @@ export class Question {
   @DeleteDateColumn()
   deletedAt: Date;
 
+  //릴레이션은 추후에 테스트 시에 문제가 없다면 보류
   // @JoinColumn()
   // @OneToOne(() => Deposit, (deposit) => deposit.question)
   // @Field(() => Deposit)

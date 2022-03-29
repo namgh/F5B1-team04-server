@@ -42,6 +42,7 @@ type CoachProfile {
   profileTitle: String!
   profileContents: String!
   image: String!
+  answerInitAmount: Int
 }
 
 type ColumnComment {
@@ -157,6 +158,19 @@ enum QUESTION_FIELD_ENUM {
   PORTFORLIO
 }
 
+type OrderHistory {
+  id: String!
+  user: User!
+  answer: Answer!
+  amount: Int!
+  status: ORDER_STATUS!
+}
+
+enum ORDER_STATUS {
+  PAYMENT
+  CANCEL
+}
+
 type AnswerLike {
   id: String!
   user: User!
@@ -166,6 +180,7 @@ type AnswerLike {
 }
 
 type Query {
+  stringReturn: String!
   goodEvalAnswerList(itemCount: Float!): [Answer!]!
   myCoachingListHasAnswer: [Answer!]!
   coachAnsweredList: [Answer!]!
@@ -196,6 +211,8 @@ type Query {
 }
 
 type Mutation {
+  createAnswerOrder(answerId: String!): OrderHistory!
+  cancelAnswerOrder(answerId: String!, userId: String!): OrderHistory!
   likeAnswerToggle(answerId: String!): AnswerLike!
   dislikeAnswerToggle(answerId: String!): AnswerLike!
   createCoachAnswer(createAnswerInput: CreateAnswerInput!, questionId: String!): Answer!
@@ -213,9 +230,9 @@ type Mutation {
   createColumn(createColumnInput: CreateColumnInput!): CoachColumn!
   updateColumn(updateColumnInput: UpdateColumnInput!, columnId: String!): CoachColumn!
   deleteColumn(columnId: String!): Boolean!
-  createCoachProfile(createProfileInput: CreateCoachProfileInput!, userId: String!): User!
-  updateCoachProfile(UpdateCoachInput: UpdateCoachInput!, userId: String!): User!
-  deleteCoachProfile(userId: String!): Boolean!
+  createCoachProfile(createProfileInput: CreateCoachProfileInput!): User!
+  updateCoachProfile(UpdateCoachInput: UpdateCoachInput!): User!
+  deleteCoachProfile: Boolean!
   createPointTransaction(amount: Float!, impUid: String!): PointTransaction!
   cancelPointTransaction(amount: Float!, impUid: String!): PointTransaction!
   createUser(name: String!, nickname: String!, phonenumber: String!, password: String!, email: String!): User!
@@ -246,14 +263,15 @@ input CreateAnswerInput {
 }
 
 input UpdateAnswerInput {
-  title: String!
-  contents: String!
+  title: String
+  contents: String
+  amount: Int
 }
 
 input CreateQuestionInput {
   title: String!
   contents: String!
-  QType: QUESTION_FIELD_ENUM!
+  QType: QUESTION_FIELD_ENUM
 }
 
 input UpdateQuestionInput {
@@ -281,6 +299,7 @@ input CreateCoachProfileInput {
   profileTitle: String!
   profileContents: String!
   image: String!
+  answerInitAmount: Int
 }
 
 input UpdateCoachInput {
@@ -289,6 +308,7 @@ input UpdateCoachInput {
   profileTitle: String!
   profileContents: String!
   image: String!
+  answerInitAmount: Int
 }
 
 """The `Upload` scalar type represents a file upload."""

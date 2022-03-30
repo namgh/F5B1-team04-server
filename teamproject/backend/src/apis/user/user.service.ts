@@ -170,6 +170,7 @@ export class UserService {
     await this.cacheManager.set(phonenumber, token, {
       ttl: 180,
     });
+    return `${phonenumber} 으로 ${token}을 전송했습니다`;
   }
 
   async checktoken({ phonenumber, token }) {

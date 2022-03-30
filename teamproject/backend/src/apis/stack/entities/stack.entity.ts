@@ -40,6 +40,10 @@ export class Stack {
   @Field(() => Int)
   like: number;
 
+  @Column({ default: 0 })
+  @Field(() => Int)
+  dislike: number;
+
   @CreateDateColumn()
   createAt: Date;
 

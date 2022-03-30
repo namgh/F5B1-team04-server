@@ -173,6 +173,7 @@ export class BlogService {
         });
       }),
     );
+    console.log(results);
     return results;
   }
 }

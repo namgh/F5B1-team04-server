@@ -113,6 +113,7 @@ type Stack {
   contents: String!
   user: User!
   like: Int!
+  dislike: Int!
   stacktag: [StackTag!]!
 }
 
@@ -170,6 +171,8 @@ type StackComment {
   contents: String!
   user: User!
   stack: Stack!
+  like: Int!
+  dislike: Int!
 }
 
 type PointTransaction {
@@ -235,9 +238,9 @@ type AnswerLike {
 type Query {
   fetchCoachUserList: [User!]!
   fetchCoachUser(userId: String!): User!
-  findAllUser: User!
-  findUserOrderbylike: [User!]!
-  findUsersearch(search: String!): [User!]!
+  fetchAllUser: User!
+  fetchUserOrderbylike: [User!]!
+  fetchUsersearch(search: String!): [User!]!
   fetchmainstack: String!
   fetchBlog: [Blog!]!
   fetchmyBlog: [Blog!]!
@@ -300,7 +303,8 @@ type Mutation {
   updateStack(blogid: String!, contents: String!, title: String!): Stack!
   deleteStack(blogid: String!): String!
   uploadStackFile(files: [Upload!]!): [String!]!
-  Stacktoggle(stackid: String!): StackLike!
+  Stackliketoggle(stackid: String!): StackLike!
+  Stackdisliketoggle(stackid: String!): StackLike!
   createStackComment(contents: String!, stackid: String!): StackComment!
   updateStackComment(stackcommentid: String!, contents: String!): StackComment!
   deleteStackComment(stackcommentid: String!): StackComment!

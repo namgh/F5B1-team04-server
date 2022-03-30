@@ -11,7 +11,7 @@ async function bootstrap() {
       'http://localhost:3000',
       'http://cucutoo.shop',
       'https://cucutoo.shop',
-      'http://cucutoo.com',
+      'https://cucutoo.com',
       'http://cucutoo.com',
     ],
     credentials: true,

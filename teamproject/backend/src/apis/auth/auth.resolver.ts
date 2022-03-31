@@ -14,6 +14,7 @@ import {
 import { CurrentUser, ICurrentUser } from 'src/common/auth/gql-user.param';
 import * as jwt from 'jsonwebtoken';
 import { access } from 'fs';
+import { Token } from 'graphql';
 
 @Resolver()
 export class AuthResolver {
@@ -35,40 +36,41 @@ export class AuthResolver {
     const isAuthenticated = await bcrypt.compare(password, user.password); //user.password - 해쉬된 비밀번호
     if (!isAuthenticated)
       throw new UnauthorizedException('비밀번호가 틀렸습니다!!!');
-    this.authService.setRefreshToken({ user, res: context.res });
+    await this.authService.setRefreshToken({ user, res: context.res });
 
-    return this.authService.getAccessToken({ user });
+    return await this.authService.getAccessToken({ user });
   }
 
   @UseGuards(GqlAuthRefreshGuard)
   @Mutation(() => String)
-  resotreAccessToken(@CurrentUser() currentUser: ICurrentUser) {
+  async resotreAccessToken(@CurrentUser() currentUser: ICurrentUser) {
     return this.authService.getAccessToken({ user: currentUser });
   }
 
-  @UseGuards(GqlAuthAccessGuard) // 로그인 한 사람만 이 API에 접근가능함
+  @UseGuards(GqlAuthRefreshGuard) // 로그인 한 사람만 이 API에 접근가능함
   @Mutation(() => String)
   async logout(
     @Context() context: any,
     @CurrentUser() currentUser: ICurrentUser,
   ) {
+    console.log('++++++++++++', context.req.headers.cookie);
     const refreshToken = context.req.headers.cookie.replace(
       'refreshToken=',
       '',
     );
-    const accesstoken = context.req.headers.authorization.replace(
-      'Bearer ',
-      '',
-    );
+    // console.log('+++++++++++', context.req.headers);
+    // const accesstoken = context.req.headers.authorization.replace(
+    //   'Bearer ',
+    //   '',
+    // );
     try {
-      jwt.verify(refreshToken, 'myRefreshkey') &&
-        jwt.verify(accesstoken, 'myAccessKey');
+      jwt.verify(refreshToken, 'myRefreshkey');
     } catch {
       throw new UnauthorizedException('토큰검증 실패');
     }
 
     //console.log(context.req.refreshToken);
-    await this.authService.logout({ accesstoken, refreshToken, currentUser });
+    await this.authService.logout({ refreshToken, currentUser });
 
     return '성공';
   }

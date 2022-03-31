@@ -42,12 +42,15 @@ export class StackResolver {
   async createStack(
     @Args('title') title: string,
     @Args('contents') contents: string,
+    @Args({ name: 'stacktag', type: () => [String] }) stacktag: string[],
+
     @CurrentUser() currentUser: ICurrentUser,
   ) {
     return this.stackService.create({
       title,
       contents,
       currentUser,
+      stacktag,
     });
   }
 

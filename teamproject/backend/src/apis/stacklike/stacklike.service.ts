@@ -136,4 +136,93 @@ export class StackLikeService {
       await queryRunner.release();
     }
   }
+
+  async dislike({ stackid, currentUser }) {
+    const queryRunner = await this.connection.createQueryRunner();
+    const queryBuiler = await this.connection.createQueryBuilder();
+    await queryRunner.connect();
+    await queryRunner.startTransaction('SERIALIZABLE');
+    try {
+      const stack = await queryRunner.manager.findOne(
+        Stack,
+        { id: stackid },
+        { lock: { mode: 'pessimistic_write' } },
+      );
+
+      const user = await queryRunner.manager.findOne(User, {
+        id: currentUser.id,
+      });
+
+      const stacklike = await queryRunner.manager.findOne(StackLike, {
+        user: currentUser.id,
+        stack: stackid,
+      });
+
+      if (!stacklike) {
+        const createlike = await this.stacklikerepository.create({
+          islike: true,
+          user: user,
+          stack: stack,
+        });
+
+        const dislike = stack.dislike + 1;
+
+        const updatestack = await this.stackrepository.create({
+          ...stack,
+          dislike,
+        });
+
+        await queryRunner.manager.save(updatestack);
+
+        const result = await queryRunner.manager.save(createlike);
+
+        await queryRunner.commitTransaction();
+
+        return result;
+      }
+
+      if (!stacklike.islike) {
+        const createlike = await this.stacklikerepository.create({
+          ...stacklike,
+          islike: true,
+        });
+
+        const dislike = stack.dislike + 1;
+
+        const updateblog = await this.stackrepository.create({
+          ...stack,
+          dislike,
+        });
+
+        await queryRunner.manager.save(updateblog);
+
+        const result = await queryRunner.manager.save(createlike);
+        await queryRunner.commitTransaction();
+        return result;
+      }
+
+      const createlike = await this.stacklikerepository.create({
+        ...stacklike,
+        islike: false,
+      });
+      const dislike = stack.dislike - 1;
+
+      const updateblog = await this.stackrepository.create({
+        ...stack,
+        dislike,
+      });
+
+      await queryRunner.manager.save(updateblog);
+
+      const result = await queryRunner.manager.save(createlike);
+
+      await queryRunner.commitTransaction();
+
+      return result;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+  }
 }

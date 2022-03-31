@@ -10,18 +10,24 @@ import { CurrentUser, ICurrentUser } from 'src/common/auth/gql-user.param';
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
-  @Query(() => User)
-  findAllUser() {
+  @Query(() => [User])
+  fetchAllUser() {
     return this.userService.findAll();
   }
 
   @Query(() => [User])
-  findUserOrderbylike() {
-    return this.userService.findUserOrderbylike();
+  fetchUserOrderbylike() {
+    return this.userService.findUserOrderbyscore();
+  }
+
+  @UseGuards(GqlAuthAccessGuard)
+  @Query(() => User)
+  fetchmyuser(@CurrentUser() currentUser: ICurrentUser) {
+    return this.userService.fetchmyuser({ currentUser });
   }
 
   @Query(() => [User])
-  findUsersearch(@Args('search') search: string) {
+  fetchUsersearch(@Args('search') search: string) {
     return this.userService.findusersearch({ search });
   }
 
@@ -85,5 +91,41 @@ export class UserResolver {
     @Args('phonenumber') phonenumber: string,
   ) {
     return await this.userService.checktoken({ phonenumber, token });
+  }
+
+  @UseGuards(GqlAuthAccessGuard)
+  @Mutation(() => User)
+  async plususerscore(
+    @Args('score') score: number,
+    @CurrentUser() currentUser: ICurrentUser,
+  ) {
+    return this.userService.plususerscore({ score, currentUser });
+  }
+
+  @UseGuards(GqlAuthAccessGuard)
+  @Mutation(() => User)
+  async minususerscore(
+    @Args('score') score: number,
+    @CurrentUser() currentUser: ICurrentUser,
+  ) {
+    return this.userService.plususerscore({ score, currentUser });
+  }
+
+  @Query(() => [User])
+  async fetchuserbypage(
+    @Args({ name: 'page', nullable: true }) page?: number,
+    @Args({ name: 'perpage', nullable: true }) perpage?: number,
+  ) {
+    return this.userService.fetchuserbypage({ page, perpage });
+  }
+
+  @Query(() => Boolean)
+  async fetchisnicknameuser(@Args('nickname') nickname: string) {
+    return this.userService.fetchisnicknameuser({ nickname });
+  }
+
+  @Mutation(() => Boolean)
+  async usernulliddelete() {
+    return this.userService.usernulliddelete();
   }
 }

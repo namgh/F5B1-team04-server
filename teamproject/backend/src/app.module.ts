@@ -28,6 +28,7 @@ import { AnswercommentModule } from './apis/answercomment/answercomment.module';
 import { AnswerlikeModule } from './apis/answerlike/answerlike.module';
 import { OrderModule } from './apis/order/order.module';
 import { DepositModule } from './apis/deposit/deposit.module';
+import { StackTagModule } from './apis/stacktag/stacktag.module';
 
 @Module({
   imports: [
@@ -53,24 +54,29 @@ import { DepositModule } from './apis/deposit/deposit.module';
     AnswerlikeModule,
     OrderModule,
     DepositModule,
+    StackTagModule,
     GraphQLModule.forRoot({
       autoSchemaFile: 'src/common/graphql/schema.gql',
       context: ({ req, res }) => ({ req, res }),
+      cors: {
+        origin: true,
+        Credential: true,
+      },
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'my_database',
       port: 3306,
       username: 'root',
-      password: 'root',
-      database: 'cu2project',
-      // password: '1q2w3e4r',
-      // database: 'teamproject',
+      // password: 'root',
+      // database: 'cu2project',
+      password: '1q2w3e4r',
+      database: 'teamproject',
       entities: [__dirname + '/apis/**/*.entity.*'],
       synchronize: true,
       logging: true,
     }),
-    // ConfigModule.forRoot({ isGlobal: true }), //
+    ConfigModule.forRoot({ isGlobal: true }), //
     CacheModule.register<RedisClientOptions>({
       store: redisStore,
       url: 'redis://my_redis:6379',

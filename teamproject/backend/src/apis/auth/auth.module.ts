@@ -5,7 +5,7 @@ import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../user/entities/user.entity';
-import { jwtRefreshStrategy } from 'src/common/auth/jwt-refresh.strategy';
+import { JwtRefreshStrategy } from 'src/common/auth/jwt-refresh.strategy';
 import { AuthController } from './auth.controller';
 import { jwtGoogleStrategy } from 'src/common/auth/jwt-social-google.strategy';
 import { jwtNaverStrategy } from 'src/common/auth/jwt-social-naver.strategy';
@@ -22,8 +22,7 @@ import { MainStack } from '../mainstack/entities/mainstack.entity';
     AuthResolver, //
     AuthService,
     UserService,
-    AuthModule,
-    jwtRefreshStrategy,
+    JwtRefreshStrategy,
     jwtGoogleStrategy,
     jwtNaverStrategy,
     jwtKakaoStrategy,

@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
-import { getRepository, Repository } from 'typeorm';
+import { Connection, getRepository, Repository } from 'typeorm';
 import { MainStack } from '../mainstack/entities/mainstack.entity';
 import { User } from './entities/user.entity';
 import { Cache } from 'cache-manager';
@@ -21,16 +21,21 @@ export class UserService {
 
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
+
+    private readonly connection: Connection,
   ) {}
 
   async findAll() {
-    return await this.userRepository.find({});
-  }
-
-  async findUserOrderbylike() {
     return await getRepository(User)
       .createQueryBuilder('user')
-      .orderBy('user.like')
+      .orderBy('user.createAt', 'DESC')
+      .getMany();
+  }
+
+  async findUserOrderbyscore() {
+    return await getRepository(User)
+      .createQueryBuilder('user')
+      .orderBy('user.score', 'DESC')
       .getMany();
   }
 
@@ -60,6 +65,12 @@ export class UserService {
         return key;
       }
     }
+  }
+
+  async fetchmyuser({ currentUser }) {
+    return await this.userRepository.findOne({
+      id: currentUser.id,
+    });
   }
 
   async create({ email, hashedPassword, phonenumber, name, nickname }) {
@@ -168,6 +179,7 @@ export class UserService {
     await this.cacheManager.set(phonenumber, token, {
       ttl: 180,
     });
+    return `${phonenumber} 으로 ${token}을 전송했습니다`;
   }
 
   async checktoken({ phonenumber, token }) {
@@ -179,5 +191,86 @@ export class UserService {
     }
 
     return false;
+  }
+
+  async plususerscore({ score, currentUser }) {
+    const queryRunner = await this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction('SERIALIZABLE');
+
+    try {
+      const user = await queryRunner.manager.findOne(
+        User,
+        { id: currentUser.id },
+        { lock: { mode: 'pessimistic_write' } },
+      );
+
+      const result = await queryRunner.manager.save(User, {
+        ...user,
+        score: user.score + score,
+      });
+
+      await queryRunner.commitTransaction();
+
+      return result;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async minususerscore({ score, currentUser }) {
+    const queryRunner = await this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction('SERIALIZABLE');
+
+    try {
+      const user = await queryRunner.manager.findOne(
+        User,
+        { id: currentUser.id },
+        { lock: { mode: 'pessimistic_write' } },
+      );
+
+      const result = await queryRunner.manager.save(User, {
+        ...user,
+        score: user.score - score,
+      });
+
+      await queryRunner.commitTransaction();
+
+      return result;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async fetchuserbypage({ page, perpage }) {
+    if (!page) page = 0;
+    if (!perpage) perpage = 10;
+
+    return await this.userRepository.find({
+      order: { score: 'DESC' },
+      take: perpage,
+      skip: page,
+    });
+  }
+
+  async fetchisnicknameuser({ nickname }) {
+    const isnickname = await this.userRepository.find({
+      where: {
+        nickname: nickname,
+      },
+    });
+
+    if (isnickname) return true;
+    return false;
+  }
+
+  async usernulliddelete() {
+    const result = await this.userRepository.softDelete({ id: null });
+    return result.affected ? true : false;
   }
 }

@@ -12,16 +12,25 @@ export class StackLikeResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [Stack])
-  async fetchStacklike(@CurrentUser() currentUser: ICurrentUser) {
+  async fetchStackmylike(@CurrentUser() currentUser: ICurrentUser) {
     return this.stacklikeservice.findstacklike({ currentUser });
   }
 
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => StackLike)
-  async Stacktoggle(
+  async Stackliketoggle(
     @Args('stackid') stackid: string,
     @CurrentUser() currentUser: ICurrentUser,
   ) {
     return this.stacklikeservice.like({ stackid, currentUser });
+  }
+
+  @UseGuards(GqlAuthAccessGuard)
+  @Mutation(() => StackLike)
+  async Stackdisliketoggle(
+    @Args('stackid') stackid: string,
+    @CurrentUser() currentUser: ICurrentUser,
+  ) {
+    return this.stacklikeservice.dislike({ stackid, currentUser });
   }
 }

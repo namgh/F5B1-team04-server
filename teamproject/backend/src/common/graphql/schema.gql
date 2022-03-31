@@ -228,6 +228,8 @@ type AnswerLike {
 type Query {
   fetchCoachUserList: [User!]!
   fetchCoachUser(userId: String!): User!
+  fetchMyCoachInfo: User!
+  fetchMyPointHistory: [PointTransaction!]!
   findAllUser: User!
   findUserOrderbylike: [User!]!
   findUsersearch(search: String!): [User!]!
@@ -248,14 +250,17 @@ type Query {
   fetchStacklike: [Stack!]!
   fetchBlogcommentlike: [BlogComment!]!
   fetchColumnCommentList(columnId: String!): [ColumnComment!]!
+  fetchMyColumnComment: [ColumnComment!]!
   fetchColumnList: [CoachColumn!]!
   fetchRecommendColumnList: [CoachColumn!]!
   fetchRecommendColumnListArgs(itemcount: Float!, pageNum: Float!): [CoachColumn!]!
+  fetchSearchedColumnList(search: String!): [CoachColumn!]!
   fetchHighHitColumnList: [CoachColumn!]!
   fetchHighHitColumnListArgs(itemcount: Float!, pageNum: Float!): [CoachColumn!]!
   fetchDetailColumn(columnId: String!): CoachColumn!
   fetchMyColumn: [CoachColumn!]!
-  fetchCoachQuestionList(coachId: String!): [Question!]!
+  fetchColumnListWhatILike: [ColumnLike!]!
+  fetchCoachQuestionList: [Question!]!
   fetchMyQuestionList: [Question!]!
   fetchQuestion(questionId: String!): Question!
   goodEvalAnswerList(itemCount: Float!): [Answer!]!

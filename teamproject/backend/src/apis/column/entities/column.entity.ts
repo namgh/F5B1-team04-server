@@ -2,6 +2,7 @@ import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { ColumnLike } from 'src/apis/columnlike/entities/columnlike.entity';
 import { User } from 'src/apis/user/entities/user.entity';
 import {
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
@@ -38,7 +39,7 @@ export class CoachColumn {
   @CreateDateColumn()
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
   @DeleteDateColumn()

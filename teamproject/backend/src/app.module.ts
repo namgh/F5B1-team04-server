@@ -70,7 +70,7 @@ import { DepositModule } from './apis/deposit/deposit.module';
       synchronize: true,
       logging: true,
     }),
-    ConfigModule.forRoot({ isGlobal: true }), //
+    // ConfigModule.forRoot({ isGlobal: true }), //
     CacheModule.register<RedisClientOptions>({
       store: redisStore,
       url: 'redis://my_redis:6379',

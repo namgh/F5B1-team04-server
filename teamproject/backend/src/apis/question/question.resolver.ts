@@ -1,7 +1,10 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { GqlAuthAccessGuard } from 'src/common/auth/gql-auth.guard';
+import { RolesGuard } from 'src/common/auth/gql-role.guard';
+import { Roles } from 'src/common/auth/gql-role.param';
 import { CurrentUser, ICurrentUser } from 'src/common/auth/gql-user.param';
+import { Role } from '../user/entities/user.entity';
 import { CreateQuestionInput } from './dto/createquestion.input';
 import { UpdateQuestionInput } from './dto/updatequestion.input';
 import { Question } from './entities/question.entity';
@@ -11,9 +14,11 @@ import { QuestionService } from './question.service';
 export class QuestionResolver {
   constructor(private readonly questionService: QuestionService) {}
 
+  @Roles(Role.COACH)
+  @UseGuards(GqlAuthAccessGuard, RolesGuard)
   @Query(() => [Question])
-  async fetchCoachQuestionList(@Args('coachId') coachId: string) {
-    return await this.questionService.findAllCoachQuestion({ coachId });
+  async fetchCoachQuestionList(@CurrentUser() currentUser: ICurrentUser) {
+    return await this.questionService.findAllCoachQuestion({ currentUser });
   }
 
   // @Query(() => Question)
@@ -57,7 +62,8 @@ export class QuestionResolver {
     return await this.questionService.findQuestion({ questionId });
   }
 
-  @UseGuards(GqlAuthAccessGuard)
+  @Roles(Role.USER)
+  @UseGuards(GqlAuthAccessGuard, RolesGuard)
   @Mutation(() => Question)
   async createCoachQuestion(
     @CurrentUser() currentUser: ICurrentUser,
@@ -70,6 +76,9 @@ export class QuestionResolver {
       createQuestionInput,
     });
   }
+
+  // @Query(() => [Question])
+  // async fetchSearchArgsQuestion(@Args('search') search: string) {}
 
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Question)

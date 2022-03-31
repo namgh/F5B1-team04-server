@@ -26,6 +26,14 @@ export class PointTransactionService {
     private readonly connection: Connection,
   ) {}
 
+  async findMyPointHistory({ currentUser }) {
+    return await this.pointTransactionRepository.find({
+      order: { createdAt: 'DESC' },
+      where: { user: { id: currentUser.id } },
+      relations: ['user'],
+    });
+  }
+
   async create({ impUid, amount, currentUser, access_token }) {
     const queryRunner = this.connection.createQueryRunner();
     await queryRunner.connect();

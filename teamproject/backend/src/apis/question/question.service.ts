@@ -10,6 +10,11 @@ import { Deposit, DEPOSIT_STATUS } from '../deposit/entities/deposit.entity';
 import { User } from '../user/entities/user.entity';
 import { Question } from './entities/question.entity';
 
+import { Cache } from 'cache-manager';
+import { CACHE_MANAGER, Inject, UseGuards } from '@nestjs/common';
+
+import { ElasticsearchService } from '@nestjs/elasticsearch';
+
 @Injectable()
 export class QuestionService {
   constructor(
@@ -23,15 +28,20 @@ export class QuestionService {
     private readonly coachReposotory: Repository<CoachProfile>,
 
     private readonly connection: Connection,
+
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
+
+    private readonly elasticsearchService: ElasticsearchService,
   ) {}
 
-  async findAllCoachQuestion({ coachId }) {
+  async findAllCoachQuestion({ currentUser }) {
     return await this.questionRepository.find({
-      where: { toCoach: { id: coachId } },
+      where: { toCoach: { id: currentUser.id } },
       relations: ['fromUser', 'toCoach', 'toCoach.coachProfile'],
     });
   }
-  async findAllHasNoAnsweredQuestion({ coachId }) {}
+  // async findAllHasNoAnsweredQuestion({ coachId }) {}
 
   async findAllMyQuestion({ currentUser }) {
     return await this.questionRepository.find({
@@ -39,7 +49,7 @@ export class QuestionService {
       relations: ['fromUser', 'toCoach', 'toCoach.coachProfile'],
     });
   }
-  async findMyHasNoAnswerQuestion({ currentUser }) {}
+  // async findMyHasNoAnswerQuestion({ currentUser }) {}
 
   async findQuestion({ questionId }) {
     // // method-1 : @Query(() => Question)
@@ -56,6 +66,37 @@ export class QuestionService {
       .where('question.id=:id', { id: questionId })
       .getOne();
   }
+
+  //elastic
+  //
+  //
+  //
+
+  async findAllSearchArgsQuestion({ search }) {
+    //redis ?.get
+    const redisRes = await this.cacheManager.get(`question:${search}`);
+    if (redisRes) return redisRes;
+    //elastic .?get
+    const elsRes = await this.elasticsearchService.search({
+      index: 'question',
+      query: { match: { title: search } },
+    });
+    console.log('💛elsRes', elsRes);
+
+    const questions = elsRes.hits.hits.map((q: any) => ({
+      title: q._source.title,
+      contents: q._source.contents,
+    }));
+    //redis .set
+    await this.cacheManager.set(`question:${search}`, questions, { ttl: 0 });
+    //return
+    return questions;
+  }
+
+  //
+  //
+  //
+  //
 
   async create({ coachId, currentUser, createQuestionInput }) {
     const queryRunner = await this.connection.createQueryRunner();

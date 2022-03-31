@@ -23,9 +23,17 @@ export class CoachProfileResolver {
     return await this.coachProfileService.findOne({ userId });
   }
 
+  @Roles(Role.COACH)
+  @UseGuards(GqlAuthAccessGuard, RolesGuard)
+  @Query(() => User)
+  async fetchMyCoachInfo(@CurrentUser() currentUser: ICurrentUser) {
+    return this.coachProfileService.findMyCoachInfo({ currentUser });
+  }
+
   /**
    * 회사메일 검증 로직 추가
    */
+
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => User)
   async createCoachProfile(

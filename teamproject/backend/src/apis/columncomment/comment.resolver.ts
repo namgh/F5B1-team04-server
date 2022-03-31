@@ -1,7 +1,10 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { GqlAuthAccessGuard } from 'src/common/auth/gql-auth.guard';
+import { RolesGuard } from 'src/common/auth/gql-role.guard';
+import { Roles } from 'src/common/auth/gql-role.param';
 import { CurrentUser, ICurrentUser } from 'src/common/auth/gql-user.param';
+import { Role } from '../user/entities/user.entity';
 import { ColumnCommentService } from './comment.service';
 import { ColumnComment } from './entities/columncomment.entity';
 
@@ -16,9 +19,15 @@ export class ColumnCommentResolver {
     return await this.columnCommentService.findAll({ columnId });
   }
 
-  async fetchMyColumnComment() {} //columnid
+  @Roles(Role.USER)
+  @UseGuards(GqlAuthAccessGuard, RolesGuard)
+  @Query(() => [ColumnComment])
+  async fetchMyColumnComment(@CurrentUser() currentUser: ICurrentUser) {
+    return this.columnCommentService.findMyColumnComment({ currentUser });
+  } //columnid
 
-  @UseGuards(GqlAuthAccessGuard)
+  @Roles(Role.USER)
+  @UseGuards(GqlAuthAccessGuard, RolesGuard)
   @Mutation(() => ColumnComment)
   async createColumnComment(
     @Args('columnId') columnId: string,
@@ -32,7 +41,8 @@ export class ColumnCommentResolver {
     });
   }
 
-  @UseGuards(GqlAuthAccessGuard)
+  @Roles(Role.USER)
+  @UseGuards(GqlAuthAccessGuard, RolesGuard)
   @Mutation(() => ColumnComment)
   async updateColumnComment(
     @Args('commentId') commentId: string,
@@ -44,7 +54,8 @@ export class ColumnCommentResolver {
     });
   }
 
-  @UseGuards(GqlAuthAccessGuard)
+  @Roles(Role.USER)
+  @UseGuards(GqlAuthAccessGuard, RolesGuard)
   @Mutation(() => Boolean)
   async deleteColumnComment(
     @Args('columnId') columnId: string,

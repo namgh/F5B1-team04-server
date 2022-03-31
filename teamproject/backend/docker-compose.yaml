@@ -7,9 +7,11 @@ services:
       dockerfile: Dockerfile
     ports:
       - 3000:3000
+    env_file:
+      - ./.env
     volumes:
       - ./src:/myfolder/src
-      - .env:/myfolder/.env
+      # - .env:/myfolder/.env
 
   my_database:
     platform: linux/x86_64
@@ -36,7 +38,7 @@ services:
   # elasticsearch:
   #   image: elasticsearch:7.17.0
   #   environment:
-  #     discovery.type: single-node 
+  #     discovery.type: single-node
   #   ports:
   #     - 9200:9200
 

@@ -135,29 +135,45 @@ export class ColumnlikeService {
     await queryRunner.startTransaction();
 
     try {
-      const flag = await queryRunner.manager.findOne(ColumnLike, {
-        user: currentUser.id,
-        coachColumn: columnId,
-      });
-      const user_ = await queryRunner.manager.findOne(User, {
-        id: currentUser.id,
-      });
-      const cloumn_ = await queryRunner.manager.findOne(CoachColumn, {
-        id: columnId,
-      });
-
+      const flag = await queryRunner.manager.findOne(
+        ColumnLike,
+        {
+          user: currentUser.id,
+          coachColumn: columnId,
+        },
+        {
+          relations: ['user', 'coachColumn', 'coachColumn.user'],
+        },
+      );
+      console.log('💛', flag);
+      const user_ = await queryRunner.manager.findOne(
+        User,
+        { id: currentUser.id },
+        { relations: ['coachProfile'] },
+      );
+      console.log('💛u', user_);
+      const cloumn_ = await queryRunner.manager.findOne(
+        CoachColumn,
+        { id: columnId },
+        { relations: ['user'] },
+      );
+      console.log('💛c', cloumn_);
       if (flag === undefined) {
         //
-        await queryRunner.manager.save(CoachColumn, {
+        console.log('💛', '1');
+        console.log('');
+        const x = await queryRunner.manager.save(CoachColumn, {
           ...cloumn_,
           dislikecount: ++cloumn_.dislikecount,
         });
+        console.log(x);
         const dislike_ = this.likeRepository.create({
           status: C_LIKE_STATUS_ENUM.COLUMN,
           user: user_,
           coachColumn: cloumn_,
           idDislike: true,
         });
+        console.log(dislike_);
         const dislikeRes = await queryRunner.manager.save(dislike_);
         await queryRunner.commitTransaction();
         return dislikeRes;
@@ -165,11 +181,12 @@ export class ColumnlikeService {
       } else if (!flag.idDislike) {
         //
         if (flag.isLike) {
-          await queryRunner.manager.save(CoachColumn, {
+          const x = await queryRunner.manager.save(CoachColumn, {
             ...cloumn_,
             likecount: --cloumn_.likecount,
             dislikecount: ++cloumn_.dislikecount,
           });
+          console.log('💛', x);
           const dislike_ = this.likeRepository.create({
             ...flag,
             user: user_,

@@ -21,24 +21,44 @@ export class ColumnCommentService {
   async findAll({ columnId }) {
     return await this.columnCommentRepository.find({
       where: { coachColumn: { id: columnId } },
-      relations: ['coachColumn', 'user'],
+      relations: ['coachColumn', 'user', 'coachColumn.user'],
+    });
+  }
+
+  async findMyColumnComment({ currentUser }) {
+    return await this.columnCommentRepository.find({
+      where: { user: { id: currentUser.id } },
+      relations: [
+        'user',
+        'coachColumn',
+        'coachColumn.user',
+        'coachColumn.user.coachProfile',
+      ],
     });
   }
 
   async create({ columnId, currentUser, contents }) {
-    const user = await this.userRepository.findOne({ id: currentUser.id });
-    const column = await this.columnRespository.findOne({ id: columnId });
-    return await this.columnCommentRepository.save({
+    const user = await this.userRepository.findOne({
+      where: { id: currentUser.id },
+      // relations: ['coachProfile'],
+    });
+    const column = await this.columnRespository.findOne({
+      where: { id: columnId },
+      relations: ['user', 'user.coachProfile'],
+    });
+    const x = await this.columnCommentRepository.save({
       contents,
       user,
       coachColumn: column,
     });
+    console.log(x);
+    return x;
   }
 
   async update({ commentId, contents }) {
     const columnComment = await this.columnCommentRepository.findOne({
       where: { id: commentId },
-      relations: ['coachColumn', 'user'],
+      relations: ['coachColumn', 'coachColumn.user', 'user'],
     });
     return await this.columnCommentRepository.save({
       ...columnComment,

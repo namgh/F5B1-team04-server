@@ -23,6 +23,14 @@ export class CoachProfileService {
 
   async findAll() {
     return await this.userRepository.find({
+      where: { role: Role.COACH },
+      relations: ['coachProfile'],
+    });
+  }
+
+  async findMyCoachInfo({ currentUser }) {
+    return await this.userRepository.findOne({
+      where: { id: currentUser.id },
       relations: ['coachProfile'],
     });
   }
@@ -45,6 +53,7 @@ export class CoachProfileService {
       role: Role.COACH,
     });
     console.log(x);
+    return x;
   }
 
   async update({ currentUser, updateCoachInput }: IUpdateCoach) {

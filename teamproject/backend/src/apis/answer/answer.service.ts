@@ -43,16 +43,22 @@ export class AnswerService {
   async findMyHasAnswerCoaching({ currentUser }) {
     const question = await this.questionRepository.find({
       where: { fromUser: { id: currentUser.id } },
+      relations: ['fromUser', 'toCoach'],
     });
+
+    console.log('💛question', question);
+
     const QIds = question.map((e) => e.id);
+    console.log('💛QID', QIds);
     const answered = await getRepository(Answer)
       .createQueryBuilder('answer')
       .leftJoinAndSelect('answer.question', 'question')
       .leftJoinAndSelect('question.fromUser', 'user')
       .leftJoinAndSelect('question.toCoach', 'coach')
+      .leftJoinAndSelect('coach.coachProfile', 'profile')
       .where('question.id IN (:id)', { id: QIds })
       .getMany();
-    console.log(answered);
+    console.log('💛answered', answered);
     return answered;
   }
 
@@ -134,7 +140,7 @@ export class AnswerService {
   }
 
   async update({ answerId, updateAnswerInput }) {
-    const prevAnswer = this.answerRepository.findOne({
+    const prevAnswer = await this.answerRepository.findOne({
       where: { id: answerId },
       relations: ['question', 'question.toCoach', 'question.fromUser'],
     });

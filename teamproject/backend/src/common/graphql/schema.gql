@@ -238,11 +238,14 @@ type AnswerLike {
 type Query {
   fetchCoachUserList: [User!]!
   fetchCoachUser(userId: String!): User!
-  fetchAllUser: User!
+  fetchAllUser: [User!]!
   fetchUserOrderbylike: [User!]!
+  fetchmyuser: User!
   fetchUsersearch(search: String!): [User!]!
   fetchmainstack: String!
-  fetchBlog: [Blog!]!
+  fetchuserbypage(perpage: Float, page: Float): [User!]!
+  fetchisnicknameuser(nickname: String!): Boolean!
+  fetchBlogAll: [Blog!]!
   fetchmyBlog: [Blog!]!
   fetchotherBlogorderbylikeAll: [Blog!]!
   fetchotherBlogorderbycreateAt: [Blog!]!
@@ -287,15 +290,18 @@ type Mutation {
   checktoken(phonenumber: String!, token: String!): Boolean!
   plususerscore(score: Float!): User!
   minususerscore(score: Float!): User!
+  usernulliddelete: Boolean!
   login(password: String!, email: String!): String!
   resotreAccessToken: String!
   logout: String!
   createBlog(blogcategorytag: [String!]!, blogtag: [String!]!, contents: String!, title: String!): Blog!
   updateBlog(blogid: String!, contents: String!, title: String!): Blog!
+  deletemyBlog(blogid: String!): String!
   deleteBlog(blogid: String!): String!
-  uploadFile(files: [Upload!]!): [String!]!
+  uploadblogFile(files: [Upload!]!): [String!]!
   createBlogComment(contents: String!, blogid: String!): BlogComment!
   updateBlogComment(blogcommentid: String!, contents: String!, blogid: String!): BlogComment!
+  deletemyBlogComment(blogcommentid: String!): Boolean!
   deleteBlogComment(blogcommentid: String!): Boolean!
   likeBlogtoggle(blogid: String!): BlogLike!
   dislikeBlogtoggle(blogid: String!): BlogLike!

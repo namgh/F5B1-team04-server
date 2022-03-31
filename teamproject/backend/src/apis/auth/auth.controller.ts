@@ -32,13 +32,10 @@ export class AuthController {
     @Req() req: Request & IOAuthUser, //
     @Res() res: Response,
   ) {
-    
     const user = this.loginfunction(res, req);
     this.authService.setRefreshToken({ user, res });
 
-    res.redirect(
-      'http://localhost:5500/homework/main-project/frontend/login/index.html',
-    );
+    res.redirect('http://localhost:3000/main');
   }
 
   @Get('/login/kakao')
@@ -47,11 +44,9 @@ export class AuthController {
     @Req() req: Request & IOAuthUser, //
     @Res() res: Response,
   ) {
-     const user = this.loginfunction(res, req);
+    const user = this.loginfunction(res, req);
     this.authService.setRefreshToken({ user, res });
 
-    res.redirect(
-      'http://localhost:5500/homework/main-project/frontend/login/index.html',
-    );
+    res.redirect('http://localhost:3000/main');
   }
 }

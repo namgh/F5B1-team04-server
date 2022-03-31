@@ -7,13 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(graphqlUploadExpress());
   app.enableCors({
-    origin: [
-      'http://localhost:3000',
-      'http://cucutoo.shop',
-      'https://cucutoo.shop',
-      'https://cucutoo.com',
-      'http://cucutoo.com',
-    ],
+    origin: true,
     credentials: true,
   });
   app.useGlobalFilters(new HttpExceptionFilter());

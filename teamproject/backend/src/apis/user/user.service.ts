@@ -26,13 +26,16 @@ export class UserService {
   ) {}
 
   async findAll() {
-    return await this.userRepository.find({});
-  }
-
-  async findUserOrderbylike() {
     return await getRepository(User)
       .createQueryBuilder('user')
-      .orderBy('user.like')
+      .orderBy('user.createAt', 'DESC')
+      .getMany();
+  }
+
+  async findUserOrderbyscore() {
+    return await getRepository(User)
+      .createQueryBuilder('user')
+      .orderBy('user.score', 'DESC')
       .getMany();
   }
 
@@ -62,6 +65,12 @@ export class UserService {
         return key;
       }
     }
+  }
+
+  async fetchmyuser({ currentUser }) {
+    return await this.userRepository.findOne({
+      id: currentUser.id,
+    });
   }
 
   async create({ email, hashedPassword, phonenumber, name, nickname }) {
@@ -236,5 +245,39 @@ export class UserService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async fetchuserbypage({ page, perpage }) {
+    if (!page) page = 0;
+    if (!perpage) perpage = 10;
+
+    return await getRepository(User)
+      .createQueryBuilder('user')
+      .orderBy('user.score', 'DESC')
+      .skip(page * perpage)
+      .take(perpage)
+      .getMany();
+
+    // return await this.userRepository.find({
+    //   order: { score: 'DESC' },
+    //   take: perpage,
+    //   skip: page,
+    // });
+  }
+
+  async fetchisnicknameuser({ nickname }) {
+    const isnickname = await this.userRepository.find({
+      where: {
+        nickname: nickname,
+      },
+    });
+
+    if (isnickname) return true;
+    return false;
+  }
+
+  async usernulliddelete() {
+    const result = await this.userRepository.softDelete({ id: null });
+    return result.affected ? true : false;
   }
 }

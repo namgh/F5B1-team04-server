@@ -10,14 +10,20 @@ import { CurrentUser, ICurrentUser } from 'src/common/auth/gql-user.param';
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
-  @Query(() => User)
+  @Query(() => [User])
   fetchAllUser() {
     return this.userService.findAll();
   }
 
   @Query(() => [User])
   fetchUserOrderbylike() {
-    return this.userService.findUserOrderbylike();
+    return this.userService.findUserOrderbyscore();
+  }
+
+  @UseGuards(GqlAuthAccessGuard)
+  @Query(() => User)
+  fetchmyuser(@CurrentUser() currentUser: ICurrentUser) {
+    return this.userService.fetchmyuser({ currentUser });
   }
 
   @Query(() => [User])
@@ -103,5 +109,23 @@ export class UserResolver {
     @CurrentUser() currentUser: ICurrentUser,
   ) {
     return this.userService.plususerscore({ score, currentUser });
+  }
+
+  @Query(() => [User])
+  async fetchuserbypage(
+    @Args({ name: 'page', nullable: true }) page?: number,
+    @Args({ name: 'perpage', nullable: true }) perpage?: number,
+  ) {
+    return this.userService.fetchuserbypage({ page, perpage });
+  }
+
+  @Query(() => Boolean)
+  async fetchisnicknameuser(@Args('nickname') nickname: string) {
+    return this.userService.fetchisnicknameuser({ nickname });
+  }
+
+  @Mutation(() => Boolean)
+  async usernulliddelete() {
+    return this.userService.usernulliddelete();
   }
 }

@@ -23,6 +23,7 @@ export class BlogCommentService {
       .createQueryBuilder('blogcomment')
       .leftJoinAndSelect('blogcomment.blog', 'blog')
       .where('blog.id = :id', { id: blogid })
+      .orderBy('like', 'DESC')
       .getMany();
   }
 

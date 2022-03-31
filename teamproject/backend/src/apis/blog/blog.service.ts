@@ -134,7 +134,7 @@ export class BlogService {
     });
   }
 
-  async delete({ currentUser, blogid }) {
+  async mydelete({ currentUser, blogid }) {
     const blog = await getRepository(Blog)
       .createQueryBuilder('blog')
       .leftJoinAndSelect('blog.user', 'user')
@@ -142,7 +142,6 @@ export class BlogService {
       .andWhere('user.id = :id', { id: currentUser.id })
       .getMany();
 
-    console.log('blog===========', blog);
     if (blog) {
       const result = await this.blogrepository.softDelete({
         id: blogid,
@@ -150,6 +149,13 @@ export class BlogService {
       return result.affected ? true : false;
     }
     return null;
+  }
+
+  async delete({ blogid }) {
+    const result = await this.blogrepository.softDelete({
+      id: blogid,
+    });
+    return result.affected ? true : false;
   }
 
   async upload({ files }: IFile) {
@@ -173,7 +179,6 @@ export class BlogService {
         });
       }),
     );
-    console.log(results);
     return results;
   }
 }

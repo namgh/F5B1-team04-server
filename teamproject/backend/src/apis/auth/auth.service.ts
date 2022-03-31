@@ -26,17 +26,10 @@ export class AuthService {
       { email: user.email, sub: user.id, role: user.role },
       { secret: 'myRefreshkey', expiresIn: '2w' },
     );
-    console.log(refreshToken);
-    // res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; path=/;`);
-    //res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; path=/;`);
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
-    res.setHeader('Access-Control-Allow-Origin', 'http://cucutoo.shop');
-    res.setHeader('Access-Control-Allow-Origin', 'https://cucutoo.shop');
-    res.setHeader('Access-Control-Allow-Origin', 'https://cucutoo.com');
-    res.setHeader('Access-Control-Allow-Origin', 'http://http://cucutoo.com');
     res.setHeader(
       'Set-Cookie',
-      `refreshToken${refreshToken}; path=/; domain = 34.64.206.255; SameSite = None; Secure; httpOnly;`,
+      `refreshToken${refreshToken}; path=/; domain =.namgh627.shop; SameSite = None; Secure=false; httpOnly;`,
     );
   }
 

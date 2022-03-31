@@ -1,10 +1,14 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { BlogTag } from 'src/apis/blogtag/entities/blogtag.entity';
+//import { CoachTag } from 'src/apis/coachtag/entities/coachtag.entity';
 import { User } from 'src/apis/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -65,8 +69,4 @@ export class CoachProfile {
 
   @OneToOne(() => User, (user) => user.coachProfile)
   user: User;
-
-  // @Column({ nullable: true })
-  // @Field(() => Boolean)
-  // isHiring: boolean
 }

@@ -53,6 +53,18 @@ export class BlogCommentResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => Boolean)
+  async deletemyBlogComment(
+    @Args('blogcommentid') blogcommentid: string,
+    @CurrentUser() currentUser: ICurrentUser,
+  ) {
+    return this.blogCommentService.delete({
+      blogcommentid,
+      currentUser,
+    });
+  }
+
+  @UseGuards(GqlAuthAccessGuard)
+  @Mutation(() => Boolean)
   async deleteBlogComment(
     @Args('blogcommentid') blogcommentid: string,
     @CurrentUser() currentUser: ICurrentUser,

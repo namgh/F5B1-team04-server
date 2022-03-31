@@ -1,6 +1,7 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { Blog } from 'src/apis/blog/entities/blog.entity';
 import { Stack } from 'src/apis/stack/entities/stack.entity';
+import { StackCommentLike } from 'src/apis/stackcommentlike/entities/stackcommentlike.entity';
 import { User } from 'src/apis/user/entities/user.entity';
 import {
   Column,
@@ -8,6 +9,7 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -39,4 +41,18 @@ export class StackComment {
 
   @DeleteDateColumn()
   deletdAt: Date;
+
+  @Column({ default: 0 })
+  @Field(() => Int)
+  like: number;
+
+  @Column({ default: 0 })
+  @Field(() => Int)
+  dislike: number;
+
+  @OneToMany(
+    (type) => StackCommentLike,
+    (stackcommentlike) => stackcommentlike.stackcomment,
+  )
+  stackcommentlike: StackCommentLike[];
 }

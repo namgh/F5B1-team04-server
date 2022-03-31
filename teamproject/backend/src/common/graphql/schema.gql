@@ -101,12 +101,20 @@ type StackLike {
   islike: Boolean!
 }
 
+type StackTag {
+  id: String!
+  tag: String!
+  stack: [Stack!]!
+}
+
 type Stack {
   id: String!
   title: String!
   contents: String!
   user: User!
   like: Int!
+  dislike: Int!
+  stacktag: [StackTag!]!
 }
 
 type User {
@@ -163,6 +171,8 @@ type StackComment {
   contents: String!
   user: User!
   stack: Stack!
+  like: Int!
+  dislike: Int!
 }
 
 type PointTransaction {
@@ -230,11 +240,14 @@ type Query {
   fetchCoachUser(userId: String!): User!
   fetchMyCoachInfo: User!
   fetchMyPointHistory: [PointTransaction!]!
-  findAllUser: User!
-  findUserOrderbylike: [User!]!
-  findUsersearch(search: String!): [User!]!
+  fetchAllUser: [User!]!
+  fetchUserOrderbylike: [User!]!
+  fetchmyuser: User!
+  fetchUsersearch(search: String!): [User!]!
   fetchmainstack: String!
-  fetchBlog: [Blog!]!
+  fetchuserbypage(perpage: Float, page: Float): [User!]!
+  fetchisnicknameuser(nickname: String!): Boolean!
+  fetchBlogAll: [Blog!]!
   fetchmyBlog: [Blog!]!
   fetchotherBlogorderbylikeAll: [Blog!]!
   fetchotherBlogorderbycreateAt: [Blog!]!
@@ -247,7 +260,7 @@ type Query {
   fetchmyStack: [Stack!]!
   fetchotherStackorderbylike: [Stack!]!
   fetchotherStackorderbycreateAt: [Stack!]!
-  fetchStacklike: [Stack!]!
+  fetchStackmylike: [Stack!]!
   fetchBlogcommentlike: [BlogComment!]!
   fetchColumnCommentList(columnId: String!): [ColumnComment!]!
   fetchMyColumnComment: [ColumnComment!]!
@@ -280,23 +293,29 @@ type Mutation {
   deleteUser: Boolean!
   sendTokenTOSMS(phonenumber: String!): String!
   checktoken(phonenumber: String!, token: String!): Boolean!
+  plususerscore(score: Float!): User!
+  minususerscore(score: Float!): User!
+  usernulliddelete: Boolean!
   login(password: String!, email: String!): String!
   resotreAccessToken: String!
   logout: String!
   createBlog(blogcategorytag: [String!]!, blogtag: [String!]!, contents: String!, title: String!): Blog!
   updateBlog(blogid: String!, contents: String!, title: String!): Blog!
+  deletemyBlog(blogid: String!): String!
   deleteBlog(blogid: String!): String!
-  uploadFile(files: [Upload!]!): [String!]!
+  uploadblogFile(files: [Upload!]!): [String!]!
   createBlogComment(contents: String!, blogid: String!): BlogComment!
   updateBlogComment(blogcommentid: String!, contents: String!, blogid: String!): BlogComment!
+  deletemyBlogComment(blogcommentid: String!): Boolean!
   deleteBlogComment(blogcommentid: String!): Boolean!
   likeBlogtoggle(blogid: String!): BlogLike!
   dislikeBlogtoggle(blogid: String!): BlogLike!
-  createStack(contents: String!, title: String!): Stack!
+  createStack(stacktag: [String!]!, contents: String!, title: String!): Stack!
   updateStack(blogid: String!, contents: String!, title: String!): Stack!
   deleteStack(blogid: String!): String!
   uploadStackFile(files: [Upload!]!): [String!]!
-  Stacktoggle(stackid: String!): StackLike!
+  Stackliketoggle(stackid: String!): StackLike!
+  Stackdisliketoggle(stackid: String!): StackLike!
   createStackComment(contents: String!, stackid: String!): StackComment!
   updateStackComment(stackcommentid: String!, contents: String!): StackComment!
   deleteStackComment(stackcommentid: String!): StackComment!
@@ -314,10 +333,10 @@ type Mutation {
   createBlogcategoryTag(blogcategorytag: String!): BlogCategoryTag!
   updateBlogcategorytag(updateblogtag: String!, blogcategorytag: String!): [BlogCategoryTag!]!
   deleteBlogcategoryTag(blogcategorytag: String!): BlogCategoryTag!
-  createBlogManyTag(blogtag: [String!]!): [BlogTag!]!
-  createBlogTag(blogtag: String!): BlogTag!
-  updateBlogtag(updateblogtag: String!, blogtag: String!): [BlogTag!]!
-  deleteBlogTag(blogtag: String!): BlogTag!
+  createBlogManyTag(stacktag: [String!]!): [StackTag!]!
+  createBlogTag(stacktag: String!): StackTag!
+  updateBlogtag(updateblogtag: String!, stacktag: String!): [StackTag!]!
+  deleteBlogTag(stacktag: String!): StackTag!
   createCoachQuestion(createQuestionInput: CreateQuestionInput!, coachId: String!): Question!
   updateCoachQuestion(updateQuestionInput: UpdateQuestionInput!, questionId: String!): Question!
   deleteCoachQuestion(questionId: String!): Boolean!

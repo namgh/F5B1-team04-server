@@ -34,7 +34,7 @@ export class User {
   @Field(() => String)
   id: string;
 
-  @Column({ nullable: true })
+  @Column()
   @Field(() => String)
   email: string;
 
@@ -49,7 +49,7 @@ export class User {
   @Field(() => String, { nullable: true })
   phonenumber?: string;
 
-  @Column({ nullable: true })
+  @Column()
   @Field(() => String)
   nickname: string;
 

@@ -61,6 +61,12 @@ type CoachProfile {
   answerInitAmount: Int
 }
 
+type CoachTag {
+  id: String!
+  tag: String!
+  user: [User!]!
+}
+
 type ColumnComment {
   id: String!
   contents: String!
@@ -131,6 +137,7 @@ type User {
   mainstack: MainStack!
   user: MainStack!
   role: Role!
+  coachtag: [CoachTag!]!
 }
 
 enum Role {
@@ -283,7 +290,7 @@ type Query {
 }
 
 type Mutation {
-  createCoachProfile(createProfileInput: CreateCoachProfileInput!): User!
+  createCoachProfile(createProfileInput: CreateCoachProfileInput!, stacktag: [String!]!): User!
   updateCoachProfile(UpdateCoachInput: UpdateCoachInput!): User!
   deleteCoachProfile: Boolean!
   createPointTransaction(amount: Float!, impUid: String!): PointTransaction!

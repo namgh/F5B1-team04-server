@@ -251,11 +251,12 @@ export class UserService {
     if (!page) page = 0;
     if (!perpage) perpage = 10;
 
-    return await this.userRepository.find({
-      order: { score: 'DESC' },
-      take: perpage,
-      skip: page,
-    });
+    return await getRepository(User)
+      .createQueryBuilder('user')
+      .orderBy('user.score', 'DESC')
+      .skip(page * perpage)
+      .take(perpage)
+      .getMany();
   }
 
   async fetchisnicknameuser({ nickname }) {

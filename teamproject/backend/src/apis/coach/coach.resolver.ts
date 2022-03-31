@@ -38,11 +38,13 @@ export class CoachProfileResolver {
   @Mutation(() => User)
   async createCoachProfile(
     @CurrentUser() currentUser: ICurrentUser,
+    @Args({ name: 'stacktag', type: () => [String] }) stacktag: string[],
     @Args('createProfileInput') createProfileInput: CreateCoachProfileInput,
   ) {
     return await this.coachProfileService.create({
       currentUser,
       createProfileInput,
+      stacktag,
     });
   }
 

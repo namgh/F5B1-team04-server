@@ -57,17 +57,19 @@ export class StackService {
       email: currentUser.email,
     });
 
-    const stacktagresult = stacktag.map(async (ele) => {
-      const isstacktag = await this.stacktagrepository.findOne({
-        tag: ele,
-      });
-      if (isstacktag) return isstacktag;
-      else {
-        return await this.stacktagrepository.save({
+    const stacktagresult = await Promise.all(
+      stacktag.map(async (ele) => {
+        const isstacktag = await this.stacktagrepository.findOne({
           tag: ele,
         });
-      }
-    });
+        if (isstacktag) return isstacktag;
+        else {
+          return await this.stacktagrepository.save({
+            tag: ele,
+          });
+        }
+      }),
+    );
 
     return await this.stackrepository.save({
       title,

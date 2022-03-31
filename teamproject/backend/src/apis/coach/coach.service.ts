@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ICurrentUser } from 'src/common/auth/gql-user.param';
 import { getRepository, Repository } from 'typeorm';
+import { BlogTag } from '../blogtag/entities/blogtag.entity';
+import { CoachTag } from '../coachtag/coachtag.entities/coachtag.entity';
+// import { CoachTag } from '../coachtag/entities/coachtag.entity';
 import { User, Role } from '../user/entities/user.entity';
 import { UpdateCoachInput } from './dto/updateCoach.input';
 import { CoachProfile } from './entities/coachprofile.entity';
@@ -19,6 +22,9 @@ export class CoachProfileService {
 
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+
+    @InjectRepository(CoachTag)
+    private readonly coachtagrepository: Repository<CoachTag>,
   ) {}
 
   async findAll() {
@@ -42,18 +48,33 @@ export class CoachProfileService {
     });
   }
 
-  async create({ currentUser, createProfileInput }) {
+  async create({ currentUser, createProfileInput, stacktag }) {
     const coachProfile = await this.coachprofileRepository.save({
       ...createProfileInput,
     });
+
     const user = await this.userRepository.findOne({ id: currentUser.id });
-    const x = await this.userRepository.save({
+
+    const stacktagresult = await Promise.all(
+      stacktag.map(async (ele) => {
+        const isblogtag = await this.coachtagrepository.findOne({
+          tag: ele,
+        });
+        if (isblogtag) return isblogtag;
+        else {
+          return await this.coachtagrepository.save({
+            tag: ele,
+          });
+        }
+      }),
+    );
+
+    return await this.userRepository.save({
       ...user,
-      coachProfile,
+      coachProfile: coachProfile,
       role: Role.COACH,
+      coachtag: stacktagresult,
     });
-    console.log(x);
-    return x;
   }
 
   async update({ currentUser, updateCoachInput }: IUpdateCoach) {

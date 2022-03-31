@@ -1,7 +1,9 @@
 import { Field, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Blog } from 'src/apis/blog/entities/blog.entity';
 import { BlogLike } from 'src/apis/bloglike/entities/bloglike.entity';
+import { BlogTag } from 'src/apis/blogtag/entities/blogtag.entity';
 import { CoachProfile } from 'src/apis/coach/entities/coachprofile.entity';
+import { CoachTag } from 'src/apis/coachtag/coachtag.entities/coachtag.entity';
 import { CoachColumn } from 'src/apis/column/entities/column.entity';
 import { ColumnLike } from 'src/apis/columnlike/entities/columnlike.entity';
 import { MainStack } from 'src/apis/mainstack/entities/mainstack.entity';
@@ -15,6 +17,8 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -113,4 +117,9 @@ export class User {
   @Column({ type: 'enum', enum: Role, default: Role.USER })
   @Field(() => Role)
   role: Role;
+
+  @JoinTable()
+  @ManyToMany(() => CoachTag, (coachtag) => coachtag.user)
+  @Field(() => [CoachTag])
+  coachtag: CoachTag[];
 }

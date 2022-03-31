@@ -14,7 +14,7 @@ import {
 
 @Entity()
 @ObjectType()
-export class BlogTag {
+export class CoachTag {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => String)
   id: string;
@@ -26,7 +26,7 @@ export class BlogTag {
   @DeleteDateColumn()
   deletdAt: Date;
 
-  @ManyToMany(() => Blog, (blog) => blog.blogtag)
-  @Field(() => [Blog])
-  blog: Blog[];
+  @ManyToMany(() => User, (user) => user.coachtag)
+  @Field(() => [User])
+  user: User[];
 }

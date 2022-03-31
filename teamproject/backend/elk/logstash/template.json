@@ -1,0 +1,30 @@
+{
+  "setting": {
+    "max_ngram_diff": "10",
+    "analysis": {
+      "analyzer": {
+        "column_ngram_analyzer": {
+          "tokenizer": ""
+        }
+      },
+      "char_filter": {},
+      "tokenizer": {
+        "column_ngram_tokenizer": {
+          "type": "nGram",
+          "min_gram": "1",
+          "max_gram": "10"
+        }
+      },
+      "filter": {}
+    }
+  },
+
+  "mappings": {
+    "properties": {
+      "title": {
+        "type": "text"
+      },
+      "contents": {}
+    }
+  }
+}

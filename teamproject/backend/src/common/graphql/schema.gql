@@ -1,0 +1,388 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type BlogCategoryTag {
+  id: String!
+  tag: String!
+  blog: [Blog!]!
+}
+
+type BlogCommentLike {
+  id: String!
+  user: User!
+  blogcomment: BlogComment!
+  islike: Boolean!
+}
+
+type BlogComment {
+  id: String!
+  contents: String!
+  user: User!
+  blog: Blog!
+  like: Int!
+}
+
+type BlogLike {
+  id: String!
+  user: User!
+  blog: Blog!
+  islike: Boolean!
+  isdislike: Boolean!
+}
+
+type BlogTag {
+  id: String!
+  tag: String!
+  blog: [Blog!]!
+}
+
+type Blog {
+  id: String!
+  title: String!
+  contents: String!
+  user: User!
+  like: Int!
+  dislike: Int!
+  blogtag: [BlogTag!]!
+  blogcategorytag: [BlogCategoryTag!]!
+}
+
+type CoachProfile {
+  id: String!
+  orgName: String!
+  orgType: String!
+  orgEmail: String!
+  department: String!
+  job: String!
+  profileTitle: String!
+  profileContents: String!
+  image: String!
+  answerInitAmount: Int
+}
+
+type ColumnComment {
+  id: String!
+  contents: String!
+  user: User!
+  coachColumn: CoachColumn!
+  likecount: Int!
+}
+
+type ColumnLike {
+  id: String!
+  user: User!
+  status: C_LIKE_STATUS!
+  coachColumn: CoachColumn!
+  columnComment: ColumnComment!
+  isLike: Boolean!
+  idDislike: Boolean!
+}
+
+enum C_LIKE_STATUS {
+  COLUMN
+  COMMENT
+}
+
+type CoachColumn {
+  id: String!
+  title: String!
+  contents: String!
+  hits: Int!
+  user: User!
+  likecount: Int!
+  dislikecount: Int!
+}
+
+type StackLike {
+  id: String!
+  user: User!
+  stack: Stack!
+  islike: Boolean!
+}
+
+type Stack {
+  id: String!
+  title: String!
+  contents: String!
+  user: User!
+  like: Int!
+}
+
+type User {
+  id: String!
+  email: String!
+  name: String!
+  phonenumber: String
+  nickname: String!
+  codeInterest: String!
+  coachInterest: String!
+  score: Int!
+  point: Int!
+  coachProfile: CoachProfile!
+  mainstack: MainStack!
+  user: MainStack!
+  role: Role!
+}
+
+enum Role {
+  USER
+  COACH
+  ADMIN
+}
+
+type MainStack {
+  id: String!
+  Python: Int!
+  C: Int!
+  Java: Int!
+  Cpp: Int!
+  Cshop: Int!
+  JavaScript: Int!
+  PHP: Int!
+  SQL: Int!
+  R: Int!
+  Go: Int!
+  Swift: Int!
+  Ruby: Int!
+  Git: Int!
+  Objective_C: Int!
+  CSS: Int!
+  HTML: Int!
+  React_js: Int!
+  Vue_js: Int!
+  Node_js: Int!
+  Express: Int!
+  Spring: Int!
+  etc: Int!
+  user: User!
+}
+
+type StackComment {
+  id: String!
+  contents: String!
+  user: User!
+  stack: Stack!
+}
+
+type PointTransaction {
+  id: String!
+  impUid: String!
+  amount: Int!
+  status: POINT_TRANSACTION_STATUS_ENUM!
+  user: User!
+}
+
+enum POINT_TRANSACTION_STATUS_ENUM {
+  PAYMENT
+  CANCEL
+  PENDING
+}
+
+type Answer {
+  id: String!
+  title: String!
+  contents: String!
+  amount: Int!
+  question: Question!
+  likecount: Int!
+  dislikecount: Int!
+}
+
+type Question {
+  id: String!
+  fromUser: User!
+  toCoach: User!
+  title: String!
+  QType: QUESTION_FIELD_ENUM!
+  contents: String!
+}
+
+enum QUESTION_FIELD_ENUM {
+  NORM
+  RESUME
+  PORTFORLIO
+}
+
+type OrderHistory {
+  id: String!
+  user: User!
+  answer: Answer!
+  amount: Int!
+  status: ORDER_STATUS!
+}
+
+enum ORDER_STATUS {
+  PAYMENT
+  CANCEL
+}
+
+type AnswerLike {
+  id: String!
+  user: User!
+  answer: Answer!
+  isLike: Boolean!
+  idDislike: Boolean!
+}
+
+type Query {
+  fetchCoachUserList: [User!]!
+  fetchCoachUser(userId: String!): User!
+  fetchMyCoachInfo: User!
+  fetchMyPointHistory: [PointTransaction!]!
+  findAllUser: User!
+  findUserOrderbylike: [User!]!
+  findUsersearch(search: String!): [User!]!
+  fetchmainstack: String!
+  fetchBlog: [Blog!]!
+  fetchmyBlog: [Blog!]!
+  fetchotherBlogorderbylikeAll: [Blog!]!
+  fetchotherBlogorderbycreateAt: [Blog!]!
+  fetchotherBlogorderbylikecreate: [Blog!]!
+  fetchBlogSearch(search: String!): [Blog!]!
+  fetchAllBlogcomment(stackid: String!): StackComment!
+  fetchBlogCommentorderby(blogid: String!): [BlogComment!]!
+  fetchBloglike: [Blog!]!
+  fetchStack: [Stack!]!
+  fetchmyStack: [Stack!]!
+  fetchotherStackorderbylike: [Stack!]!
+  fetchotherStackorderbycreateAt: [Stack!]!
+  fetchStacklike: [Stack!]!
+  fetchBlogcommentlike: [BlogComment!]!
+  fetchColumnCommentList(columnId: String!): [ColumnComment!]!
+  fetchMyColumnComment: [ColumnComment!]!
+  fetchColumnList: [CoachColumn!]!
+  fetchRecommendColumnList: [CoachColumn!]!
+  fetchRecommendColumnListArgs(itemcount: Float!, pageNum: Float!): [CoachColumn!]!
+  fetchSearchedColumnList(search: String!): [CoachColumn!]!
+  fetchHighHitColumnList: [CoachColumn!]!
+  fetchHighHitColumnListArgs(itemcount: Float!, pageNum: Float!): [CoachColumn!]!
+  fetchDetailColumn(columnId: String!): CoachColumn!
+  fetchMyColumn: [CoachColumn!]!
+  fetchColumnListWhatILike: [ColumnLike!]!
+  fetchCoachQuestionList: [Question!]!
+  fetchMyQuestionList: [Question!]!
+  fetchQuestion(questionId: String!): Question!
+  goodEvalAnswerList(itemCount: Float!): [Answer!]!
+  myCoachingListHasAnswer: [Answer!]!
+  coachAnsweredList: [Answer!]!
+  stringReturn: String!
+}
+
+type Mutation {
+  createCoachProfile(createProfileInput: CreateCoachProfileInput!): User!
+  updateCoachProfile(UpdateCoachInput: UpdateCoachInput!): User!
+  deleteCoachProfile: Boolean!
+  createPointTransaction(amount: Float!, impUid: String!): PointTransaction!
+  cancelPointTransaction(amount: Float!, impUid: String!): PointTransaction!
+  createUser(name: String!, nickname: String!, phonenumber: String!, password: String!, email: String!): User!
+  updateUser(name: String!, nickname: String!, phonenumber: String!, password: String!): User!
+  deleteUser: Boolean!
+  sendTokenTOSMS(phonenumber: String!): String!
+  checktoken(phonenumber: String!, token: String!): Boolean!
+  login(password: String!, email: String!): String!
+  resotreAccessToken: String!
+  logout: String!
+  createBlog(blogcategorytag: [String!]!, blogtag: [String!]!, contents: String!, title: String!): Blog!
+  updateBlog(blogid: String!, contents: String!, title: String!): Blog!
+  deleteBlog(blogid: String!): String!
+  uploadFile(files: [Upload!]!): [String!]!
+  createBlogComment(contents: String!, blogid: String!): BlogComment!
+  updateBlogComment(blogcommentid: String!, contents: String!, blogid: String!): BlogComment!
+  deleteBlogComment(blogcommentid: String!): Boolean!
+  likeBlogtoggle(blogid: String!): BlogLike!
+  dislikeBlogtoggle(blogid: String!): BlogLike!
+  createStack(contents: String!, title: String!): Stack!
+  updateStack(blogid: String!, contents: String!, title: String!): Stack!
+  deleteStack(blogid: String!): String!
+  uploadStackFile(files: [Upload!]!): [String!]!
+  Stacktoggle(stackid: String!): StackLike!
+  createStackComment(contents: String!, stackid: String!): StackComment!
+  updateStackComment(stackcommentid: String!, contents: String!): StackComment!
+  deleteStackComment(stackcommentid: String!): StackComment!
+  Blogcommenttoggle(blogcommentid: String!): BlogCommentLike!
+  LikeColumnToggle(columnId: String!): ColumnLike!
+  DislikeColumnToggle(columnId: String!): ColumnLike!
+  createColumnComment(contents: String!, columnId: String!): ColumnComment!
+  updateColumnComment(contents: String!, commentId: String!): ColumnComment!
+  deleteColumnComment(commentId: String!, columnId: String!): Boolean!
+  increaseColumnHit(columnId: String!): CoachColumn!
+  createColumn(createColumnInput: CreateColumnInput!): CoachColumn!
+  updateColumn(updateColumnInput: UpdateColumnInput!, columnId: String!): CoachColumn!
+  deleteColumn(columnId: String!): Boolean!
+  createBlogManycategoryTag(blogcategorytag: [String!]!): [BlogCategoryTag!]!
+  createBlogcategoryTag(blogcategorytag: String!): BlogCategoryTag!
+  updateBlogcategorytag(updateblogtag: String!, blogcategorytag: String!): [BlogCategoryTag!]!
+  deleteBlogcategoryTag(blogcategorytag: String!): BlogCategoryTag!
+  createBlogManyTag(blogtag: [String!]!): [BlogTag!]!
+  createBlogTag(blogtag: String!): BlogTag!
+  updateBlogtag(updateblogtag: String!, blogtag: String!): [BlogTag!]!
+  deleteBlogTag(blogtag: String!): BlogTag!
+  createCoachQuestion(createQuestionInput: CreateQuestionInput!, coachId: String!): Question!
+  updateCoachQuestion(updateQuestionInput: UpdateQuestionInput!, questionId: String!): Question!
+  deleteCoachQuestion(questionId: String!): Boolean!
+  createCoachAnswer(createAnswerInput: CreateAnswerInput!, questionId: String!): Answer!
+  updateCoachAnswer(updateAnswerInput: UpdateAnswerInput!, answerId: String!): Answer!
+  deleteCoachAnswer(answerId: String!): Boolean!
+  likeAnswerToggle(answerId: String!): AnswerLike!
+  dislikeAnswerToggle(answerId: String!): AnswerLike!
+  createAnswerOrder(answerId: String!): OrderHistory!
+  cancelAnswerOrder(answerId: String!, userId: String!): OrderHistory!
+}
+
+input CreateCoachProfileInput {
+  orgName: String!
+  orgType: String!
+  orgEmail: String!
+  department: String!
+  job: String!
+  profileTitle: String!
+  profileContents: String!
+  image: String!
+  answerInitAmount: Int
+}
+
+input UpdateCoachInput {
+  department: String!
+  job: String!
+  profileTitle: String!
+  profileContents: String!
+  image: String!
+  answerInitAmount: Int
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+input CreateColumnInput {
+  title: String!
+  contents: String!
+}
+
+input UpdateColumnInput {
+  title: String
+  contents: String
+}
+
+input CreateQuestionInput {
+  title: String!
+  contents: String!
+  QType: QUESTION_FIELD_ENUM
+}
+
+input UpdateQuestionInput {
+  title: String!
+  contents: String!
+  Qtype: QUESTION_FIELD_ENUM = NORM
+}
+
+input CreateAnswerInput {
+  title: String!
+  contents: String!
+}
+
+input UpdateAnswerInput {
+  title: String
+  contents: String
+  amount: Int
+}

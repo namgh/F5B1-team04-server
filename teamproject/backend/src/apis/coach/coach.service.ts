@@ -47,13 +47,11 @@ export class CoachProfileService {
       ...createProfileInput,
     });
     const user = await this.userRepository.findOne({ id: currentUser.id });
-    const x = await this.userRepository.save({
+    return await this.userRepository.save({
       ...user,
       coachProfile,
       role: Role.COACH,
     });
-    console.log(x);
-    return x;
   }
 
   async update({ currentUser, updateCoachInput }: IUpdateCoach) {

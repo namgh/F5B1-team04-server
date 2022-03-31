@@ -9,9 +9,9 @@ services:
       - 3000:3000
     env_file:
       - ./.env
-    volumes:
-      - ./src:/myfolder/src 
-      # - .env:/myfolder/.env
+    # volumes:
+    #   - ./src:/myfolder/src
+    # - .env:/myfolder/.env
 
   my_database:
     platform: linux/x86_64

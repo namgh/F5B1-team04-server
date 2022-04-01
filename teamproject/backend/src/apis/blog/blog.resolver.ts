@@ -63,7 +63,7 @@ export class BlogResolver {
           ],
         },
       },
-      sort: ['updatedat', 'desc'],
+      // sort: ['updatedat', 'desc'],
     });
 
     if (!result.hits.hits.length) return null;
@@ -76,6 +76,7 @@ export class BlogResolver {
       for (let key in temp) {
         if (!key.includes('@')) needresult[key] = temp[key];
       }
+      console.log(temp);
       return needresult;
     });
 
@@ -144,5 +145,10 @@ export class BlogResolver {
     @Args({ name: 'files', type: () => [GraphQLUpload] }) files: FileUpload[],
   ) {
     return await this.blogService.upload({ files });
+  }
+
+  @Query(() => Blog)
+  async fetchblogone(@Args('blogid') blogid: string) {
+    return this.blogService.findone({ blogid });
   }
 }

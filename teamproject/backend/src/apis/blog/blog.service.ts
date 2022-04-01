@@ -142,6 +142,8 @@ export class BlogService {
     const blog = await getRepository(Blog)
       .createQueryBuilder('blog')
       .leftJoinAndSelect('blog.user', 'user')
+      .leftJoinAndSelect('blog.blogtag', 'blogtag')
+      .leftJoinAndSelect('blog.blogcategorytag', 'blogcategorytag')
       .where('blog.id = :id', { id: blogid })
       .andWhere('user.id = :id', { id: currentUser.id })
       .getMany();
@@ -184,5 +186,15 @@ export class BlogService {
       }),
     );
     return results;
+  }
+
+  async findone({ blogid }) {
+    return await getRepository(Blog)
+      .createQueryBuilder('blog')
+      .leftJoinAndSelect('blog.user', 'user')
+      .leftJoinAndSelect('blog.blogtag', 'blogtag')
+      .leftJoinAndSelect('blog.blogcategorytag', 'blogcategorytag')
+      .andWhere('blog.id = :id', { id: blogid })
+      .getOne();
   }
 }

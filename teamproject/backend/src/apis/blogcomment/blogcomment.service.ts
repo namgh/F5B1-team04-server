@@ -18,12 +18,21 @@ export class BlogCommentService {
     private readonly userrepository: Repository<User>,
   ) {}
 
-  async fetchBlogCommentorderby({ blogid }) {
+  async fetchBlogCommentorderbylike({ blogid }) {
     return await getRepository(BlogComment)
       .createQueryBuilder('blogcomment')
       .leftJoinAndSelect('blogcomment.blog', 'blog')
       .where('blog.id = :id', { id: blogid })
-      .orderBy('like', 'DESC')
+      .orderBy('blogcomment.like', 'DESC')
+      .getMany();
+  }
+
+  async fetchBlogCommentorderbycreate({ blogid }) {
+    return await getRepository(BlogComment)
+      .createQueryBuilder('blogcomment')
+      .leftJoinAndSelect('blogcomment.blog', 'blog')
+      .where('blog.id = :id', { id: blogid })
+      .orderBy('blogcomment.createAt', 'DESC')
       .getMany();
   }
 

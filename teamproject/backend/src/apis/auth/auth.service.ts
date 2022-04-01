@@ -30,7 +30,7 @@ export class AuthService {
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
     res.setHeader(
       'Set-Cookie',
-      `refreshToken${refreshToken}; path=/; domain =.namgh627.shop; SameSite = None; Secure=false; httpOnly;`,
+      `refreshToken=${refreshToken}; path=/;domain=.cucutoo.com; SameSite=None; Secure; httpOnly;`,
     );
   }
 

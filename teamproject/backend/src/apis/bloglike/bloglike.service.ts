@@ -30,6 +30,9 @@ export class BlogLikeService {
       .leftJoinAndSelect('blog.bloglike', 'bloglike')
       .leftJoinAndSelect('bloglike.user', 'bloguser')
       .leftJoinAndSelect('bloglike.user', 'user')
+      .leftJoinAndSelect('blog.user', 'user')
+      .leftJoinAndSelect('blog.blogtag', 'blogtag')
+      .leftJoinAndSelect('blog.blogcategorytag', 'blogcategorytag')
       .where('bloglike.islike = :islike', { islike: true })
       .andWhere('user.id = :id', { id: currentUser.id })
       .getMany();

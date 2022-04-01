@@ -17,8 +17,13 @@ export class BlogCommentResolver {
   }
 
   @Query(() => [BlogComment])
-  async fetchBlogCommentorderby(@Args('blogid') blogid: string) {
-    return this.blogCommentService.fetchBlogCommentorderby({ blogid });
+  async fetchBlogCommentorderbycreate(@Args('blogid') blogid: string) {
+    return this.blogCommentService.fetchBlogCommentorderbycreate({ blogid });
+  }
+
+  @Query(() => [BlogComment])
+  async fetchBlogCommentorderbylike(@Args('blogid') blogid: string) {
+    return this.blogCommentService.fetchBlogCommentorderbylike({ blogid });
   }
 
   @UseGuards(GqlAuthAccessGuard)

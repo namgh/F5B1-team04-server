@@ -269,7 +269,8 @@ type Query {
   fetchBlogSearch(search: String!): [Blog!]!
   fetchblogone(blogid: String!): Blog!
   fetchAllBlogcomment(stackid: String!): StackComment!
-  fetchBlogCommentorderby(blogid: String!): [BlogComment!]!
+  fetchBlogCommentorderbycreate(blogid: String!): [BlogComment!]!
+  fetchBlogCommentorderbylike(blogid: String!): [BlogComment!]!
   fetchBloglike: [Blog!]!
   fetchStack: [Stack!]!
   fetchmyStack: [Stack!]!

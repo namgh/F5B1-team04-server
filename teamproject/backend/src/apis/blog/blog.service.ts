@@ -39,6 +39,9 @@ export class BlogService {
   async fetchotherBlogorderbylike() {
     return await getRepository(Blog)
       .createQueryBuilder('blog')
+      .leftJoinAndSelect('blog.user', 'user')
+      .leftJoinAndSelect('blog.blogtag', 'blogtag')
+      .leftJoinAndSelect('blog.blogcategorytag', 'blogcategorytag')
       .orderBy('blog.like', 'DESC')
       .getMany();
   }
@@ -46,15 +49,10 @@ export class BlogService {
   async fetchotherBlogorderbycreateAt() {
     return await getRepository(Blog)
       .createQueryBuilder('blog')
+      .leftJoinAndSelect('blog.user', 'user')
+      .leftJoinAndSelect('blog.blogtag', 'blogtag')
+      .leftJoinAndSelect('blog.blogcategorytag', 'blogcategorytag')
       .orderBy('blog.createAt', 'DESC')
-      .getMany();
-  }
-
-  async fetchotherBlogorderbylikecreate() {
-    return await getRepository(Blog)
-      .createQueryBuilder('blog')
-      .orderBy('blog.like', 'DESC')
-      .addOrderBy('blog.createAt', 'DESC')
       .getMany();
   }
 
@@ -62,6 +60,8 @@ export class BlogService {
     const blog = await getRepository(Blog)
       .createQueryBuilder('blog')
       .leftJoinAndSelect('blog.user', 'user')
+      .leftJoinAndSelect('blog.blogtag', 'blogtag')
+      .leftJoinAndSelect('blog.blogcategorytag', 'blogcategorytag')
       .andWhere('user.id = :id', { id: currentUser.id })
       .getMany();
 

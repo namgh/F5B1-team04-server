@@ -99,7 +99,7 @@ export class User {
   @OneToMany((type) => StackLike, (stacklike) => stacklike.user)
   stacklike: StackLike[];
 
-  @JoinColumn({})
+  @JoinColumn()
   @OneToOne(() => MainStack)
   @Field(() => MainStack)
   mainstack: MainStack;
@@ -109,10 +109,6 @@ export class User {
 
   @OneToMany(() => ColumnLike, (columnLike) => columnLike.user)
   columnlike: ColumnLike[];
-
-  @OneToOne(() => MainStack)
-  @Field(() => MainStack)
-  user: MainStack;
 
   @Column({ type: 'enum', enum: Role, default: Role.USER })
   @Field(() => Role)

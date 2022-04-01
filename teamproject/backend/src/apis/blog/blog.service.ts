@@ -73,13 +73,18 @@ export class BlogService {
       email: currentUser.email,
     });
 
-    const mainstack = await getRepository(MainStack)
-      .createQueryBuilder('mainstack')
-      .leftJoinAndSelect('mainstack.user', 'user')
+    const usermainstack = await getRepository(User)
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.mainstack', 'mainstack')
       .where('user.id = :id', { id: currentUser.id })
       .getOne();
 
-    blogtag.forEach((ele) => {
+    console.log(usermainstack);
+    console.log('==============');
+    console.log(usermainstack.mainstack);
+
+    const mainstack = usermainstack.mainstack;
+    blogcategorytag.forEach((ele) => {
       for (const key in mainstack) {
         console.log(key, mainstack[key], ele);
 

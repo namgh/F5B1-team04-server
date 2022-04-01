@@ -51,12 +51,14 @@ export class CoachProfileService {
   }
 
   async create({ currentUser, createProfileInput, stacktag }) {
+    const user = await this.userRepository.findOne({
+      where: { id: currentUser.id },
+      relations: ['coachProfile'],
+    });
     const coachProfile = await this.coachprofileRepository.save({
+      id: user.coachProfile.id,
       ...createProfileInput,
     });
-
-    const user = await this.userRepository.findOne({ id: currentUser.id });
-
     const stacktagresult = await Promise.all(
       stacktag.map(async (ele) => {
         const isblogtag = await this.coachtagrepository.findOne({

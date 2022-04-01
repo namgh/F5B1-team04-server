@@ -15,10 +15,8 @@ services:
     platform: linux/x86_64
     image: mysql:latest
     environment:
-      MYSQL_DATABASE: 'teamproject'
-      MYSQL_ROOT_PASSWORD: '1q2w3e4r'
-      # MYSQL_DATABASE: 'cu2project'
-      # MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_DATABASE: 'cu2project'
+      MYSQL_ROOT_PASSWORD: 'root'
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
@@ -36,7 +34,7 @@ services:
   elasticsearch:
     image: elasticsearch:7.17.0
     environment:
-      discovery.type: single-node 
+      discovery.type: single-node
     ports:
       - 9200:9200
 

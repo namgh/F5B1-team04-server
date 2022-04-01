@@ -11,17 +11,6 @@ export class BlogTagService {
     private readonly blogtagrepository: Repository<BlogTag>,
   ) {}
 
-  async create({ blogtag }) {
-    return await Promise.all(
-      blogtag.map((ele, i) => {
-        return new Promise(async (resolve, reject) => {
-          const findtag = await this.blogtagrepository.findOne({ tag: ele });
-          if (!findtag) return await this.blogtagrepository.save({ tag: ele });
-        });
-      }),
-    );
-  }
-
   async createone({ blogtag }) {
     return await this.blogtagrepository.save({ tag: blogtag });
   }

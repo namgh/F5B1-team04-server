@@ -42,10 +42,12 @@ export class CoachProfileService {
   }
 
   async findOne({ userId }) {
-    return await this.userRepository.findOne({
-      where: { id: userId },
-      relations: ['coachProfile'],
-    });
+    return await getRepository(User)
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.coachProfile', 'coachprofile')
+      .leftJoinAndSelect('user.coachtag', 'coachtag')
+      .where('user.id = :id', { id: userId })
+      .getOne();
   }
 
   async create({ currentUser, createProfileInput, stacktag }) {

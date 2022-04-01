@@ -8,14 +8,6 @@ export class BlogCategoryTagResolver {
     private readonly blogcategorytagservice: BlogCategoryTagService,
   ) {}
 
-  @Mutation(() => [BlogCategoryTag])
-  async createBlogManycategoryTag(
-    @Args({ name: 'blogcategorytag', type: () => [String] })
-    blogcategorytag: string[],
-  ) {
-    return await this.blogcategorytagservice.create({ blogcategorytag });
-  }
-
   @Mutation(() => BlogCategoryTag)
   async createBlogcategoryTag(
     @Args('blogcategorytag') blogcategorytag: string,

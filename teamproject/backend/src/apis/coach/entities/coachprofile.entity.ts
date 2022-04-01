@@ -21,36 +21,35 @@ export class CoachProfile {
   @Field(() => String)
   id: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => String)
   orgName: string;
 
-  //todo : coachingus category join
-  @Column()
+  @Column({ nullable: true })
   @Field(() => String)
   orgType: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => String)
   orgEmail: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => String)
   department: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => String)
   job: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => String)
   profileTitle: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => String)
   profileContents: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => String)
   image: string;
 

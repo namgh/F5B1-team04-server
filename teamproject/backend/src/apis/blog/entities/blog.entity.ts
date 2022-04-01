@@ -33,6 +33,10 @@ export class Blog {
   @Field(() => String)
   contents: string;
 
+  @Column({ length: 2000 })
+  @Field(() => String)
+  url: string;
+
   @ManyToOne(() => User, (user) => user.blog)
   @Field(() => User)
   user: User;
@@ -40,9 +44,7 @@ export class Blog {
   @OneToMany((type) => BlogLike, (bloglike) => bloglike.blog)
   bloglike: BlogLike[];
 
-  @OneToMany((type) => BlogComment, (blogcomment) => blogcomment.blog, {
-    cascade: ['soft-remove'],
-  })
+  @OneToMany((type) => BlogComment, (blogcomment) => blogcomment.blog)
   blogcomment: BlogComment[];
 
   @Column({ default: 0 })
@@ -66,12 +68,16 @@ export class Blog {
   deletdAt: Date;
 
   @JoinTable()
-  @ManyToMany(() => BlogTag, (blogtag) => blogtag.blog)
-  @Field(() => [BlogTag])
+  @ManyToMany(() => BlogTag, (blogtag) => blogtag.blog, { nullable: true })
+  @Field(() => [BlogTag], { nullable: true })
   blogtag: BlogTag[];
 
   @JoinTable()
-  @ManyToMany(() => BlogCategoryTag, (blogcategofytag) => blogcategofytag.blog)
-  @Field(() => [BlogCategoryTag])
+  @ManyToMany(
+    () => BlogCategoryTag,
+    (blogcategofytag) => blogcategofytag.blog,
+    { nullable: true },
+  )
+  @Field(() => [BlogCategoryTag], { nullable: true })
   blogcategorytag: BlogCategoryTag[];
 }

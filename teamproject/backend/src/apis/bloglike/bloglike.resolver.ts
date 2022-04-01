@@ -18,7 +18,7 @@ export class BlogLikeResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => BlogLike)
-  async likeBlogtoggle(
+  async Blogliketoggle(
     @Args('blogid') blogid: string,
     @CurrentUser() currentUser: ICurrentUser,
   ) {
@@ -27,7 +27,7 @@ export class BlogLikeResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => BlogLike)
-  async dislikeBlogtoggle(
+  async Blogdisliketoggle(
     @Args('blogid') blogid: string,
     @CurrentUser() currentUser: ICurrentUser,
   ) {

@@ -10,7 +10,7 @@ export class StackCommentResolver {
   constructor(private readonly stackCommentService: StackCommentService) {}
 
   @Query(() => StackComment)
-  async fetchAllBlogcomment(@Args('stackid') stackid: string) {
+  async fetchAllStackcomment(@Args('stackid') stackid: string) {
     return this.stackCommentService.findAll({
       stackid,
     });

@@ -33,7 +33,13 @@ export class BlogService {
   ) {}
 
   async findAll() {
-    return await this.blogrepository.find();
+    return await getRepository(Blog)
+      .createQueryBuilder('blog')
+      .leftJoinAndSelect('blog.user', 'user')
+      .leftJoinAndSelect('blog.blogtag', 'blogtag')
+      .leftJoinAndSelect('blog.blogcategorytag', 'blogcategorytag')
+      .orderBy('blog.id', 'DESC')
+      .getMany();
   }
 
   async fetchotherBlogorderbylike() {
@@ -68,7 +74,14 @@ export class BlogService {
     return blog;
   }
 
-  async create({ title, contents, currentUser, blogtag, blogcategorytag }) {
+  async create({
+    title,
+    contents,
+    currentUser,
+    blogtag,
+    blogcategorytag,
+    url,
+  }) {
     const user = await this.userrepository.findOne({
       email: currentUser.email,
     });
@@ -80,7 +93,6 @@ export class BlogService {
       .getOne();
 
     console.log(usermainstack);
-    console.log('==============');
     console.log(usermainstack.mainstack);
 
     const mainstack = usermainstack.mainstack;
@@ -130,16 +142,18 @@ export class BlogService {
       user,
       blogtag: blogtagresult,
       blogcategorytag: blogcategorytagresult,
+      url,
     });
   }
 
-  async update({ title, contents, currentUser, blogid }) {
+  async update({ title, contents, currentUser, blogid, url }) {
     const blog = await this.blogrepository.findOne({ id: blogid });
 
     return await this.blogrepository.save({
       ...blog,
       contents,
       title,
+      url,
     });
   }
 
@@ -185,7 +199,7 @@ export class BlogService {
             .pipe(
               storage.file(`thumb/${i}/${file.filename}`).createWriteStream(),
             )
-            .on('finish', () => resolve(`cu2image/${file.filename}`))
+            .on('finish', () => resolve(`thumb/${i}/${file.filename}`))
             .on('error', (error) => reject(error));
         });
       }),

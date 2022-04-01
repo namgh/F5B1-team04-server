@@ -20,10 +20,19 @@ export class BlogCommentLikeResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => BlogCommentLike)
-  async Blogcommenttoggle(
+  async Blogcommentliketoggle(
     @Args('blogcommentid') blogcommentid: string,
     @CurrentUser() currentUser: ICurrentUser,
   ) {
     return this.blogcommentlikeservice.like({ blogcommentid, currentUser });
+  }
+
+  @UseGuards(GqlAuthAccessGuard)
+  @Mutation(() => BlogCommentLike)
+  async Blogcommentdisliketoggle(
+    @Args('blogcommentid') blogcommentid: string,
+    @CurrentUser() currentUser: ICurrentUser,
+  ) {
+    return this.blogcommentlikeservice.dislike({ blogcommentid, currentUser });
   }
 }

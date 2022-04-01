@@ -89,6 +89,7 @@ export class BlogResolver {
     @Args({ name: 'blogtag', type: () => [String] }) blogtag: string[],
     @Args({ name: 'blogcategorytag', type: () => [String] })
     blogcategorytag: string[],
+    @Args('url') url: string,
     @CurrentUser() currentUser: ICurrentUser,
   ) {
     return this.blogService.create({
@@ -97,6 +98,7 @@ export class BlogResolver {
       currentUser,
       blogtag,
       blogcategorytag,
+      url,
     });
   }
 
@@ -106,6 +108,7 @@ export class BlogResolver {
     @Args('title') title: string,
     @Args('contents') contents: string,
     @Args('blogid') blogid: string,
+    @Args('url') url: string,
     @CurrentUser() currentUser: ICurrentUser,
   ) {
     return await this.blogService.update({
@@ -113,6 +116,7 @@ export class BlogResolver {
       contents,
       currentUser,
       blogid,
+      url,
     });
   }
 

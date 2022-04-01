@@ -30,19 +30,12 @@ export class StackLikeService {
       .leftJoinAndSelect('stack.user', 'stackuser')
       .leftJoinAndSelect('stack.stacklike', 'stacklike')
       .leftJoinAndSelect('stacklike.user', 'user')
+      .leftJoinAndSelect('stack.stacktag', 'stacktag')
       .where('stacklike.islike = :islike', { islike: true })
       .andWhere('user.id = :id', { id: currentUser.id })
       .getMany();
 
-    // const aaa = await getRepository(Stack)
-    //   .createQueryBuilder('stack')
-    //   .leftJoinAndSelect('stack.user', 'user')
-    //   .leftJoinAndSelect('stack.stacklike', 'stacklike')
-    //   .where('stacklike.islike = :islike', { islike: true })
-    //   .andWhere('user.id = :id', { id: currentUser.id })
-    //   .getMany();
-
-    // console.log(aaa);
+    console.log(stack);
     return stack;
   }
 
@@ -66,8 +59,6 @@ export class StackLikeService {
         user: currentUser.id,
         stack: stackid,
       });
-
-      console.log('++++++', stacklike);
 
       if (!stacklike) {
         const createlike = await this.stacklikerepository.create({
@@ -153,14 +144,14 @@ export class StackLikeService {
         id: currentUser.id,
       });
 
-      const stacklike = await queryRunner.manager.findOne(StackLike, {
+      const stackdislike = await queryRunner.manager.findOne(StackLike, {
         user: currentUser.id,
         stack: stackid,
       });
 
-      if (!stacklike) {
+      if (!stackdislike) {
         const createlike = await this.stacklikerepository.create({
-          islike: true,
+          isdislike: true,
           user: user,
           stack: stack,
         });
@@ -181,10 +172,10 @@ export class StackLikeService {
         return result;
       }
 
-      if (!stacklike.islike) {
+      if (!stackdislike.isdislike) {
         const createlike = await this.stacklikerepository.create({
-          ...stacklike,
-          islike: true,
+          ...stackdislike,
+          isdislike: true,
         });
 
         const dislike = stack.dislike + 1;
@@ -202,8 +193,8 @@ export class StackLikeService {
       }
 
       const createlike = await this.stacklikerepository.create({
-        ...stacklike,
-        islike: false,
+        ...stackdislike,
+        isdislike: false,
       });
       const dislike = stack.dislike - 1;
 

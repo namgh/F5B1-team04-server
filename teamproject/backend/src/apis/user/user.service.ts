@@ -73,7 +73,8 @@ export class UserService {
 
   async fetchmyuser({ currentUser }) {
     return await this.userRepository.findOne({
-      id: currentUser.id,
+      where: { id: currentUser.id },
+      relations: ['coachProfile', 'coachtag'],
     });
   }
 

@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
   my_backend:
-    image: asia.gcr.io/cu2project/cu2_backend:1.1
+    image: asia.gcr.io/cu2project/cu2_backend:1.0
     build:
       context: .
       dockerfile: Dockerfile

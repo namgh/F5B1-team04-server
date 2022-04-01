@@ -32,6 +32,9 @@ export class UserService {
   async findAll() {
     return await getRepository(User)
       .createQueryBuilder('user')
+      .leftJoinAndSelect('user.mainstack', 'mainstack')
+      .leftJoinAndSelect('user.coachtag', 'coachtag')
+      .leftJoinAndSelect('user.mainstack', 'mainstack')
       .orderBy('user.createAt', 'DESC')
       .getMany();
   }
@@ -39,6 +42,9 @@ export class UserService {
   async findUserOrderbyscore() {
     return await getRepository(User)
       .createQueryBuilder('user')
+      .leftJoinAndSelect('user.mainstack', 'mainstack')
+      .leftJoinAndSelect('user.coachtag', 'coachtag')
+      .leftJoinAndSelect('user.mainstack', 'mainstack')
       .orderBy('user.score', 'DESC')
       .getMany();
   }
@@ -46,6 +52,8 @@ export class UserService {
   async findusersearch({ search }) {
     return await getRepository(User)
       .createQueryBuilder('user')
+      .leftJoinAndSelect('user.mainstack', 'mainstack')
+      .leftJoinAndSelect('user.coachtag', 'coachtag')
       .leftJoinAndSelect('user.mainstack', 'mainstack')
       .where('user.name = :name', { name: search })
       .orWhere('user.nickname = :nickname', { nickname: search })
@@ -60,22 +68,24 @@ export class UserService {
     delete mainstack.mainstack.id;
 
     const bestmainstack = Object.values(mainstack.mainstack);
-    //console.log(mainstack.mainstack);
+    console.log(mainstack.mainstack);
     const max = Math.max(...bestmainstack);
     if (max === 0) return 'no';
     for (const key in mainstack.mainstack) {
       if (mainstack.mainstack[key] === max) {
-        console.log(key);
         return key;
       }
     }
   }
 
   async fetchmyuser({ currentUser }) {
-    return await this.userRepository.findOne({
-      where: { id: currentUser.id },
-      relations: ['coachProfile', 'coachtag'],
-    });
+    return await getRepository(User)
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.mainstack', 'mainstack')
+      .leftJoinAndSelect('user.coachtag', 'coachtag')
+      .leftJoinAndSelect('user.mainstack', 'mainstack')
+      .where('user.id = :id', { id: currentUser.id })
+      .getOne();
   }
 
   async create({ email, hashedPassword, phonenumber, name, nickname }) {
@@ -85,20 +95,18 @@ export class UserService {
 
     if (result1) throw new ConflictException('이미 등록된 이메일입니다');
     const coachProfile = await this.coachprofilerepository.save({});
-    const returnresult = await this.userRepository.save({
+
+    const mainstack = await this.mainstackRepository.save({});
+
+    return await this.userRepository.save({
       email,
       password: hashedPassword,
       phonenumber,
       name,
       nickname,
       coachProfile,
+      mainstack,
     });
-
-    await this.mainstackRepository.save({
-      user: returnresult,
-    });
-
-    return returnresult;
   }
   async socailcreate({ password, email, name }) {
     const result1 = await this.userRepository.findOne({
@@ -241,6 +249,9 @@ export class UserService {
 
     return await getRepository(User)
       .createQueryBuilder('user')
+      .leftJoinAndSelect('user.mainstack', 'mainstack')
+      .leftJoinAndSelect('user.coachtag', 'coachtag')
+      .leftJoinAndSelect('user.mainstack', 'mainstack')
       .orderBy('user.score', 'DESC')
       .skip(page * perpage)
       .take(perpage)

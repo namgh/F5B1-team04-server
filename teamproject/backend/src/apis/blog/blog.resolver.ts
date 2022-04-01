@@ -41,11 +41,6 @@ export class BlogResolver {
   }
 
   @Query(() => [Blog])
-  fetchotherBlogorderbylikecreate() {
-    return this.blogService.fetchotherBlogorderbylikecreate();
-  }
-
-  @Query(() => [Blog])
   async fetchBlogSearch(@Args('search') search: string) {
     const redistemp = await this.cacheManager.get(`title:${search}`);
 

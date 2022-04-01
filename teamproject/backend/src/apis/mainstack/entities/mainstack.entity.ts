@@ -104,7 +104,6 @@ export class MainStack {
   @Field(() => Int)
   etc: number;
 
-  @JoinColumn()
   @OneToOne(() => User)
   @Field(() => User)
   user: User;

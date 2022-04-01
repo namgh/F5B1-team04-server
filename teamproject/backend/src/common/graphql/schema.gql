@@ -44,9 +44,16 @@ type Blog {
   user: User!
   like: Int!
   dislike: Int!
+  createAt: DateTime!
+  updatedAt: DateTime!
   blogtag: [BlogTag!]!
   blogcategorytag: [BlogCategoryTag!]!
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type CoachProfile {
   id: String!
@@ -260,6 +267,7 @@ type Query {
   fetchotherBlogorderbycreateAt: [Blog!]!
   fetchotherBlogorderbylikecreate: [Blog!]!
   fetchBlogSearch(search: String!): [Blog!]!
+  fetchblogone(blogid: String!): Blog!
   fetchAllBlogcomment(stackid: String!): StackComment!
   fetchBlogCommentorderby(blogid: String!): [BlogComment!]!
   fetchBloglike: [Blog!]!

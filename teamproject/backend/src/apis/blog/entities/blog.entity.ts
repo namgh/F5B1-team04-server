@@ -1,4 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { type } from 'os';
 import { BlogCategoryTag } from 'src/apis/blogcategorytag/entities/blogcategofytag.entity';
 import { BlogComment } from 'src/apis/blogcomment/entities/blogcomment.entity';
 import { BlogLike } from 'src/apis/bloglike/entities/bloglike.entity';
@@ -28,7 +29,7 @@ export class Blog {
   @Field(() => String)
   title: string;
 
-  @Column()
+  @Column({ length: 5000 })
   @Field(() => String)
   contents: string;
 
@@ -53,9 +54,11 @@ export class Blog {
   dislike: number;
 
   @CreateDateColumn()
+  @Field(() => Date)
   createAt: Date;
 
   @UpdateDateColumn()
+  @Field(() => Date)
   updatedAt: Date;
 
   @DeleteDateColumn()

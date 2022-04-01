@@ -145,4 +145,9 @@ export class BlogResolver {
   ) {
     return await this.blogService.upload({ files });
   }
+
+  @Query(() => Blog)
+  async fetchblogone(@Args('blogid') blogid: string) {
+    return this.blogService.findone({ blogid });
+  }
 }

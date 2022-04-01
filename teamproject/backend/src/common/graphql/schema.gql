@@ -45,7 +45,8 @@ type Blog {
   like: Int!
   dislike: Int!
   createAt: DateTime!
-  updatedAt: DateTime!
+  updatedat: DateTime!
+  deletdAt: DateTime!
   blogtag: [BlogTag!]!
   blogcategorytag: [BlogCategoryTag!]!
 }

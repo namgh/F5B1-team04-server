@@ -27,8 +27,11 @@ export class AuthService {
       { secret: 'myRefreshkey', expiresIn: '2w' },
     );
     console.log(refreshToken);
-    //res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
-    res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; path=/;`);
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader(
+      'Set-Cookie',
+      `refreshToken=${refreshToken}; path=/;domain=.cucutoo.com; SameSite=None; Secure; httpOnly;`,
+    );
   }
 
   async logout({ refreshToken, currentUser }) {

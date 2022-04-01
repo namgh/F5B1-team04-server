@@ -2,6 +2,7 @@ version: '3.3'
 
 services:
   my_backend:
+    image: asia.gcr.io/cu2project/cu2_backend:1.1
     build:
       context: .
       dockerfile: Dockerfile
@@ -9,16 +10,11 @@ services:
       - 3000:3000
     env_file:
       - ./.env
-    # volumes:
-    #   - ./src:/myfolder/src
-    # - .env:/myfolder/.env
 
   my_database:
     platform: linux/x86_64
     image: mysql:latest
     environment:
-      # MYSQL_DATABASE: 'homework'
-      # MYSQL_ROOT_PASSWORD: '1q2w3e4r'
       MYSQL_DATABASE: 'cu2project'
       MYSQL_ROOT_PASSWORD: 'root'
     command:

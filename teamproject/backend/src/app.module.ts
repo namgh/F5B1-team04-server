@@ -68,10 +68,10 @@ import { StackTagModule } from './apis/stacktag/stacktag.module';
       host: 'my_database',
       port: 3306,
       username: 'root',
-      // password: 'root',
-      // database: 'cu2project',
-      password: '1q2w3e4r',
-      database: 'teamproject',
+      password: 'root',
+      database: 'cu2project',
+      // password: '1q2w3e4r',
+      // database: 'teamproject',
       entities: [__dirname + '/apis/**/*.entity.*'],
       synchronize: true,
       logging: true,
@@ -79,7 +79,7 @@ import { StackTagModule } from './apis/stacktag/stacktag.module';
     ConfigModule.forRoot({ isGlobal: true }), //
     CacheModule.register<RedisClientOptions>({
       store: redisStore,
-      url: 'redis://my_redis:6379',
+      url: 'redis://my_redis:6379', //'redis://cu2redis:6379'
       isGlobal: true,
     }),
   ],

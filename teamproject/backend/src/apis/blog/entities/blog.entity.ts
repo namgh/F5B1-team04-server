@@ -59,9 +59,10 @@ export class Blog {
 
   @UpdateDateColumn()
   @Field(() => Date)
-  updatedAt: Date;
+  updatedat: Date;
 
   @DeleteDateColumn()
+  @Field(() => Date)
   deletdAt: Date;
 
   @JoinTable()

@@ -29,12 +29,11 @@ export class BlogLikeService {
       .createQueryBuilder('blog')
       .leftJoinAndSelect('blog.bloglike', 'bloglike')
       .leftJoinAndSelect('bloglike.user', 'bloguser')
-      .leftJoinAndSelect('bloglike.user', 'user')
       .leftJoinAndSelect('blog.user', 'user')
       .leftJoinAndSelect('blog.blogtag', 'blogtag')
       .leftJoinAndSelect('blog.blogcategorytag', 'blogcategorytag')
       .where('bloglike.islike = :islike', { islike: true })
-      .andWhere('user.id = :id', { id: currentUser.id })
+      .andWhere('bloguser.id = :id', { id: currentUser.id })
       .getMany();
   }
 
@@ -171,12 +170,12 @@ export class BlogLikeService {
         return result;
       }
 
-      if (!bloglike.islike) {
+      if (!bloglike.isdislike) {
         const createlike = await this.bloglikerepository.create({
           ...bloglike,
           isdislike: true,
         });
-
+        console.log(createlike);
         const dislike = blog.dislike + 1;
 
         const updateblog = await this.blogrepository.create({

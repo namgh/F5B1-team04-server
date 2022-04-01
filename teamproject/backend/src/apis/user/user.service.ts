@@ -34,8 +34,8 @@ export class UserService {
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.mainstack', 'mainstack')
       .leftJoinAndSelect('user.coachtag', 'coachtag')
-      .leftJoinAndSelect('user.mainstack', 'mainstack')
-      .orderBy('user.createAt', 'DESC')
+      .leftJoinAndSelect('user.coachProfile', 'coachProfile')
+      .orderBy('user.createdAt', 'DESC')
       .getMany();
   }
 
@@ -44,7 +44,7 @@ export class UserService {
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.mainstack', 'mainstack')
       .leftJoinAndSelect('user.coachtag', 'coachtag')
-      .leftJoinAndSelect('user.mainstack', 'mainstack')
+      .leftJoinAndSelect('user.coachProfile', 'coachProfile')
       .orderBy('user.score', 'DESC')
       .getMany();
   }
@@ -54,7 +54,7 @@ export class UserService {
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.mainstack', 'mainstack')
       .leftJoinAndSelect('user.coachtag', 'coachtag')
-      .leftJoinAndSelect('user.mainstack', 'mainstack')
+      .leftJoinAndSelect('user.coachProfile', 'coachProfile')
       .where('user.name = :name', { name: search })
       .orWhere('user.nickname = :nickname', { nickname: search })
       .getMany();
@@ -68,7 +68,6 @@ export class UserService {
     delete mainstack.mainstack.id;
 
     const bestmainstack = Object.values(mainstack.mainstack);
-    console.log(mainstack.mainstack);
     const max = Math.max(...bestmainstack);
     if (max === 0) return 'no';
     for (const key in mainstack.mainstack) {
@@ -83,7 +82,7 @@ export class UserService {
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.mainstack', 'mainstack')
       .leftJoinAndSelect('user.coachtag', 'coachtag')
-      .leftJoinAndSelect('user.mainstack', 'mainstack')
+      .leftJoinAndSelect('user.coachProfile', 'coachProfile')
       .where('user.id = :id', { id: currentUser.id })
       .getOne();
   }
@@ -133,8 +132,9 @@ export class UserService {
     nickname,
     currentUser,
   }) {
-    const { email, ...rest } = currentUser;
-    const User = await this.userRepository.findOne({ email });
+    const User = await this.userRepository.findOne({
+      email: currentUser.email,
+    });
     const password = hashedPassword;
     const newUser = { ...User, password, phonenumber, name, nickname };
     return await this.userRepository.save(newUser);
@@ -251,7 +251,7 @@ export class UserService {
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.mainstack', 'mainstack')
       .leftJoinAndSelect('user.coachtag', 'coachtag')
-      .leftJoinAndSelect('user.mainstack', 'mainstack')
+      .leftJoinAndSelect('user.coachProfile', 'coachProfile')
       .orderBy('user.score', 'DESC')
       .skip(page * perpage)
       .take(perpage)

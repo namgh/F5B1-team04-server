@@ -11,17 +11,6 @@ export class StackTagService {
     private readonly stacktagrepository: Repository<StackTag>,
   ) {}
 
-  async create({ stacktag }) {
-    return await Promise.all(
-      stacktag.map((ele, i) => {
-        return new Promise(async (resolve, reject) => {
-          const findtag = await this.stacktagrepository.findOne({ tag: ele });
-          if (!findtag) return await this.stacktagrepository.save({ tag: ele });
-        });
-      }),
-    );
-  }
-
   async createone({ stacktag }) {
     return await this.stacktagrepository.save({ tag: stacktag });
   }

@@ -30,6 +30,10 @@ export class BlogCommentLike {
   @Field(() => Boolean)
   islike: Boolean;
 
+  @Column({ default: false })
+  @Field(() => Boolean)
+  isdislike: Boolean;
+
   @CreateDateColumn()
   createAt: Date;
 

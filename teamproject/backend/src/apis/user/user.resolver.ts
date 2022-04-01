@@ -16,7 +16,7 @@ export class UserResolver {
   }
 
   @Query(() => [User])
-  fetchUserOrderbylike() {
+  fetchUserOrderbyscore() {
     return this.userService.findUserOrderbyscore();
   }
 

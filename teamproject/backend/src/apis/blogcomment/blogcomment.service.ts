@@ -22,6 +22,7 @@ export class BlogCommentService {
     return await getRepository(BlogComment)
       .createQueryBuilder('blogcomment')
       .leftJoinAndSelect('blogcomment.blog', 'blog')
+      .leftJoinAndSelect('blogcomment.user', 'user')
       .where('blog.id = :id', { id: blogid })
       .orderBy('blogcomment.like', 'DESC')
       .getMany();
@@ -31,6 +32,7 @@ export class BlogCommentService {
     return await getRepository(BlogComment)
       .createQueryBuilder('blogcomment')
       .leftJoinAndSelect('blogcomment.blog', 'blog')
+      .leftJoinAndSelect('blogcomment.user', 'user')
       .where('blog.id = :id', { id: blogid })
       .orderBy('blogcomment.createAt', 'DESC')
       .getMany();
@@ -78,9 +80,12 @@ export class BlogCommentService {
   }
 
   async findAll({ blogid }) {
-    return await this.blogCommentrepository.find({
-      where: { blog: blogid },
-      relations: ['blog'],
-    });
+    return await getRepository(BlogComment)
+      .createQueryBuilder('blogcomment')
+      .leftJoinAndSelect('blogcomment.blog', 'blog')
+      .leftJoinAndSelect('blogcomment.user', 'user')
+      .where('blog.id = :id', { id: blogid })
+      .orderBy('blogcomment.id', 'DESC')
+      .getMany();
   }
 }

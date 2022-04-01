@@ -25,20 +25,38 @@ export class StackService {
   ) {}
 
   async findAll() {
-    return await this.stackrepository.find();
+    return await getRepository(Stack)
+      .createQueryBuilder('stack')
+      .leftJoinAndSelect('stack.user', 'user')
+      .leftJoinAndSelect('stack.stacktag', 'stacktag')
+      .orderBy('stack.id', 'DESC')
+      .getMany();
   }
 
   async fetchotherStackorderbylike() {
     return await getRepository(Stack)
       .createQueryBuilder('stack')
-      .orderBy('stack.like', 'ASC')
+      .leftJoinAndSelect('stack.user', 'user')
+      .leftJoinAndSelect('stack.stacktag', 'stacktag')
+      .orderBy('stack.like', 'DESC')
       .getMany();
+  }
+
+  async fetchStackOnebystackid({ stackid }) {
+    return await getRepository(Stack)
+      .createQueryBuilder('stack')
+      .leftJoinAndSelect('stack.user', 'user')
+      .leftJoinAndSelect('stack.stacktag', 'stacktag')
+      .where('stack.id = :id', { id: stackid })
+      .getOne();
   }
 
   async fetchotherStackorderbycreateAt() {
     return await getRepository(Stack)
       .createQueryBuilder('stack')
-      .orderBy('stack.createAt', 'ASC')
+      .leftJoinAndSelect('stack.user', 'user')
+      .leftJoinAndSelect('stack.stacktag', 'stacktag')
+      .orderBy('stack.createAt', 'DESC')
       .getMany();
   }
 
@@ -46,6 +64,7 @@ export class StackService {
     const stack = await getRepository(Stack)
       .createQueryBuilder('stack')
       .leftJoinAndSelect('stack.user', 'user')
+      .leftJoinAndSelect('stack.stacktag', 'stacktag')
       .andWhere('user.id = :id', { id: currentUser.id })
       .getMany();
 
@@ -79,8 +98,8 @@ export class StackService {
     });
   }
 
-  async update({ title, contents, currentUser, blogid }) {
-    const blog = await this.stackrepository.findOne({ id: blogid });
+  async update({ title, contents, currentUser, stackid }) {
+    const blog = await this.stackrepository.findOne({ id: stackid });
 
     return await this.stackrepository.save({
       ...blog,
@@ -89,9 +108,9 @@ export class StackService {
     });
   }
 
-  async delete({ currentUser, blogid }) {
+  async delete({ currentUser, stackid }) {
     const result = await this.stackrepository.softDelete({
-      id: blogid,
+      id: stackid,
     });
     return result.affected ? true : false;
   }
@@ -112,7 +131,7 @@ export class StackService {
             .pipe(
               storage.file(`thumb/${i}/${file.filename}`).createWriteStream(),
             )
-            .on('finish', () => resolve(`cu2image/${file.filename}`))
+            .on('finish', () => resolve(`thumb/${i}/${file.filename}`))
             .on('error', (error) => reject(error));
         });
       }),

@@ -7,6 +7,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -53,7 +54,8 @@ export class Stack {
   @DeleteDateColumn()
   deletdAt: Date;
 
+  @JoinTable()
   @ManyToMany(() => StackTag, (stacktag) => stacktag.stack)
-  @Field(() => [StackTag])
+  @Field(() => [StackTag], { nullable: true })
   stacktag: StackTag[];
 }

@@ -17,8 +17,13 @@ export class StackResolver {
   ) {}
 
   @Query(() => [Stack])
-  fetchStack() {
+  fetchStackAll() {
     return this.stackService.findAll();
+  }
+
+  @Query(() => Stack)
+  fetchStackOnebystackid(@Args('stackid') stackid: string) {
+    return this.stackService.fetchStackOnebystackid({ stackid });
   }
 
   @UseGuards(GqlAuthAccessGuard)
@@ -59,26 +64,26 @@ export class StackResolver {
   async updateStack(
     @Args('title') title: string,
     @Args('contents') contents: string,
-    @Args('blogid') blogid: string,
+    @Args('stackid') stackid: string,
     @CurrentUser() currentUser: ICurrentUser,
   ) {
     return await this.stackService.update({
       title,
       contents,
       currentUser,
-      blogid,
+      stackid,
     });
   }
 
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => String)
   async deleteStack(
-    @Args('blogid') blogid: string,
+    @Args('stackid') stackid: string,
     @CurrentUser() currentUser: ICurrentUser,
   ) {
     return await this.stackService.delete({
       currentUser,
-      blogid,
+      stackid,
     });
   }
 

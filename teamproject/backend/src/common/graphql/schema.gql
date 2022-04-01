@@ -61,6 +61,12 @@ type CoachProfile {
   answerInitAmount: Int
 }
 
+type CoachTag {
+  id: String!
+  tag: String!
+  user: [User!]!
+}
+
 type ColumnComment {
   id: String!
   contents: String!
@@ -131,6 +137,7 @@ type User {
   mainstack: MainStack!
   user: MainStack!
   role: Role!
+  coachtag: [CoachTag!]!
 }
 
 enum Role {
@@ -283,7 +290,7 @@ type Query {
 }
 
 type Mutation {
-  createCoachProfile(createProfileInput: CreateCoachProfileInput!): User!
+  createCoachProfile(createProfileInput: CreateCoachProfileInput!, stacktag: [String!]!): User!
   updateCoachProfile(UpdateCoachInput: UpdateCoachInput!): User!
   deleteCoachProfile: Boolean!
   createPointTransaction(amount: Float!, impUid: String!): PointTransaction!
@@ -329,11 +336,9 @@ type Mutation {
   createColumn(createColumnInput: CreateColumnInput!): CoachColumn!
   updateColumn(updateColumnInput: UpdateColumnInput!, columnId: String!): CoachColumn!
   deleteColumn(columnId: String!): Boolean!
-  createBlogManycategoryTag(blogcategorytag: [String!]!): [BlogCategoryTag!]!
   createBlogcategoryTag(blogcategorytag: String!): BlogCategoryTag!
   updateBlogcategorytag(updateblogtag: String!, blogcategorytag: String!): [BlogCategoryTag!]!
   deleteBlogcategoryTag(blogcategorytag: String!): BlogCategoryTag!
-  createBlogManyTag(stacktag: [String!]!): [StackTag!]!
   createBlogTag(stacktag: String!): StackTag!
   updateBlogtag(updateblogtag: String!, stacktag: String!): [StackTag!]!
   deleteBlogTag(stacktag: String!): StackTag!
@@ -347,6 +352,7 @@ type Mutation {
   dislikeAnswerToggle(answerId: String!): AnswerLike!
   createAnswerOrder(answerId: String!): OrderHistory!
   cancelAnswerOrder(answerId: String!, userId: String!): OrderHistory!
+  createBlogManyTag(stacktag: [String!]!): [StackTag!]!
 }
 
 input CreateCoachProfileInput {

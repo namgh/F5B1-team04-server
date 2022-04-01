@@ -63,6 +63,7 @@ export class BlogResolver {
           ],
         },
       },
+      sort: ['updatedat', 'desc'],
     });
 
     if (!result.hits.hits.length) return null;

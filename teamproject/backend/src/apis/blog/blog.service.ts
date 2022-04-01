@@ -91,29 +91,33 @@ export class BlogService {
 
     await this.mainstackrepository.save(mainstack);
 
-    const blogtagresult = blogtag.map(async (ele) => {
-      const isblogtag = await this.blogtagrepository.findOne({
-        tag: ele,
-      });
-      if (isblogtag) return isblogtag;
-      else {
-        return await this.blogtagrepository.save({
+    const blogtagresult = await Promise.all(
+      blogtag.map(async (ele) => {
+        const isblogtag = await this.blogtagrepository.findOne({
           tag: ele,
         });
-      }
-    });
+        if (isblogtag) return isblogtag;
+        else {
+          return await this.blogtagrepository.save({
+            tag: ele,
+          });
+        }
+      }),
+    );
 
-    const blogcategorytagresult = blogcategorytag.map(async (ele) => {
-      const isblogtag = await this.blogcategorytagrepository.findOne({
-        tag: ele,
-      });
-      if (isblogtag) return isblogtag;
-      else {
-        return await this.blogcategorytagrepository.save({
+    const blogcategorytagresult = await Promise.all(
+      blogcategorytag.map(async (ele) => {
+        const isblogtag = await this.blogcategorytagrepository.findOne({
           tag: ele,
         });
-      }
-    });
+        if (isblogtag) return isblogtag;
+        else {
+          return await this.blogcategorytagrepository.save({
+            tag: ele,
+          });
+        }
+      }),
+    );
 
     return await this.blogrepository.save({
       title,

@@ -10,6 +10,7 @@ import { Connection, getRepository, Repository } from 'typeorm';
 import { MainStack } from '../mainstack/entities/mainstack.entity';
 import { User } from './entities/user.entity';
 import { Cache } from 'cache-manager';
+import { CoachProfile } from '../coach/entities/coachprofile.entity';
 
 @Injectable()
 export class UserService {
@@ -21,6 +22,9 @@ export class UserService {
 
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
+
+    @InjectRepository(CoachProfile)
+    private readonly coachprofilerepository: Repository<CoachProfile>,
 
     private readonly connection: Connection,
   ) {}
@@ -79,38 +83,21 @@ export class UserService {
     });
 
     if (result1) throw new ConflictException('이미 등록된 이메일입니다');
-
-    const createnewuser = await this.userRepository.save({
+    const coachProfile = await this.coachprofilerepository.save({});
+    const returnresult = await this.userRepository.save({
       email,
       password: hashedPassword,
       phonenumber,
       name,
       nickname,
+      coachProfile,
     });
 
     await this.mainstackRepository.save({
-      user: createnewuser,
+      user: returnresult,
     });
 
-    return createnewuser;
-    // const newuser = {
-    //   password: hashedPassword,
-    //   email,
-    //   nickname,
-    //   name,
-    //   phonenumber,
-    // };
-
-    // const createnewuser = await this.userRepository.create(newuser);
-
-    // const mainstack = await this.mainstackRepository.save({
-    //   user: createnewuser,
-    // });
-
-    // return await this.userRepository.save({
-    //   ...newuser,
-    //   mainstack,
-    // });
+    return returnresult;
   }
   async socailcreate({ password, email, name }) {
     const result1 = await this.userRepository.findOne({

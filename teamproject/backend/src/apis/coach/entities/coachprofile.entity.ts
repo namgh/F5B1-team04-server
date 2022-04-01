@@ -1,10 +1,14 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { BlogTag } from 'src/apis/blogtag/entities/blogtag.entity';
+//import { CoachTag } from 'src/apis/coachtag/entities/coachtag.entity';
 import { User } from 'src/apis/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -17,36 +21,35 @@ export class CoachProfile {
   @Field(() => String)
   id: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => String)
   orgName: string;
 
-  //todo : coachingus category join
-  @Column()
+  @Column({ nullable: true })
   @Field(() => String)
   orgType: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => String)
   orgEmail: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => String)
   department: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => String)
   job: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => String)
   profileTitle: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => String)
   profileContents: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => String)
   image: string;
 
@@ -65,8 +68,4 @@ export class CoachProfile {
 
   @OneToOne(() => User, (user) => user.coachProfile)
   user: User;
-
-  // @Column({ nullable: true })
-  // @Field(() => Boolean)
-  // isHiring: boolean
 }

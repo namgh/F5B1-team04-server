@@ -66,6 +66,6 @@ export class CoachProfile {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToOne(() => User, (user) => user.coachProfile, { nullable: true })
+  @OneToOne(() => User, (user) => user.coachProfile)
   user: User;
 }

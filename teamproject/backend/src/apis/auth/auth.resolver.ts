@@ -63,6 +63,7 @@ export class AuthResolver {
       'Bearer ',
       '',
     );
+
     try {
       jwt.verify(refreshToken, 'myRefreshkey');
       jwt.verify(accesstoken, 'myAccessKey');

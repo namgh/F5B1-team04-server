@@ -34,11 +34,14 @@ export class AuthService {
     );
   }
 
-  async logout({ refreshToken, currentUser }) {
+  async logout({ refreshToken, currentUser, accesstoken }) {
     const User = {
       refreshToken: refreshToken,
       ...currentUser,
     };
+    await this.cacheManager.set(`accesstoken:${accesstoken}`, User, {
+      ttl: User.exp,
+    });
     return await this.cacheManager.set(`refreshToken:${refreshToken}`, User, {
       ttl: User.exp,
     });

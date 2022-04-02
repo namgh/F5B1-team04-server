@@ -59,18 +59,19 @@ export class AuthResolver {
       '',
     );
     // console.log('+++++++++++', context.req.headers);
-    // const accesstoken = context.req.headers.authorization.replace(
-    //   'Bearer ',
-    //   '',
-    // );
+    const accesstoken = context.req.headers.authorization.replace(
+      'Bearer ',
+      '',
+    );
     try {
       jwt.verify(refreshToken, 'myRefreshkey');
+      jwt.verify(accesstoken, 'myAccessKey');
     } catch {
       throw new UnauthorizedException('토큰검증 실패');
     }
 
     //console.log(context.req.refreshToken);
-    await this.authService.logout({ refreshToken, currentUser });
+    await this.authService.logout({ refreshToken, currentUser, accesstoken });
 
     return '성공';
   }

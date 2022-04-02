@@ -53,16 +53,16 @@ export class User {
   @Field(() => String, { nullable: true })
   phonenumber?: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Field(() => String)
   nickname: string;
 
   @Column({ nullable: true })
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   codeInterest: string;
 
   @Column({ nullable: true })
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   coachInterest: string;
 
   @Column({ default: 0 })
@@ -75,7 +75,7 @@ export class User {
 
   @JoinColumn()
   @OneToOne(() => CoachProfile, { nullable: true })
-  @Field(() => CoachProfile)
+  @Field(() => CoachProfile, { nullable: true })
   coachProfile: CoachProfile;
 
   @DeleteDateColumn()
@@ -116,6 +116,6 @@ export class User {
 
   @JoinTable()
   @ManyToMany(() => CoachTag, (coachtag) => coachtag.user)
-  @Field(() => [CoachTag])
+  @Field(() => [CoachTag], { nullable: true })
   coachtag: CoachTag[];
 }

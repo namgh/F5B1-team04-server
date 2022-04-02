@@ -21,8 +21,8 @@ export class CoachProfile {
   @Field(() => String)
   id: string;
 
-  @Column()
-  @Field(() => String)
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
   orgName: string;
 
   @Column({ nullable: true })
@@ -54,10 +54,10 @@ export class CoachProfile {
   image: string;
 
   @Column({ default: 1000 })
-  @Field(() => Int, { nullable: true })
+  @Field(() => Int)
   answerInitAmount: number;
 
-  @DeleteDateColumn({ nullable: true })
+  @DeleteDateColumn()
   deletdAt: Date;
 
   @CreateDateColumn()

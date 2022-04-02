@@ -21,36 +21,36 @@ export class CoachProfile {
   @Field(() => String)
   id: string;
 
-  @Column({ nullable: true })
+  @Column()
   @Field(() => String)
   orgName: string;
 
   @Column({ nullable: true })
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   orgType: string;
 
   @Column({ nullable: true })
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   orgEmail: string;
 
   @Column({ nullable: true })
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   department: string;
 
   @Column({ nullable: true })
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   job: string;
 
   @Column({ nullable: true })
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   profileTitle: string;
 
   @Column({ nullable: true })
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   profileContents: string;
 
   @Column({ nullable: true })
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   image: string;
 
   @Column({ default: 1000 })
@@ -66,6 +66,6 @@ export class CoachProfile {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToOne(() => User, (user) => user.coachProfile)
+  @OneToOne(() => User, (user) => user.coachProfile, { nullable: true })
   user: User;
 }

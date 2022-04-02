@@ -47,7 +47,7 @@ export class AuthResolver {
     return this.authService.getAccessToken({ user: currentUser });
   }
 
-  @UseGuards(GqlAuthRefreshGuard) // 로그인 한 사람만 이 API에 접근가능함
+  @UseGuards(GqlAuthAccessGuard) // 로그인 한 사람만 이 API에 접근가능함
   @Mutation(() => String)
   async logout(
     @Context() context: any,

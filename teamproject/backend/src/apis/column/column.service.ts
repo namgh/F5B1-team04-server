@@ -32,7 +32,7 @@ export class CoachColumnService {
 
   async findAll() {
     return await this.coachColumnRepository.find({
-      relations: ['user'],
+      relations: ['user', 'user.coachProfile'],
     });
   }
 

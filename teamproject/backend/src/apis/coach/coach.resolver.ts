@@ -9,6 +9,7 @@ import { CoachProfileService } from './coach.service';
 import { CreateCoachProfileInput } from './dto/createCoach.input';
 import { UpdateCoachInput } from './dto/updateCoach.input';
 
+import { FileUpload, GraphQLUpload } from 'graphql-upload';
 @Resolver()
 export class CoachProfileResolver {
   constructor(private readonly coachProfileService: CoachProfileService) {}
@@ -46,6 +47,13 @@ export class CoachProfileResolver {
       createProfileInput,
       stacktag,
     });
+  }
+
+  @Mutation(() => [String])
+  async uploadCoachProfileImages(
+    @Args({name : 'files', type: () => [GraphQLUpload]}) files: FileUpload[]
+  ) {
+    return await this.coachProfileService.upload({files})
   }
 
   @Roles(Role.COACH)

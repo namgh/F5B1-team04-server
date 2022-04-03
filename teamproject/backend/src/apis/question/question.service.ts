@@ -35,6 +35,21 @@ export class QuestionService {
     private readonly elasticsearchService: ElasticsearchService,
   ) {}
 
+
+  async findAllQuestionList() {
+    return await this.questionRepository.find({
+      relations: ['fromUser', 'toCoach','toCoach.coachProfile']
+    })
+  }
+
+  async findAllCoachsQuestionList({coachId}) {
+    return await this.questionRepository.find({
+      where: { toCoach: { id: coachId } },
+      relations: ['fromUser', 'toCoach', 'toCoach.coachProfile']
+    })
+  }
+
+
   async findAllCoachQuestion({ currentUser }) {
     return await this.questionRepository.find({
       where: { toCoach: { id: currentUser.id } },

@@ -255,7 +255,7 @@ export class UserService {
       .orderBy('user.score', 'DESC')
       .skip(page * perpage)
       .take(perpage)
-      .getMany();
+      .getMany();   
   }
 
   async fetchisnicknameuser({ nickname }) {

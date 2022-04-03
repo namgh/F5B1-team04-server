@@ -4,7 +4,7 @@ import { Connection, getRepository, IsNull, Not, Repository } from 'typeorm';
 import { CoachProfile } from '../coach/entities/coachprofile.entity';
 import { Deposit, DEPOSIT_STATUS } from '../deposit/entities/deposit.entity';
 import { OrderHistory } from '../order/entities/order.entity';
-import { Question } from '../question/entities/question.entity';
+import { Question, QUESTION_FIELD_ENUM } from '../question/entities/question.entity';
 import { User } from '../user/entities/user.entity';
 import { Answer } from './entities/answer.entity';
 
@@ -40,6 +40,39 @@ export class AnswerService {
       .getMany();
   }
 
+  async findAnswerListOrderByHigthScorePerCoach({ itemCount, coachId }) {
+    const x = await this.answerRepository.find({
+      where: { question: { toCoach: coachId } },
+      relations: ['question', 'question.fromUser', 'question.toCoach', 'question.toCoach.coachProfile'],
+      order: { likecount: 'DESC' },
+      take: itemCount
+    })
+    
+    console.log(x)
+  }
+
+
+  async findQnACoachingListForClient() {
+    const x = await this.answerRepository.find({
+      relations:['question', 'question.fromUser', 'question.toCoach', 'question.toCoach.coachProfile']
+    })
+    console.log(x)
+    return x
+  }
+
+  async findQnAListPerCoach({ coachId }) {
+        
+
+    return await this.answerRepository.find({
+      where: { question : { toCoach: {id: coachId}}},
+      relations: ['question', 'question.fromUser', 'question.toCoach', 'question.toCoach.coachProfile'],
+    })
+  
+  }
+  
+  
+  
+  
   async findMyHasAnswerCoaching({ currentUser }) {
     const question = await this.questionRepository.find({
       where: { fromUser: { id: currentUser.id } },
@@ -117,8 +150,21 @@ export class AnswerService {
 
       //answer:question 은 1:1 관계 이기에 같은 questionId를 갖는 question을 주입하려고 할 때 에러!
       //중복 검사 안해도됨
+
+      let { QType, ...rest } = createAnswerInput
+      if (QType === 'NORM') {
+        QType = QUESTION_FIELD_ENUM.NORM
+      }
+      else if (QType === 'PORTFOLIO') {
+        QType = QUESTION_FIELD_ENUM.PORTFORLIO
+      }
+      else if (QType === 'RESUME') {
+        QType = QUESTION_FIELD_ENUM.RESUME
+      }
+
       const answer = await queryRunner.manager.save(Answer, {
-        ...createAnswerInput,
+        ...rest,
+        QType: QType,
         question,
         amount: deposit.fromAmount,
       });

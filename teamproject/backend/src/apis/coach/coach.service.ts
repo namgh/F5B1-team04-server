@@ -9,6 +9,15 @@ import { User, Role } from '../user/entities/user.entity';
 import { UpdateCoachInput } from './dto/updateCoach.input';
 import { CoachProfile } from './entities/coachprofile.entity';
 
+import { FileUpload } from 'graphql-upload';
+import { Storage } from '@google-cloud/storage';
+
+
+interface IFile {
+  files: FileUpload[];
+}
+
+
 interface IUpdateCoach {
   currentUser: ICurrentUser;
   updateCoachInput: UpdateCoachInput;
@@ -26,6 +35,27 @@ export class CoachProfileService {
     @InjectRepository(CoachTag)
     private readonly coachtagrepository: Repository<CoachTag>,
   ) {}
+
+  async upload({ files }: IFile) {
+    const storage = new Storage({
+      keyFilename: process.env.STORAGE_KEY_FILENAME,
+      projectId: process.env.STORAGE_PROJECT_ID
+    }).bucket(process.env.STORAGE_BUCKET)
+
+    const promiseFiles = await Promise.all(files)
+
+    const results = await Promise.all(
+      promiseFiles.map((file) => {
+        return new Promise((resolve, reject) => {
+          file.createReadStream()
+            .pipe(storage.file(`coachprofile/${file.filename}`).createWriteStream())
+            .on('finish', () => resolve(`coachprofile/${file.filename}`))
+            .on('error', (error)=> reject(error))
+        })
+      })
+    )
+    return results
+  }
 
   async findAll() {
     return await this.userRepository.find({
@@ -118,4 +148,8 @@ export class CoachProfileService {
     }
     return false;
   }
+
+
+
+
 }

@@ -13,6 +13,7 @@ type BlogCommentLike {
   user: User!
   blogcomment: BlogComment!
   islike: Boolean!
+  isdislike: Boolean!
 }
 
 type BlogComment {
@@ -21,6 +22,7 @@ type BlogComment {
   user: User!
   blog: Blog!
   like: Int!
+  dislike: Int!
 }
 
 type BlogLike {
@@ -41,14 +43,15 @@ type Blog {
   id: String!
   title: String!
   contents: String!
+  url: String!
   user: User!
   like: Int!
   dislike: Int!
   createAt: DateTime!
   updatedat: DateTime!
   deletdAt: DateTime!
-  blogtag: [BlogTag!]!
-  blogcategorytag: [BlogCategoryTag!]!
+  blogtag: [BlogTag!]
+  blogcategorytag: [BlogCategoryTag!]
 }
 
 """
@@ -58,15 +61,15 @@ scalar DateTime
 
 type CoachProfile {
   id: String!
-  orgName: String!
-  orgType: String!
-  orgEmail: String!
-  department: String!
-  job: String!
-  profileTitle: String!
-  profileContents: String!
-  image: String!
-  answerInitAmount: Int
+  orgName: String
+  orgType: String
+  orgEmail: String
+  department: String
+  job: String
+  profileTitle: String
+  profileContents: String
+  image: String
+  answerInitAmount: Int!
 }
 
 type CoachTag {
@@ -113,6 +116,7 @@ type StackLike {
   user: User!
   stack: Stack!
   islike: Boolean!
+  isdislike: Boolean!
 }
 
 type StackTag {
@@ -128,7 +132,9 @@ type Stack {
   user: User!
   like: Int!
   dislike: Int!
-  stacktag: [StackTag!]!
+  createAt: DateTime!
+  updatedAt: DateTime!
+  stacktag: [StackTag!]
 }
 
 type User {
@@ -137,15 +143,14 @@ type User {
   name: String!
   phonenumber: String
   nickname: String!
-  codeInterest: String!
-  coachInterest: String!
+  codeInterest: String
+  coachInterest: String
   score: Int!
   point: Int!
-  coachProfile: CoachProfile!
+  coachProfile: CoachProfile
   mainstack: MainStack!
-  user: MainStack!
   role: Role!
-  coachtag: [CoachTag!]!
+  coachtag: [CoachTag!]
 }
 
 enum Role {
@@ -206,9 +211,9 @@ enum POINT_TRANSACTION_STATUS_ENUM {
 
 type Answer {
   id: String!
-  title: String!
-  contents: String!
-  amount: Int!
+  title: String
+  contents: String
+  amount: Int
   question: Question!
   likecount: Int!
   dislikecount: Int!
@@ -218,9 +223,9 @@ type Question {
   id: String!
   fromUser: User!
   toCoach: User!
-  title: String!
+  title: String
   QType: QUESTION_FIELD_ENUM!
-  contents: String!
+  contents: String
 }
 
 enum QUESTION_FIELD_ENUM {
@@ -256,7 +261,7 @@ type Query {
   fetchMyCoachInfo: User!
   fetchMyPointHistory: [PointTransaction!]!
   fetchAllUser: [User!]!
-  fetchUserOrderbylike: [User!]!
+  fetchUserOrderbyscore: [User!]!
   fetchmyuser: User!
   fetchUsersearch(search: String!): [User!]!
   fetchmainstack: String!
@@ -266,18 +271,19 @@ type Query {
   fetchmyBlog: [Blog!]!
   fetchotherBlogorderbylikeAll: [Blog!]!
   fetchotherBlogorderbycreateAt: [Blog!]!
-  fetchotherBlogorderbylikecreate: [Blog!]!
   fetchBlogSearch(search: String!): [Blog!]!
   fetchblogone(blogid: String!): Blog!
-  fetchAllBlogcomment(stackid: String!): StackComment!
+  fetchAllBlogcomment(blogid: String!): [BlogComment!]!
   fetchBlogCommentorderbycreate(blogid: String!): [BlogComment!]!
   fetchBlogCommentorderbylike(blogid: String!): [BlogComment!]!
   fetchBloglike: [Blog!]!
-  fetchStack: [Stack!]!
+  fetchStackAll: [Stack!]!
+  fetchStackOnebystackid(stackid: String!): Stack!
   fetchmyStack: [Stack!]!
   fetchotherStackorderbylike: [Stack!]!
   fetchotherStackorderbycreateAt: [Stack!]!
   fetchStackmylike: [Stack!]!
+  fetchAllStackcomment(stackid: String!): StackComment!
   fetchBlogcommentlike: [BlogComment!]!
   fetchColumnCommentList(columnId: String!): [ColumnComment!]!
   fetchMyColumnComment: [ColumnComment!]!
@@ -290,10 +296,15 @@ type Query {
   fetchDetailColumn(columnId: String!): CoachColumn!
   fetchMyColumn: [CoachColumn!]!
   fetchColumnListWhatILike: [ColumnLike!]!
+  fetchQuestionList: [Question!]!
+  fetchQuestionListPerCoach(coachId: String!): [Question!]!
   fetchCoachQuestionList: [Question!]!
   fetchMyQuestionList: [Question!]!
   fetchQuestion(questionId: String!): Question!
   goodEvalAnswerList(itemCount: Float!): [Answer!]!
+  goodEvalAnswerListPerCoach(coachId: String!, itemCount: Float!): [Answer!]!
+  fetchQnACoachingList: [Answer!]!
+  fetchQnACoachListPerCoach(coachId: String!): [Answer!]!
   myCoachingListHasAnswer: [Answer!]!
   coachAnsweredList: [Answer!]!
   stringReturn: String!
@@ -301,6 +312,7 @@ type Query {
 
 type Mutation {
   createCoachProfile(createProfileInput: CreateCoachProfileInput!, stacktag: [String!]!): User!
+  uploadCoachProfileImages(files: [Upload!]!): [String!]!
   updateCoachProfile(UpdateCoachInput: UpdateCoachInput!): User!
   deleteCoachProfile: Boolean!
   createPointTransaction(amount: Float!, impUid: String!): PointTransaction!
@@ -316,8 +328,8 @@ type Mutation {
   login(password: String!, email: String!): String!
   resotreAccessToken: String!
   logout: String!
-  createBlog(blogcategorytag: [String!]!, blogtag: [String!]!, contents: String!, title: String!): Blog!
-  updateBlog(blogid: String!, contents: String!, title: String!): Blog!
+  createBlog(url: String!, blogcategorytag: [String!]!, blogtag: [String!]!, contents: String!, title: String!): Blog!
+  updateBlog(url: String!, blogid: String!, contents: String!, title: String!): Blog!
   deletemyBlog(blogid: String!): String!
   deleteBlog(blogid: String!): String!
   uploadblogFile(files: [Upload!]!): [String!]!
@@ -325,18 +337,19 @@ type Mutation {
   updateBlogComment(blogcommentid: String!, contents: String!, blogid: String!): BlogComment!
   deletemyBlogComment(blogcommentid: String!): Boolean!
   deleteBlogComment(blogcommentid: String!): Boolean!
-  likeBlogtoggle(blogid: String!): BlogLike!
-  dislikeBlogtoggle(blogid: String!): BlogLike!
+  Blogliketoggle(blogid: String!): BlogLike!
+  Blogdisliketoggle(blogid: String!): BlogLike!
   createStack(stacktag: [String!]!, contents: String!, title: String!): Stack!
-  updateStack(blogid: String!, contents: String!, title: String!): Stack!
-  deleteStack(blogid: String!): String!
+  updateStack(stackid: String!, contents: String!, title: String!): Stack!
+  deleteStack(stackid: String!): String!
   uploadStackFile(files: [Upload!]!): [String!]!
   Stackliketoggle(stackid: String!): StackLike!
   Stackdisliketoggle(stackid: String!): StackLike!
   createStackComment(contents: String!, stackid: String!): StackComment!
   updateStackComment(stackcommentid: String!, contents: String!): StackComment!
   deleteStackComment(stackcommentid: String!): StackComment!
-  Blogcommenttoggle(blogcommentid: String!): BlogCommentLike!
+  Blogcommentliketoggle(blogcommentid: String!): BlogCommentLike!
+  Blogcommentdisliketoggle(blogcommentid: String!): BlogCommentLike!
   LikeColumnToggle(columnId: String!): ColumnLike!
   DislikeColumnToggle(columnId: String!): ColumnLike!
   createColumnComment(contents: String!, columnId: String!): ColumnComment!
@@ -362,32 +375,31 @@ type Mutation {
   dislikeAnswerToggle(answerId: String!): AnswerLike!
   createAnswerOrder(answerId: String!): OrderHistory!
   cancelAnswerOrder(answerId: String!, userId: String!): OrderHistory!
-  createBlogManyTag(stacktag: [String!]!): [StackTag!]!
 }
 
 input CreateCoachProfileInput {
-  orgName: String!
-  orgType: String!
-  orgEmail: String!
-  department: String!
-  job: String!
-  profileTitle: String!
-  profileContents: String!
-  image: String!
-  answerInitAmount: Int
-}
-
-input UpdateCoachInput {
-  department: String!
-  job: String!
-  profileTitle: String!
-  profileContents: String!
-  image: String!
-  answerInitAmount: Int
+  orgName: String
+  orgType: String
+  orgEmail: String
+  department: String
+  job: String
+  profileTitle: String
+  profileContents: String
+  image: String
+  answerInitAmount: Int!
 }
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
+
+input UpdateCoachInput {
+  department: String
+  job: String
+  profileTitle: String
+  profileContents: String
+  image: String
+  answerInitAmount: Int!
+}
 
 input CreateColumnInput {
   title: String!
@@ -402,7 +414,7 @@ input UpdateColumnInput {
 input CreateQuestionInput {
   title: String!
   contents: String!
-  QType: QUESTION_FIELD_ENUM
+  QType: String
 }
 
 input UpdateQuestionInput {

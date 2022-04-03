@@ -185,7 +185,7 @@ export class BlogService {
 
   async upload({ files }: IFile) {
     const storage = new Storage({
-      keyFilename: 'fiery-surf-341008-9eb487c6b3f6.json',
+      keyFilename: 'cu2project-4b09dba6a53d.json',
       projectId: 'fiery-surf-341008',
     }).bucket('cu2image');
 

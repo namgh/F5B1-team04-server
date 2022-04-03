@@ -39,8 +39,8 @@ export class Question {
   @Field(() => User)
   toCoach: User;
 
-  @Column()
-  @Field(() => String)
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
   title: string;
 
   @Column({
@@ -51,8 +51,8 @@ export class Question {
   @Field(() => QUESTION_FIELD_ENUM)
   QType: QUESTION_FIELD_ENUM;
 
-  @Column()
-  @Field(() => String)
+  @Column({ nullable: true })
+  @Field(() => String,{ nullable: true })
   contents: string;
 
   @OneToOne(() => Answer, (answer) => answer.question)

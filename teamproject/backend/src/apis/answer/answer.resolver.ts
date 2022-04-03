@@ -21,10 +21,29 @@ export class AnswerResolver {
     });
   }
 
-  //
-  //
-  //
-  //
+  @Query(() => [Answer])
+  async goodEvalAnswerListPerCoach(
+    @Args('itemCount') itemCount: number,
+    @Args('coachId') coachId: string
+  ) {
+    return await this.answerService.findAnswerListOrderByHigthScorePerCoach({
+      coachId,
+      itemCount
+    })
+  }
+
+
+  @Query(() => [Answer])
+  async fetchQnACoachingList() {
+    return await this.answerService.findQnACoachingListForClient()
+  }
+
+  @Query(() => [Answer])
+  async fetchQnACoachListPerCoach(
+    @Args('coachId') coachId : string
+  ) {
+    return await this.answerService.findQnAListPerCoach({coachId})
+  }
 
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [Answer])

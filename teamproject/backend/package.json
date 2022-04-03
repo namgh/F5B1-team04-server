@@ -24,7 +24,7 @@
     "@elastic/elasticsearch": "^8.0.0",
     "@google-cloud/storage": "^5.18.2",
     "@nestjs/common": "^8.0.0",
-    "@nestjs/config": "^1.2.0",
+    "@nestjs/config": "^2.0.0",
     "@nestjs/core": "^8.0.0",
     "@nestjs/elasticsearch": "^8.1.0",
     "@nestjs/graphql": "^9.1.2",

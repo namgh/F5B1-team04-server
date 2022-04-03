@@ -79,7 +79,7 @@ import { StackTagModule } from './apis/stacktag/stacktag.module';
     ConfigModule.forRoot({ isGlobal: true }), //
     CacheModule.register<RedisClientOptions>({
       store: redisStore,
-      url: 'redis://my_redis:6379',
+      url: 'redis://my_redis:6379', 
       isGlobal: true,
     }),
   ],

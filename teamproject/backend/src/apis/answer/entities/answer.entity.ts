@@ -19,16 +19,16 @@ export class Answer {
   @Field(() => String)
   id: string;
 
-  @Column()
-  @Field(() => String)
+  @Column({ nullable: true })
+  @Field(() => String,{ nullable: true })
   title: string;
 
-  @Column()
-  @Field(() => String)
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
   contents: string;
 
-  @Column()
-  @Field(() => Int)
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
   amount: number;
 
   @JoinColumn()

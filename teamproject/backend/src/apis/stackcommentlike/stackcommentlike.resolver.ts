@@ -15,13 +15,13 @@ export class StackCommentLikeResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [StackComment])
-  async fetchBlogcommentlike(@CurrentUser() currentUser: ICurrentUser) {
+  async fetchStackcommentlike(@CurrentUser() currentUser: ICurrentUser) {
     return this.stackcommentlikeservice.findStackcommentlike({ currentUser });
   }
 
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => StackCommentLike)
-  async Blogcommentliketoggle(
+  async Stackcommentliketoggle(
     @Args('stackcommentid') stackcommentid: string,
     @CurrentUser() currentUser: ICurrentUser,
   ) {
@@ -30,7 +30,7 @@ export class StackCommentLikeResolver {
 
   @UseGuards(GqlAuthAccessGuard)
   @Mutation(() => StackCommentLike)
-  async Blogcommentdisliketoggle(
+  async Stackcommentdisliketoggle(
     @Args('stackcommentid') stackcommentid: string,
     @CurrentUser() currentUser: ICurrentUser,
   ) {

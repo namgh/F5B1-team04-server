@@ -138,4 +138,15 @@ export class StackService {
     );
     return results;
   }
+  async fetchstackbysearch({ search }) {
+    return getRepository(Stack)
+      .createQueryBuilder('stack')
+      .leftJoinAndSelect('stack.user', 'user')
+      .leftJoinAndSelect('stack.stacktag', 'stacktag')
+      .where('stack.title like :title', { title: '%' + search + '%' })
+      .orWhere('stack.contents like :contents', {
+        contents: '%' + search + '%',
+      })
+      .getMany();
+  }
 }

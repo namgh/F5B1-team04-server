@@ -187,7 +187,7 @@ export class BlogService {
     const storage = new Storage({
       keyFilename: 'cu2project-346112-d5421f4b1c03.json',
       projectId: 'cu2project-346112',
-    }).bucket('cu2-backend-bucket');
+    }).bucket('cu2project-backend');
 
     const waitedfile = await Promise.all(files);
 

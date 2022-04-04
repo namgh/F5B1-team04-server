@@ -185,9 +185,9 @@ export class BlogService {
 
   async upload({ files }: IFile) {
     const storage = new Storage({
-      keyFilename: 'cu2project-4b09dba6a53d.json',
-      projectId: 'fiery-surf-341008',
-    }).bucket('cu2image');
+      keyFilename: 'cu2project-346112-d5421f4b1c03.json',
+      projectId: 'cu2project-346112',
+    }).bucket('cu2-backend-bucket');
 
     const waitedfile = await Promise.all(files);
 

@@ -25,7 +25,7 @@ export class QuestionResolver {
     @Args('coachId') coachId: string
   ) {
     return await this.questionService.findAllCoachsQuestionList({coachId})
-  }
+  } 
 
 
   @Roles(Role.COACH)

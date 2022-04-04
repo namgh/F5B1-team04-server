@@ -16,7 +16,7 @@ import {
 
 export enum QUESTION_FIELD_ENUM {
   NORM = 'NORM',
-  RESUME = 'RESUMNE',
+  RESUME = 'RESUME',
   PORTFORLIO = 'PORTFORLIO',
 }
 

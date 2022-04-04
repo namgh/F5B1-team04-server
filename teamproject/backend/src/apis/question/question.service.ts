@@ -8,7 +8,7 @@ import { Connection, getRepository, Repository } from 'typeorm';
 import { CoachProfile } from '../coach/entities/coachprofile.entity';
 import { Deposit, DEPOSIT_STATUS } from '../deposit/entities/deposit.entity';
 import { User } from '../user/entities/user.entity';
-import { Question } from './entities/question.entity';
+import { Question, QUESTION_FIELD_ENUM } from './entities/question.entity';
 
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER, Inject, UseGuards } from '@nestjs/common';
@@ -163,8 +163,20 @@ export class QuestionService {
       });
       console.log('💛Deposit', deposit);
       console.log('💛deposit.id', deposit.id);
+
+      let { QType, ...rest } = createQuestionInput
+      if (QType === "NORM") QType = QUESTION_FIELD_ENUM.NORM
+      if (QType === "RESUME") QType = QUESTION_FIELD_ENUM.RESUME
+      if (QType === "PORTFORLIO") QType = QUESTION_FIELD_ENUM.PORTFORLIO
+
+      console.log("💛Type", typeof QType)
+      console.log("💛Type", QType)
+
+
       const question = await queryRunner.manager.save(Question, {
-        ...createQuestionInput,
+        // ...createQuestionInput,
+        ...rest,
+        QType,
         fromUser: minusUser,
         toCoach,
         deposit: deposit.id,

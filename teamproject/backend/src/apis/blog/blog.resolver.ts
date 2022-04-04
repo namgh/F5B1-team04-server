@@ -7,6 +7,7 @@ import { GqlAuthAccessGuard } from 'src/common/auth/gql-auth.guard';
 import { CurrentUser, ICurrentUser } from 'src/common/auth/gql-user.param';
 import { BlogService } from './blog.service';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { BlogReturn } from './dto/blog.return';
 
 @Resolver()
 export class BlogResolver {
@@ -40,14 +41,8 @@ export class BlogResolver {
     return this.blogService.fetchotherBlogorderbycreateAt();
   }
 
-  @Query(() => [Blog])
+  @Query(() => [BlogReturn])
   async fetchBlogSearch(@Args('search') search: string) {
-    const redistemp = await this.cacheManager.get(`title:${search}`);
-
-    if (redistemp) {
-      return JSON.parse(redistemp);
-    }
-
     const result = await this.elasticsearchService.search({
       index: 'blog',
       query: {
@@ -58,25 +53,29 @@ export class BlogResolver {
           ],
         },
       },
-      // sort: ['updatedat', 'desc'],
     });
 
-    if (!result.hits.hits.length) return null;
-
-    const resultmap = result.hits.hits.map((ele) => {
-      const needresult = {};
-
-      const resultsource = JSON.stringify(ele._source);
-      const temp = JSON.parse(resultsource);
-      for (let key in temp) {
-        if (!key.includes('@')) needresult[key] = temp[key];
-      }
-      console.log(temp);
-      return needresult;
-    });
-
-    await this.cacheManager.set(`title:${search}`, JSON.stringify(resultmap), {
-      ttl: 30,
+    if (!result.hits.hits.length) return [];
+    //console.log(result.hits.hits)
+    const resultmap = result.hits.hits.map((ele): any => {
+      const temp = JSON.stringify(ele);
+      const el = JSON.parse(temp);
+      return {
+        id: el._source.id,
+        contents: el._source.contents,
+        like: el._source.like,
+        searchcontents: el._source.searchcontents,
+        user: {
+          email: el._source.email,
+          nickname: el._source.nickname,
+        },
+        blogcategorytag: [
+          {
+            tag: el._source.tag,
+          },
+        ],
+        updatedat: String(el._source.updatedat),
+      };
     });
     return JSON.parse(JSON.stringify(resultmap));
   }
@@ -151,4 +150,3 @@ export class BlogResolver {
     return this.blogService.findone({ blogid });
   }
 }
- 

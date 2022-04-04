@@ -93,4 +93,8 @@ export class StackResolver {
   ) {
     return await this.stackService.upload({ files });
   }
+  @Query(() => [Stack])
+  async fetchstackbysearch(@Args('search') search: string) {
+    return this.stackService.fetchstackbysearch({ search });
+  }
 }

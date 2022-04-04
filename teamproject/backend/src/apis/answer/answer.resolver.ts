@@ -51,8 +51,7 @@ export class AnswerResolver {
     return await this.answerService.findMyHasAnswerCoaching({ currentUser });
   }
 
-  @Roles(Role.COACH)
-  @UseGuards(GqlAuthAccessGuard, RolesGuard)
+  @UseGuards(GqlAuthAccessGuard)
   @Query(() => [Answer])
   async coachAnsweredList(@CurrentUser() currentUser: ICurrentUser) {
     return await this.answerService.findAllCoachAnswer({ currentUser });

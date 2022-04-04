@@ -64,6 +64,7 @@ export class BlogResolver {
         id: el._source.id,
         contents: el._source.contents,
         like: el._source.like,
+        title: el._source.title,
         searchcontents: el._source.searchcontents,
         user: {
           email: el._source.email,

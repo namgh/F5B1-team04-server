@@ -9,8 +9,8 @@ export class CreateQuestionInput {
   @Field(() => String)
   contents: string;
 
-  // @Field(() => QUESTION_FIELD_ENUM, { nullable: true })
+  // @Field(() => QUESTION_FIELD_ENUM)
   // QType: QUESTION_FIELD_ENUM;
-  @Field(() => String, { nullable: true })
-  QType: string;
+  // @Field(() => String, { nullable: true })
+  // QType: string;
 }

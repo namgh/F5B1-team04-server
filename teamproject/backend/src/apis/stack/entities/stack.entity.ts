@@ -31,7 +31,7 @@ export class Stack {
   contents: string;
 
   @ManyToOne(() => User, (user) => user.stack)
-  @Field(() => User)
+  @Field(() => User, { nullable: true })
   user: User;
 
   @OneToMany((type) => StackLike, (stacklike) => stacklike.stack)

@@ -4,7 +4,10 @@ import { Connection, getRepository, IsNull, Not, Repository } from 'typeorm';
 import { CoachProfile } from '../coach/entities/coachprofile.entity';
 import { Deposit, DEPOSIT_STATUS } from '../deposit/entities/deposit.entity';
 import { OrderHistory } from '../order/entities/order.entity';
-import { Question, QUESTION_FIELD_ENUM } from '../question/entities/question.entity';
+import {
+  Question,
+  QUESTION_FIELD_ENUM,
+} from '../question/entities/question.entity';
 import { User } from '../user/entities/user.entity';
 import { Answer } from './entities/answer.entity';
 
@@ -43,36 +46,44 @@ export class AnswerService {
   async findAnswerListOrderByHigthScorePerCoach({ itemCount, coachId }) {
     const x = await this.answerRepository.find({
       where: { question: { toCoach: coachId } },
-      relations: ['question', 'question.fromUser', 'question.toCoach', 'question.toCoach.coachProfile'],
+      relations: [
+        'question',
+        'question.fromUser',
+        'question.toCoach',
+        'question.toCoach.coachProfile',
+      ],
       order: { likecount: 'DESC' },
-      take: itemCount
-    })
-    
-    console.log(x)
-  }
+      take: itemCount,
+    });
 
+    console.log(x);
+  }
 
   async findQnACoachingListForClient() {
     const x = await this.answerRepository.find({
-      relations:['question', 'question.fromUser', 'question.toCoach', 'question.toCoach.coachProfile']
-    })
-    console.log(x)
-    return x
+      relations: [
+        'question',
+        'question.fromUser',
+        'question.toCoach',
+        'question.toCoach.coachProfile',
+      ],
+    });
+    console.log(x);
+    return x;
   }
 
   async findQnAListPerCoach({ coachId }) {
-        
-
     return await this.answerRepository.find({
-      where: { question : { toCoach: {id: coachId}}},
-      relations: ['question', 'question.fromUser', 'question.toCoach', 'question.toCoach.coachProfile'],
-    })
-  
+      where: { question: { toCoach: { id: coachId } } },
+      relations: [
+        'question',
+        'question.fromUser',
+        'question.toCoach',
+        'question.toCoach.coachProfile',
+      ],
+    });
   }
-  
-  
-  
-  
+
   async findMyHasAnswerCoaching({ currentUser }) {
     const question = await this.questionRepository.find({
       where: { fromUser: { id: currentUser.id } },
@@ -95,7 +106,7 @@ export class AnswerService {
     return answered;
   }
 
-  async findAllCoachAnswer({ currentUser }) {
+  async findAllCoachAnswercoach({ currentUser }) {
     const question = await this.questionRepository.find({
       where: { toCoach: { id: currentUser.id } },
     });
@@ -106,6 +117,18 @@ export class AnswerService {
       .leftJoinAndSelect('question.fromUser', 'user')
       .leftJoinAndSelect('question.toCoach', 'coach')
       .where('question.id IN (:id)', { id: QIds })
+      .getMany();
+    // console.log(answered);
+    return answered;
+  }
+
+  async findAllCoachAnswer() {
+    const answered = await getRepository(Answer)
+      .createQueryBuilder('answer')
+      .leftJoinAndSelect('answer.question', 'question')
+      .leftJoinAndSelect('question.fromUser', 'user')
+      .leftJoinAndSelect('question.toCoach', 'coach')
+      .orderBy('answer.createdAt', 'DESC')
       .getMany();
     // console.log(answered);
     return answered;
@@ -151,7 +174,6 @@ export class AnswerService {
       //answer:question 은 1:1 관계 이기에 같은 questionId를 갖는 question을 주입하려고 할 때 에러!
       //중복 검사 안해도됨
 
-      
       const answer = await queryRunner.manager.save(Answer, {
         ...createAnswerInput,
         question,

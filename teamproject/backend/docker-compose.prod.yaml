@@ -2,14 +2,14 @@ version: '3.3'
 
 services:
   my_backend:
-    image: asia.gcr.io/cu2project/cu2_backend:1.0
+    # image: asia.gcr.io/cu2project/cu2_backend:1.0
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - 3000:3000
     env_file:
-      - ./.env 
+      - ./.env
 
   my_database:
     platform: linux/x86_64
@@ -33,7 +33,7 @@ services:
 
   elasticsearch:
     image: elasticsearch:7.17.0
-    environment: 
+    environment:
       discovery.type: single-node
     ports:
       - 9200:9200

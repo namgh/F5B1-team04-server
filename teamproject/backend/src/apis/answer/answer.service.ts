@@ -151,20 +151,9 @@ export class AnswerService {
       //answer:question 은 1:1 관계 이기에 같은 questionId를 갖는 question을 주입하려고 할 때 에러!
       //중복 검사 안해도됨
 
-      let { QType, ...rest } = createAnswerInput
-      if (QType === 'NORM') {
-        QType = QUESTION_FIELD_ENUM.NORM
-      }
-      else if (QType === 'PORTFOLIO') {
-        QType = QUESTION_FIELD_ENUM.PORTFORLIO
-      }
-      else if (QType === 'RESUME') {
-        QType = QUESTION_FIELD_ENUM.RESUME
-      }
-
+      
       const answer = await queryRunner.manager.save(Answer, {
-        ...rest,
-        QType: QType,
+        ...createAnswerInput,
         question,
         amount: deposit.fromAmount,
       });

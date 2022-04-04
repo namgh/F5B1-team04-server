@@ -4,10 +4,10 @@ import { jwtAccessStrategy } from 'src/common/auth/jwt-access.strategy';
 import { AuthModule } from '../auth/auth.module';
 import { BlogComment } from '../blogcomment/entities/blogcomment.entity';
 import { StackComment } from '../stackcomment/entities/stackcomment.entity';
-import { StackCommentService } from '../stackcomment/stackcomment.service';
 import { User } from '../user/entities/user.entity';
 import { StackCommentLike } from './entities/stackcommentlike.entity';
 import { StackCommentLikeResolver } from './stackcommentlike.resolver';
+import { StackCommentLikeService } from './staclcommentlike.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, StackComment, StackCommentLike])],
@@ -15,7 +15,7 @@ import { StackCommentLikeResolver } from './stackcommentlike.resolver';
     jwtAccessStrategy,
     AuthModule,
     StackCommentLikeResolver,
-    StackCommentService,
+    StackCommentLikeService,
   ],
 })
 export class StackCommentLikeModule {}

@@ -9,11 +9,28 @@ import { StackCommentService } from './stackcomment.service';
 export class StackCommentResolver {
   constructor(private readonly stackCommentService: StackCommentService) {}
 
-  @Query(() => StackComment)
-  async fetchAllStackcomment(@Args('stackid') stackid: string) {
+  @Query(() => [StackComment])
+  async fetchAllStackcommentAll(@Args('stackid') stackid: string) {
     return this.stackCommentService.findAll({
       stackid,
     });
+  }
+
+  @Query(() => [StackComment])
+  async fetchStackCommentorderbycreate(@Args('stackid') stackid: string) {
+    return this.stackCommentService.fetchStackCommentorderbycreate({ stackid });
+  }
+
+  @Query(() => [StackComment])
+  async fetchStackCommentorderbylike(@Args('stackid') stackid: string) {
+    return this.stackCommentService.fetchStackCommentorderbylike({ stackid });
+  }
+
+  @Query(() => StackComment)
+  async fetchStackCommentbyStackId(
+    @Args('stackcommentid') stackcommentid:string,
+  ){
+    return await this.stackCommentService.fetchStackCommentbyStackId({stackcommentid})
   }
 
   @UseGuards(GqlAuthAccessGuard)
@@ -45,7 +62,7 @@ export class StackCommentResolver {
   }
 
   @UseGuards(GqlAuthAccessGuard)
-  @Mutation(() => StackComment)
+  @Mutation(() => Boolean)
   async deleteStackComment(
     @Args('stackcommentid') stackcommentid: string,
     @CurrentUser() currentUser: ICurrentUser,

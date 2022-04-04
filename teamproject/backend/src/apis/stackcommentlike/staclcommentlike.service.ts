@@ -30,10 +30,12 @@ export class StackCommentLikeService {
     const stackcomment = await getRepository(StackComment)
       .createQueryBuilder('stackcomment')
       .leftJoinAndSelect('stackcomment.user', 'user')
-      .leftJoinAndSelect('stackcomment.stacklike', 'stacklike')
-      .leftJoinAndSelect('stacklike.user', 'stackuser')
+      .leftJoinAndSelect('stackcomment.stackcommentlike', 'stackcommentlike')
+      .leftJoinAndSelect('stackcommentlike.user', 'stackcommentlikeuser')
+      .leftJoinAndSelect('stackcomment.stack','stack')
+      .leftJoinAndSelect('stack.user','stackuser')
       .where('stackcommentlike.islike = :islike', { islike: true })
-      .andWhere('stackuser.id = :id', { id: currentUser.id })
+      .andWhere('stackcommentlikeuser.id = :id', { id: currentUser.id })
       .getMany();
 
     return stackcomment;
@@ -45,7 +47,7 @@ export class StackCommentLikeService {
     await queryRunner.startTransaction('SERIALIZABLE');
     try {
       const stackcomment = await queryRunner.manager.findOne(
-        BlogComment,
+        StackComment,
         { id: stackcommentid },
         { lock: { mode: 'pessimistic_write' } },
       );
@@ -54,7 +56,7 @@ export class StackCommentLikeService {
         id: currentUser.id,
       });
 
-      const blogcommentlike = await queryRunner.manager.findOne(
+      const stackcommentlike = await queryRunner.manager.findOne(
         StackCommentLike,
         {
           user: currentUser.id,
@@ -62,7 +64,7 @@ export class StackCommentLikeService {
         },
       );
 
-      if (!blogcommentlike) {
+      if (!stackcommentlike) {
         const createlike = await this.stackcommentlikerepository.create({
           islike: true,
           user: user,
@@ -85,20 +87,20 @@ export class StackCommentLikeService {
         return result;
       }
 
-      if (!blogcommentlike.islike) {
+      if (!stackcommentlike.islike) {
         const createlike = await this.stackcommentlikerepository.create({
-          ...blogcommentlike,
+          ...stackcommentlike,
           islike: true,
         });
 
         const like = stackcomment.like + 1;
 
-        const updateblog = await this.stackcommentrepository.create({
+        const updatestack = await this.stackcommentrepository.create({
           ...stackcomment,
           like,
         });
 
-        await queryRunner.manager.save(updateblog);
+        await queryRunner.manager.save(updatestack);
 
         const result = await queryRunner.manager.save(createlike);
         await queryRunner.commitTransaction();
@@ -106,7 +108,7 @@ export class StackCommentLikeService {
       }
 
       const createlike = await this.stackcommentlikerepository.create({
-        ...blogcommentlike,
+        ...stackcommentlike,
         islike: false,
       });
       const like = stackcomment.like - 1;
@@ -155,7 +157,7 @@ export class StackCommentLikeService {
 
       if (!blogcommentlike) {
         const createlike = await this.stackcommentlikerepository.create({
-          islike: true,
+          dislike: true,
           user: user,
           stackcomment: stackcomment,
         });
@@ -176,10 +178,10 @@ export class StackCommentLikeService {
         return result;
       }
 
-      if (!blogcommentlike.islike) {
+      if (!blogcommentlike.dislike) {
         const createlike = await this.stackcommentlikerepository.create({
           ...blogcommentlike,
-          islike: true,
+          dislike: true,
         });
 
         const dislike = stackcomment.dislike + 1;
@@ -198,7 +200,7 @@ export class StackCommentLikeService {
 
       const createlike = await this.stackcommentlikerepository.create({
         ...blogcommentlike,
-        islike: false,
+        dislike: false,
       });
       const dislike = stackcomment.dislike - 1;
 

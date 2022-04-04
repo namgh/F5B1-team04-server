@@ -54,7 +54,7 @@ export class BlogResolver {
         bool: {
           should: [
             { match: { title: search } }, //
-            { match: { contents: search } },
+            { match: { searchcontents: search } },
           ],
         },
       },

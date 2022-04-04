@@ -24,25 +24,22 @@ export class AnswerResolver {
   @Query(() => [Answer])
   async goodEvalAnswerListPerCoach(
     @Args('itemCount') itemCount: number,
-    @Args('coachId') coachId: string
+    @Args('coachId') coachId: string,
   ) {
     return await this.answerService.findAnswerListOrderByHigthScorePerCoach({
       coachId,
-      itemCount
-    })
+      itemCount,
+    });
   }
-
 
   @Query(() => [Answer])
   async fetchQnACoachingList() {
-    return await this.answerService.findQnACoachingListForClient()
+    return await this.answerService.findQnACoachingListForClient();
   }
 
   @Query(() => [Answer])
-  async fetchQnACoachListPerCoach(
-    @Args('coachId') coachId : string
-  ) {
-    return await this.answerService.findQnAListPerCoach({coachId})
+  async fetchQnACoachListPerCoach(@Args('coachId') coachId: string) {
+    return await this.answerService.findQnAListPerCoach({ coachId });
   }
 
   @UseGuards(GqlAuthAccessGuard)
@@ -51,10 +48,17 @@ export class AnswerResolver {
     return await this.answerService.findMyHasAnswerCoaching({ currentUser });
   }
 
+  @Roles(Role.COACH)
+  @UseGuards(GqlAuthAccessGuard, RolesGuard)
+  @Query(() => [Answer])
+  async coachAnsweredListonlycoach(@CurrentUser() currentUser: ICurrentUser) {
+    return await this.answerService.findAllCoachAnswercoach({ currentUser });
+  }
+
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [Answer])
   async coachAnsweredList(@CurrentUser() currentUser: ICurrentUser) {
-    return await this.answerService.findAllCoachAnswer({ currentUser });
+    return await this.answerService.findAllCoachAnswer();
   }
 
   @Roles(Role.COACH)

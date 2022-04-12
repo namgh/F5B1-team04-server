@@ -1,4 +1,4 @@
-import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Field, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Answer } from 'src/apis/answer/entities/answer.entity';
 import { Deposit } from 'src/apis/deposit/entities/deposit.entity';
 import { User } from 'src/apis/user/entities/user.entity';
@@ -10,7 +10,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToOne,
-  PrimaryGeneratedColumn, 
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
@@ -52,16 +52,22 @@ export class Question {
   QType: QUESTION_FIELD_ENUM;
 
   @Column({ nullable: true })
-  @Field(() => String,{ nullable: true })
+  @Field(() => String, { nullable: true })
   contents: string;
+
+  @Column({ default: 0 })
+  @Field(() => Int)
+  like: number;
 
   @OneToOne(() => Answer, (answer) => answer.question)
   answer: Answer;
 
   @CreateDateColumn()
+  @Field(() => Date)
   createdAt: Date;
 
   @UpdateDateColumn()
+  @Field(() => Date)
   updatedAt: Date;
 
   @DeleteDateColumn()

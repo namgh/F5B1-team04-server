@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  HttpException,
   Injectable,
   UnprocessableEntityException,
 } from '@nestjs/common';
@@ -35,20 +36,18 @@ export class QuestionService {
     private readonly elasticsearchService: ElasticsearchService,
   ) {}
 
-
   async findAllQuestionList() {
     return await this.questionRepository.find({
-      relations: ['fromUser', 'toCoach','toCoach.coachProfile']
-    })
+      relations: ['fromUser', 'toCoach', 'toCoach.coachProfile'],
+    });
   }
 
-  async findAllCoachsQuestionList({coachId}) {
+  async findAllCoachsQuestionList({ coachId }) {
     return await this.questionRepository.find({
       where: { toCoach: { id: coachId } },
-      relations: ['fromUser', 'toCoach', 'toCoach.coachProfile']
-    })
+      relations: ['fromUser', 'toCoach', 'toCoach.coachProfile'],
+    });
   }
-
 
   async findAllCoachQuestion({ currentUser }) {
     return await this.questionRepository.find({
@@ -172,7 +171,6 @@ export class QuestionService {
       // console.log("💛Type", typeof QType)
       // console.log("💛Type", QType)
 
-
       const question = await queryRunner.manager.save(Question, {
         ...createQuestionInput,
         // ...rest,
@@ -189,6 +187,10 @@ export class QuestionService {
     } catch (error) {
       console.log(error);
       await queryRunner.rollbackTransaction();
+      throw new HttpException(
+        error.response.data.message,
+        error.response.status,
+      );
     } finally {
       await queryRunner.release();
     }

@@ -29,6 +29,7 @@ import { AnswerlikeModule } from './apis/answerlike/answerlike.module';
 import { OrderModule } from './apis/order/order.module';
 import { DepositModule } from './apis/deposit/deposit.module';
 import { StackTagModule } from './apis/stacktag/stacktag.module';
+import { FollowModule } from './apis/follow/follow.module';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { StackTagModule } from './apis/stacktag/stacktag.module';
     OrderModule,
     DepositModule,
     StackTagModule,
+    FollowModule,
     GraphQLModule.forRoot({
       autoSchemaFile: 'src/common/graphql/schema.gql',
       context: ({ req, res }) => ({ req, res }),
@@ -79,7 +81,7 @@ import { StackTagModule } from './apis/stacktag/stacktag.module';
     ConfigModule.forRoot({ isGlobal: true }), //
     CacheModule.register<RedisClientOptions>({
       store: redisStore,
-      url: 'redis://my_redis:6379', 
+      url: 'redis://my_redis:6379',
       isGlobal: true,
     }),
   ],

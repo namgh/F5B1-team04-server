@@ -17,6 +17,9 @@ export class BlogReturn {
   user: User;
 
   @Field(() => String)
+  status: string;
+
+  @Field(() => String)
   searchcontents: string;
 
   @Field(() => String)

@@ -34,9 +34,11 @@ export class StackComment {
   stack: Stack;
 
   @CreateDateColumn()
+  @Field(() => Date)
   createAt: Date;
 
   @UpdateDateColumn()
+  @Field(() => Date)
   updatedAt: Date;
 
   @DeleteDateColumn()

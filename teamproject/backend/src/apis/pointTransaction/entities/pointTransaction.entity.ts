@@ -42,5 +42,6 @@ export class PointTransaction {
   user: User;
 
   @CreateDateColumn()
+  @Field(() => Date)
   createdAt: Date;
 }

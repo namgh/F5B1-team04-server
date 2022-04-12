@@ -5,7 +5,7 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Connection, Repository } from 'typeorm';
+import { Connection, getRepository, Repository } from 'typeorm';
 import { IamportService } from '../iamport/iamport.service';
 import { User } from '../user/entities/user.entity';
 import {
@@ -33,6 +33,30 @@ export class PointTransactionService {
       where: { user: { id: currentUser.id } },
       relations: ['user'],
     });
+  }
+  async fetchpointHistorybypage({ page, perpage }) {
+    if (!page) page = 0;
+    if (!perpage) perpage = 10;
+    return await getRepository(PointTransaction)
+      .createQueryBuilder('point_transaction')
+      .leftJoinAndSelect('point_transaction.user', 'user')
+      .orderBy('point_transaction.createdAt', 'DESC')
+      .skip(page * perpage)
+      .take(perpage)
+      .getMany();
+  }
+
+  async fetchmypointHistorybypage({ page, perpage, currentUser }) {
+    if (!page) page = 0;
+    if (!perpage) perpage = 10;
+    return await getRepository(PointTransaction)
+      .createQueryBuilder('point_transaction')
+      .leftJoinAndSelect('point_transaction.user', 'user')
+      .orderBy('point_transaction.createdAt', 'DESC')
+      .where('user.id = :id', { id: currentUser.id })
+      .skip(page * perpage)
+      .take(perpage)
+      .getMany();
   }
 
   async create({ impUid, amount, currentUser, access_token }) {
@@ -72,6 +96,7 @@ export class PointTransactionService {
       return pointTransaction;
     } catch (error) {
       await queryRunner.rollbackTransaction();
+      throw new HttpException(error.response.message, error.status);
     } finally {
       await queryRunner.release();
     }
@@ -140,10 +165,7 @@ export class PointTransactionService {
       return afterCanceled;
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      throw new HttpException(
-        error.response.data.message,
-        error.response.status,
-      );
+      throw new HttpException(error.response.message, error.status);
     } finally {
       await queryRunner.release();
     }

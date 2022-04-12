@@ -59,4 +59,29 @@ export class PointTransactionResolver {
       currentUser,
     });
   }
+
+  @Query(() => [PointTransaction])
+  async fetchpointHistorybypage(
+    @Args('page') page: number,
+    @Args('perpage') perpage: number,
+  ) {
+    return await this.pointTransactionService.fetchpointHistorybypage({
+      page,
+      perpage,
+    });
+  }
+
+  @UseGuards(GqlAuthAccessGuard)
+  @Query(() => [PointTransaction])
+  async fetchmypointHistorybypage(
+    @CurrentUser() currentUser: ICurrentUser,
+    @Args('page') page?: number,
+    @Args('perpage') perpage?: number,
+  ) {
+    return await this.pointTransactionService.fetchmypointHistorybypage({
+      page,
+      perpage,
+      currentUser,
+    });
+  }
 }

@@ -37,8 +37,8 @@ export class PointTransaction {
   @Field(() => POINT_TRANSACTION_STATUS_ENUM)
   status: POINT_TRANSACTION_STATUS_ENUM;
 
-  @ManyToOne(() => User)
-  @Field()
+  @ManyToOne(() => User, (user) => user.pointtransaction)
+  @Field(() => User)
   user: User;
 
   @CreateDateColumn()

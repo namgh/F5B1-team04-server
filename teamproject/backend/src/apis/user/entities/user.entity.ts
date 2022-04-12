@@ -8,6 +8,7 @@ import { CoachColumn } from 'src/apis/column/entities/column.entity';
 import { ColumnLike } from 'src/apis/columnlike/entities/columnlike.entity';
 import { Follow } from 'src/apis/follow/entities/follow.entity';
 import { MainStack } from 'src/apis/mainstack/entities/mainstack.entity';
+import { PointTransaction } from 'src/apis/pointTransaction/entities/pointTransaction.entity';
 // import { CoachProfile } from 'src/apis/coach/entities/coachprofile.entity';
 import { Stack } from 'src/apis/stack/entities/stack.entity';
 import { StackLike } from 'src/apis/stacklike/entities/stacklike.entity';
@@ -133,4 +134,10 @@ export class User {
   @Column({ default: 0 })
   @Field(() => Int)
   followingnumber: number;
+
+  @OneToMany(
+    () => PointTransaction,
+    (pointtransaction) => pointtransaction.user,
+  )
+  pointtransaction: PointTransaction;
 }

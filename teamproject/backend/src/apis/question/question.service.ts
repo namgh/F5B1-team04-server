@@ -187,10 +187,7 @@ export class QuestionService {
     } catch (error) {
       console.log(error);
       await queryRunner.rollbackTransaction();
-      throw new HttpException(
-        error.response.data.message,
-        error.response.status,
-      );
+      throw new HttpException(error.response.message, error.status);
     } finally {
       await queryRunner.release();
     }

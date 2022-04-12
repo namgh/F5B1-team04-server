@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  HttpException,
   Injectable,
   UnprocessableEntityException,
 } from '@nestjs/common';
@@ -84,6 +85,7 @@ export class OrderService {
       return res;
     } catch (error) {
       await queryRunner.rollbackTransaction();
+      throw new HttpException(error.response.message, error.status);
     } finally {
       await queryRunner.release();
     }
@@ -133,6 +135,7 @@ export class OrderService {
       return cancel;
     } catch (error) {
       await queryRunner.rollbackTransaction();
+      throw new HttpException(error.response.message, error.status);
     } finally {
       await queryRunner.release();
     }

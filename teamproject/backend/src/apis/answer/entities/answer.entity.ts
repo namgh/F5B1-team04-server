@@ -20,7 +20,7 @@ export class Answer {
   id: string;
 
   @Column({ nullable: true })
-  @Field(() => String,{ nullable: true })
+  @Field(() => String, { nullable: true })
   title: string;
 
   @Column({ nullable: true })
@@ -45,9 +45,11 @@ export class Answer {
   dislikecount: number;
 
   @CreateDateColumn()
+  @Field(() => Date)
   createdAt: Date;
 
   @UpdateDateColumn()
+  @Field(() => Date)
   updatedAt: Date;
 
   @DeleteDateColumn()

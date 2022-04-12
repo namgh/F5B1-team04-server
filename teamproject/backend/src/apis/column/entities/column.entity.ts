@@ -24,7 +24,7 @@ export class CoachColumn {
   @Field(() => String)
   title: string;
 
-  @Column()
+  @Column({ length: 5000 })
   @Field(() => String)
   contents: string;
 
@@ -37,9 +37,11 @@ export class CoachColumn {
   user: User;
 
   @CreateDateColumn()
+  @Field(() => Date)
   createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
+  @Field(() => Date)
   updatedAt: Date;
 
   @DeleteDateColumn()

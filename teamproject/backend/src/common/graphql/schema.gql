@@ -23,7 +23,14 @@ type BlogComment {
   blog: Blog!
   like: Int!
   dislike: Int!
+  createAt: DateTime!
+  updatedAt: DateTime!
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type BlogLike {
   id: String!
@@ -54,11 +61,6 @@ type Blog {
   blogcategorytag: [BlogCategoryTag!]
 }
 
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
 type CoachProfile {
   id: String!
   orgName: String
@@ -69,7 +71,7 @@ type CoachProfile {
   profileTitle: String
   profileContents: String
   image: String
-  answerInitAmount: Int!
+  answerInitAmount: Int
 }
 
 type CoachTag {
@@ -84,6 +86,8 @@ type ColumnComment {
   user: User!
   coachColumn: CoachColumn!
   likecount: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type ColumnLike {
@@ -107,8 +111,17 @@ type CoachColumn {
   contents: String!
   hits: Int!
   user: User!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   likecount: Int!
   dislikecount: Int!
+}
+
+type Follow {
+  id: String!
+  following: User
+  follower: User
+  deletdAt: DateTime!
 }
 
 type StackLike {
@@ -129,7 +142,7 @@ type Stack {
   id: String!
   title: String!
   contents: String!
-  user: User!
+  user: User
   like: Int!
   dislike: Int!
   createAt: DateTime!
@@ -151,6 +164,8 @@ type User {
   mainstack: MainStack!
   role: Role!
   coachtag: [CoachTag!]
+  followernumber: Int!
+  followingnumber: Int!
 }
 
 enum Role {
@@ -186,11 +201,25 @@ type MainStack {
   user: User!
 }
 
+type BlogReturn {
+  id: String!
+  title: String
+  contents: String
+  user: User
+  status: String!
+  searchcontents: String!
+  updatedat: String!
+  blogcategorytag: [BlogCategoryTag!]
+  like: Int
+}
+
 type StackComment {
   id: String!
   contents: String!
   user: User!
   stack: Stack!
+  createAt: DateTime!
+  updatedAt: DateTime!
   like: Int!
   dislike: Int!
 }
@@ -217,6 +246,8 @@ type Answer {
   question: Question!
   likecount: Int!
   dislikecount: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type Question {
@@ -226,6 +257,9 @@ type Question {
   title: String
   QType: QUESTION_FIELD_ENUM!
   contents: String
+  like: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 enum QUESTION_FIELD_ENUM {
@@ -271,7 +305,7 @@ type Query {
   fetchmyBlog: [Blog!]!
   fetchotherBlogorderbylikeAll: [Blog!]!
   fetchotherBlogorderbycreateAt: [Blog!]!
-  fetchBlogSearch(search: String!): [Blog!]!
+  fetchBlogSearch(search: String!): [BlogReturn!]!
   fetchblogone(blogid: String!): Blog!
   fetchAllBlogcomment(blogid: String!): [BlogComment!]!
   fetchBlogCommentorderbycreate(blogid: String!): [BlogComment!]!
@@ -282,8 +316,12 @@ type Query {
   fetchmyStack: [Stack!]!
   fetchotherStackorderbylike: [Stack!]!
   fetchotherStackorderbycreateAt: [Stack!]!
+  fetchstackbysearch(search: String!): [Stack!]!
   fetchStackmylike: [Stack!]!
-  fetchAllStackcomment(stackid: String!): StackComment!
+  fetchAllStackcommentAll(stackid: String!): [StackComment!]!
+  fetchStackCommentorderbycreate(stackid: String!): [StackComment!]!
+  fetchStackCommentorderbylike(stackid: String!): [StackComment!]!
+  fetchStackCommentbyStackId(stackcommentid: String!): StackComment!
   fetchBlogcommentlike: [BlogComment!]!
   fetchColumnCommentList(columnId: String!): [ColumnComment!]!
   fetchMyColumnComment: [ColumnComment!]!
@@ -306,8 +344,13 @@ type Query {
   fetchQnACoachingList: [Answer!]!
   fetchQnACoachListPerCoach(coachId: String!): [Answer!]!
   myCoachingListHasAnswer: [Answer!]!
+  coachAnsweredListonlycoach: [Answer!]!
   coachAnsweredList: [Answer!]!
   stringReturn: String!
+  fetchFollower(userId: String!): [Follow!]!
+  fetchFollowing(userId: String!): [Follow!]!
+  fetchmyFollower: [Follow!]!
+  fetchmyFollowing: [Follow!]!
 }
 
 type Mutation {
@@ -347,7 +390,7 @@ type Mutation {
   Stackdisliketoggle(stackid: String!): StackLike!
   createStackComment(contents: String!, stackid: String!): StackComment!
   updateStackComment(stackcommentid: String!, contents: String!): StackComment!
-  deleteStackComment(stackcommentid: String!): StackComment!
+  deleteStackComment(stackcommentid: String!): Boolean!
   Blogcommentliketoggle(blogcommentid: String!): BlogCommentLike!
   Blogcommentdisliketoggle(blogcommentid: String!): BlogCommentLike!
   LikeColumnToggle(columnId: String!): ColumnLike!
@@ -375,6 +418,7 @@ type Mutation {
   dislikeAnswerToggle(answerId: String!): AnswerLike!
   createAnswerOrder(answerId: String!): OrderHistory!
   cancelAnswerOrder(answerId: String!, userId: String!): OrderHistory!
+  createFollow(followUserId: String!): Follow!
 }
 
 input CreateCoachProfileInput {
@@ -386,7 +430,7 @@ input CreateCoachProfileInput {
   profileTitle: String
   profileContents: String
   image: String
-  answerInitAmount: Int!
+  answerInitAmount: Int
 }
 
 """The `Upload` scalar type represents a file upload."""
@@ -398,7 +442,7 @@ input UpdateCoachInput {
   profileTitle: String
   profileContents: String
   image: String
-  answerInitAmount: Int!
+  answerInitAmount: Int
 }
 
 input CreateColumnInput {
@@ -414,7 +458,6 @@ input UpdateColumnInput {
 input CreateQuestionInput {
   title: String!
   contents: String!
-  QType: String
 }
 
 input UpdateQuestionInput {

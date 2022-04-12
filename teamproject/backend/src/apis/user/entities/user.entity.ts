@@ -6,6 +6,7 @@ import { CoachProfile } from 'src/apis/coach/entities/coachprofile.entity';
 import { CoachTag } from 'src/apis/coachtag/coachtag.entities/coachtag.entity';
 import { CoachColumn } from 'src/apis/column/entities/column.entity';
 import { ColumnLike } from 'src/apis/columnlike/entities/columnlike.entity';
+import { Follow } from 'src/apis/follow/entities/follow.entity';
 import { MainStack } from 'src/apis/mainstack/entities/mainstack.entity';
 // import { CoachProfile } from 'src/apis/coach/entities/coachprofile.entity';
 import { Stack } from 'src/apis/stack/entities/stack.entity';
@@ -118,4 +119,18 @@ export class User {
   @ManyToMany(() => CoachTag, (coachtag) => coachtag.user)
   @Field(() => [CoachTag], { nullable: true })
   coachtag: CoachTag[];
+
+  @OneToMany(() => Follow, (follower) => follower.follower)
+  follower: Follow;
+
+  @OneToMany(() => Follow, (following) => following.following)
+  following: Follow;
+
+  @Column({ default: 0 })
+  @Field(() => Int)
+  followernumber: number;
+
+  @Column({ default: 0 })
+  @Field(() => Int)
+  followingnumber: number;
 }

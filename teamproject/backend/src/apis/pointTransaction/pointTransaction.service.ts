@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  HttpException,
   Injectable,
   UnprocessableEntityException,
 } from '@nestjs/common';
@@ -139,6 +140,10 @@ export class PointTransactionService {
       return afterCanceled;
     } catch (error) {
       await queryRunner.rollbackTransaction();
+      throw new HttpException(
+        error.response.data.message,
+        error.response.status,
+      );
     } finally {
       await queryRunner.release();
     }

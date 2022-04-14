@@ -62,6 +62,7 @@ export class UserService {
       .leftJoinAndSelect('user.coachProfile', 'coachProfile')
       .where('user.name like :name', { name: '%' + search + '%' })
       .orWhere('user.nickname like :nickname', { nickname: '%' + search + '%' })
+      .orderBy('user.score', 'DESC')
       .getMany();
   }
 

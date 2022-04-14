@@ -47,10 +47,12 @@ export class BlogResolver {
       index: 'blog',
       query: {
         bool: {
+          must: [{ match: { status: 'blog' } }],
           should: [
-            { match: { title: search } }, //
-            { match: { searchcontents: search } },
+            { match_phrase: { title: search } }, //
+            { match_phrase: { searchcontents: search } },
           ],
+          minimum_should_match: 1,
         },
       },
     });
@@ -65,6 +67,7 @@ export class BlogResolver {
         contents: el._source.contents,
         like: el._source.like,
         title: el._source.title,
+        status: el._source.status,
         searchcontents: el._source.searchcontents,
         user: {
           email: el._source.email,

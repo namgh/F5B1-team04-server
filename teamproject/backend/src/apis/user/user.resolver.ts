@@ -5,6 +5,7 @@ import { User } from './entities/user.entity';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthAccessGuard } from 'src/common/auth/gql-auth.guard';
 import { CurrentUser, ICurrentUser } from 'src/common/auth/gql-user.param';
+import { FileUpload, GraphQLUpload } from 'graphql-upload';
 
 @Resolver()
 export class UserResolver {
@@ -127,5 +128,12 @@ export class UserResolver {
   @Mutation(() => Boolean)
   async usernulliddelete() {
     return this.userService.usernulliddelete();
+  }
+
+  @Mutation(() => [String])
+  async uploaduserFile(
+    @Args({ name: 'files', type: () => [GraphQLUpload] }) files: FileUpload[],
+  ) {
+    return await this.userService.upload({ files });
   }
 }

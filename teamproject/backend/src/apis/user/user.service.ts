@@ -11,7 +11,12 @@ import { MainStack } from '../mainstack/entities/mainstack.entity';
 import { User } from './entities/user.entity';
 import { Cache } from 'cache-manager';
 import { CoachProfile } from '../coach/entities/coachprofile.entity';
+import { Storage } from '@google-cloud/storage';
+import { FileUpload } from 'graphql-upload';
 
+interface IFile {
+  files: FileUpload[];
+}
 @Injectable()
 export class UserService {
   constructor(
@@ -55,8 +60,8 @@ export class UserService {
       .leftJoinAndSelect('user.mainstack', 'mainstack')
       .leftJoinAndSelect('user.coachtag', 'coachtag')
       .leftJoinAndSelect('user.coachProfile', 'coachProfile')
-      .where('user.name = :name', { name: search })
-      .orWhere('user.nickname = :nickname', { nickname: search })
+      .where('user.name like :name', { name: '%' + search + '%' })
+      .orWhere('user.nickname like :nickname', { nickname: '%' + search + '%' })
       .getMany();
   }
 
@@ -255,7 +260,7 @@ export class UserService {
       .orderBy('user.score', 'DESC')
       .skip(page * perpage)
       .take(perpage)
-      .getMany();   
+      .getMany();
   }
 
   async fetchisnicknameuser({ nickname }) {
@@ -272,5 +277,29 @@ export class UserService {
   async usernulliddelete() {
     const result = await this.userRepository.softDelete({ id: null });
     return result.affected ? true : false;
+  }
+
+  async upload({ files }: IFile) {
+    const storage = new Storage({
+      keyFilename: 'cu2project-346112-d5421f4b1c03.json',
+      projectId: 'cu2project-346112',
+    }).bucket('cu2project-backend');
+
+    const waitedfile = await Promise.all(files);
+
+    const results = await Promise.all(
+      waitedfile.map((file, i) => {
+        return new Promise((resolve, reject) => {
+          file
+            .createReadStream()
+            .pipe(
+              storage.file(`thumb/${i}/${file.filename}`).createWriteStream(),
+            )
+            .on('finish', () => resolve(`thumb/${i}/${file.filename}`))
+            .on('error', (error) => reject(error));
+        });
+      }),
+    );
+    return results;
   }
 }

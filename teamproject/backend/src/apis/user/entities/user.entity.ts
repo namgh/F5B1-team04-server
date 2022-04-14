@@ -75,6 +75,10 @@ export class User {
   @Field(() => Int)
   point: number;
 
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
+  url: string;
+
   @JoinColumn()
   @OneToOne(() => CoachProfile, { nullable: true })
   @Field(() => CoachProfile, { nullable: true })

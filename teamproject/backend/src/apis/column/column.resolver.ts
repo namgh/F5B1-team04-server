@@ -127,4 +127,9 @@ export class CoachColumnResolver {
   ) {
     return await this.coachColumnService.delete({ columnId, currentUser });
   }
+
+  @Query(() => [CoachColumn])
+  async fetchcolumnsearch(@Args('search') search: string) {
+    return this.coachColumnService.fetchcolumnsearch({ search });
+  }
 }

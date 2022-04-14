@@ -43,4 +43,13 @@ export class FollowResolver {
   async fetchmyFollowing(@CurrentUser() currentUser: ICurrentUser) {
     return this.followService.fetchmyFollowing({ currentUser });
   }
+
+  @UseGuards(GqlAuthAccessGuard)
+  @Mutation(() => Boolean)
+  async deleteFollow(
+    @Args('followUserId') followUserId: String,
+    @CurrentUser() currentUser: ICurrentUser,
+  ) {
+    return await this.followService.deletefollow({ currentUser, followUserId });
+  }
 }

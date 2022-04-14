@@ -130,6 +130,7 @@ type PointTransaction {
   amount: Int!
   status: POINT_TRANSACTION_STATUS_ENUM!
   user: User!
+  createdAt: DateTime!
 }
 
 enum POINT_TRANSACTION_STATUS_ENUM {
@@ -174,6 +175,7 @@ type User {
   coachInterest: String
   score: Int!
   point: Int!
+  url: String
   coachProfile: CoachProfile
   mainstack: MainStack!
   role: Role!
@@ -370,6 +372,7 @@ type Mutation {
   plususerscore(score: Float!): User!
   minususerscore(score: Float!): User!
   usernulliddelete: Boolean!
+  uploaduserFile(files: [Upload!]!): [String!]!
   login(password: String!, email: String!): String!
   resotreAccessToken: String!
   logout: String!

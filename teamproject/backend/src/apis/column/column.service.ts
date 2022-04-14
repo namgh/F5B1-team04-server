@@ -161,4 +161,17 @@ export class CoachColumnService {
     });
     return result.affected ? true : false;
   }
+
+  async fetchcolumnsearch({ search }) {
+    return await getRepository(CoachColumn)
+      .createQueryBuilder('column')
+      .leftJoinAndSelect('column.user', 'user')
+      .leftJoinAndSelect('user.coachProfile', 'coach')
+      .orderBy('column.likecount', 'DESC')
+      .where('column.title like :title', { title: '%' + search + '%' })
+      .orWhere('column.contents like :contents', {
+        contents: '%' + search + '%',
+      })
+      .getMany();
+  }
 }

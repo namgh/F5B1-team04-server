@@ -63,8 +63,6 @@ export class BlogCommentLikeService {
         },
       );
 
-      console.log('++++++', blogcommentid);
-
       if (!blogcommentlike) {
         const createlike = await this.blogcommentlikerepository.create({
           islike: true,

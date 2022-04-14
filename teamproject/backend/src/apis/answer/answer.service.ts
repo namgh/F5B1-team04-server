@@ -214,4 +214,18 @@ export class AnswerService {
     });
     return delRes.affected ? true : false;
   }
+
+  async fetchanswersearch({ search }) {
+    return await getRepository(Answer)
+      .createQueryBuilder('answer')
+      .leftJoinAndSelect('answer.question', 'question')
+      .leftJoinAndSelect('question.fromUser', 'user')
+      .leftJoinAndSelect('question.toCoach', 'coach')
+      .orderBy('answer.createdAt', 'DESC')
+      .where('answer.title like :title', { title: '%' + search + '%' })
+      .orWhere('answer.contents like :contents', {
+        contents: '%' + search + '%',
+      })
+      .getMany();
+  }
 }

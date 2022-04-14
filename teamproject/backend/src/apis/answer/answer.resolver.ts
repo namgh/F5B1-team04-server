@@ -87,4 +87,9 @@ export class AnswerResolver {
   async deleteCoachAnswer(@Args('answerId') answerId: string) {
     return await this.answerService.delete({ answerId });
   }
+
+  @Query(() => [Answer])
+  async fetchanswersearch(@Args('search') search: string) {
+    return this.answerService.fetchanswersearch({ search });
+  }
 }

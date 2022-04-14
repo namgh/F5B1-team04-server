@@ -218,4 +218,17 @@ export class QuestionService {
 
     return resDelQuestion.affected ? true : false;
   }
+
+  async fetchquestionsearch({ search }) {
+    return await getRepository(Question)
+      .createQueryBuilder('question')
+      .leftJoinAndSelect('question.fromUser', 'user')
+      .leftJoinAndSelect('question.toCoach', 'coach')
+      .leftJoinAndSelect('coach.coachProfile', 'profile')
+      .where('question.title like :title', { title: '%' + search + '%' })
+      .orWhere('question.contents like :contents', {
+        contents: '%' + search + '%',
+      })
+      .getMany();
+  }
 }

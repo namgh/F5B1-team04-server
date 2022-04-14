@@ -338,11 +338,13 @@ type Query {
   fetchDetailColumn(columnId: String!): CoachColumn!
   fetchMyColumn: [CoachColumn!]!
   fetchColumnListWhatILike: [ColumnLike!]!
+  fetchcolumnsearch(search: String!): [CoachColumn!]!
   fetchQuestionList: [Question!]!
   fetchQuestionListPerCoach(coachId: String!): [Question!]!
   fetchCoachQuestionList: [Question!]!
   fetchMyQuestionList: [Question!]!
   fetchQuestion(questionId: String!): Question!
+  fetchquestionsearch(search: String!): [Question!]!
   goodEvalAnswerList(itemCount: Float!): [Answer!]!
   goodEvalAnswerListPerCoach(coachId: String!, itemCount: Float!): [Answer!]!
   fetchQnACoachingList: [Answer!]!
@@ -350,6 +352,7 @@ type Query {
   myCoachingListHasAnswer: [Answer!]!
   coachAnsweredListonlycoach: [Answer!]!
   coachAnsweredList: [Answer!]!
+  fetchanswersearch(search: String!): [Answer!]!
   stringReturn: String!
   fetchFollower(userId: String!): [Follow!]!
   fetchFollowing(userId: String!): [Follow!]!
@@ -424,6 +427,7 @@ type Mutation {
   createAnswerOrder(answerId: String!): OrderHistory!
   cancelAnswerOrder(answerId: String!, userId: String!): OrderHistory!
   createFollow(followUserId: String!): Follow!
+  deleteFollow(followUserId: String!): Boolean!
 }
 
 input CreateCoachProfileInput {

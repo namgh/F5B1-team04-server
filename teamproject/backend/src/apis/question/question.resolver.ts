@@ -13,20 +13,16 @@ import { QuestionService } from './question.service';
 @Resolver()
 export class QuestionResolver {
   constructor(private readonly questionService: QuestionService) {}
-  
 
   @Query(() => [Question])
   async fetchQuestionList() {
-    return await this.questionService.findAllQuestionList()
+    return await this.questionService.findAllQuestionList();
   }
 
   @Query(() => [Question])
-  async fetchQuestionListPerCoach(
-    @Args('coachId') coachId: string
-  ) {
-    return await this.questionService.findAllCoachsQuestionList({coachId})
-  } 
-
+  async fetchQuestionListPerCoach(@Args('coachId') coachId: string) {
+    return await this.questionService.findAllCoachsQuestionList({ coachId });
+  }
 
   @Roles(Role.COACH)
   @UseGuards(GqlAuthAccessGuard, RolesGuard)
@@ -34,7 +30,6 @@ export class QuestionResolver {
   async fetchCoachQuestionList(@CurrentUser() currentUser: ICurrentUser) {
     return await this.questionService.findAllCoachQuestion({ currentUser });
   }
-
 
   // @Query(() => Question)
   // async fetchHasAnswerQuestionList(@Args('coachId') coachId: string) {
@@ -49,7 +44,7 @@ export class QuestionResolver {
   @UseGuards(GqlAuthAccessGuard)
   @Query(() => [Question])
   async fetchMyQuestionList(
-    @CurrentUser() currentUser: ICurrentUser, // 
+    @CurrentUser() currentUser: ICurrentUser, //
   ) {
     return await this.questionService.findAllMyQuestion({ currentUser });
   }
@@ -111,5 +106,10 @@ export class QuestionResolver {
   @Mutation(() => Boolean)
   async deleteCoachQuestion(@Args('questionId') questionId: string) {
     return await this.questionService.delete({ questionId });
+  }
+
+  @Query(() => [Question])
+  async fetchquestionsearch(@Args('search') search: string) {
+    return this.questionService.fetchquestionsearch({ search });
   }
 }

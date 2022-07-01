@@ -303,4 +303,11 @@ export class UserService {
     );
     return results;
   }
+
+  async aaassq(){
+    const aaa = getRepository(User)
+  }
+
+
+
 }

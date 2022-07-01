@@ -61,14 +61,14 @@ export class StackService {
   }
 
   async findmystack({ currentUser }) {
-    const stack = await getRepository(Stack)
+    return await getRepository(Stack)
       .createQueryBuilder('stack')
       .leftJoinAndSelect('stack.user', 'user')
       .leftJoinAndSelect('stack.stacktag', 'stacktag')
       .andWhere('user.id = :id', { id: currentUser.id })
       .getMany();
 
-    return stack;
+   
   }
 
   async create({ title, contents, currentUser, stacktag }) {

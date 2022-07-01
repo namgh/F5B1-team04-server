@@ -14,7 +14,6 @@ export class AuthService {
   ) {}
 
   getAccessToken({ user }) {
-    console.log(user.id);
     return this.jwtService.sign(
       { email: user.email, sub: user.id, role: user.role },
       { secret: 'myAccessKey', expiresIn: '2h' },
@@ -26,12 +25,13 @@ export class AuthService {
       { email: user.email, sub: user.id, role: user.role },
       { secret: 'myRefreshkey', expiresIn: '2w' },
     );
-    console.log(refreshToken);
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
     res.setHeader(
       'Set-Cookie',
       `refreshToken=${refreshToken}; path=/;domain=.cucutoo.com; SameSite=None; Secure; httpOnly;`,
     );
+    // res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; path=/;`);
+
   }
 
   async logout({ refreshToken, currentUser, accesstoken }) {

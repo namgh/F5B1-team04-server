@@ -24,7 +24,7 @@ services:
     cap_add:
       - SYS_NICE
     ports:
-      - 3307:3306
+      - 3306:3306
 
   my_redis:
     image: redis:latest

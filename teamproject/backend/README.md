@@ -256,7 +256,7 @@ async fetchBlogSearch(@Args('search') search: string) {
 filter에서는 mutate 옵션 중 copy 를 사용하여 searchcontents를 추가 한 후
 정규식을 사용하여 변환할 수 있는 gsub 옵션을 사용.
 
-``` json
+``` ts
 filter {
 
     if [type] == "blog"{
@@ -286,7 +286,7 @@ filter {
 
 document_id => "%{id}" 옵션을 사용해서 수정했을 때 같은 id값이 중복되지 않도록 설정
 template를 하기 위해서 template 관련 옵션들을 사용
-```json
+```ts
 output {
     if [type] == "blog" {
         elasticsearch {
@@ -305,7 +305,7 @@ output {
 stdout 옵션을 사용하여 아래와 같이 elasticsearch에 올라가는 데이터를 log로 확인 가능
 contents 에 있는 구분자를 searchcontents에서는 제외하고 저장되는것을 확인할 수 있음.
 
-```json
+```ts
  {
                "like" => 0,
                "type" => "blog",
@@ -324,7 +324,7 @@ contents 에 있는 구분자를 searchcontents에서는 제외하고 저장되�
 ```
 
 tokennizer를 ngram을 사용해서 포함된 단어도 검색 가능
-```json
+```ts
 query
 {
   fetchBlogSearch(search:"테스"){
@@ -334,7 +334,7 @@ query
 }
 ```
 
-```json
+```ts
 {
   "data": {
     "fetchBlogSearch": [

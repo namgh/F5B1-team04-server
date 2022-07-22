@@ -1,15 +1,10 @@
 # CU2 project
+![](/backend/img/cu2main1.png)
 
+![](/backend/img/cu2main2.png)
 #### project 기간 : 3/17 ~ 4/4
 
-#### 목차
-1. 기획의도
-2. 사용기술 스택
-3. 데이터 흐름도
-4. data flow
-5. erd
-6. api명세서
-7. api
+
 ### 1. 기획의도
 
 초보 개발자의 Self Study Solution을 제공하는 CU2 입니다.
@@ -28,30 +23,24 @@ CU2는 커뮤니티 서비스 CodingUs 와 멘토링 서비스 CoachingUs 로 Se
 ### 2.사용기술 스택
 
 ---
-javascript, typescript
 
-node, nestjs, typeorm, graphql
 
-elasticsearch,logstash
-
-mysql, redis
-
-docker, git, discord, notion, github
+![](/backend/img/stack.png)
 
 
 ### 3.DATA 흐름도
 
 ---
-![](/teamproject/backend/img/pipe.png)
+![](/backend/img/pipe.png)
 ### 4.DATA FLOW
 
 ---
-![](/teamproject/backend/img/flow.png)
+![](/backend/img/flow.png)
 
 ### 5.ERD
 
 ---
-![](/teamproject/backend/img/erd.png)
+![](/backend/img/erd.png)
 
 ### 6.api 명세서
 
@@ -104,7 +93,7 @@ const token = String(Math.floor(Math.random() * 10 ** 6)).padStart(6, '0');
     return `${phonenumber} 으로 ${token}을 전송했습니다`;
 ```
 
-![](/teamproject/backend/img/nhn.jpeg)
+![](/backend/img/nhn.jpeg)
 
 기존에 저장되어 있는지 휴대번호로 인증번호를 확인.
 Boolean값으로 리턴.
@@ -156,7 +145,7 @@ header에 담아서 전송합니다.
       `refreshToken=${refreshToken}; path=/;domain=.cucutoo.com; SameSite=None; Secure; httpOnly;`,
     );
 ```
-![](/teamproject/backend/img/cookie.png)
+![](/backend/img/cookie.png)
 
 
 #### logout
